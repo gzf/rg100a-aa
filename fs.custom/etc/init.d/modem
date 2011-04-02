@@ -1,0 +1,100 @@
+#!/bin/sh /etc/rc.common
+
+START=38
+STOP=91
+TIMEOUT=25
+
+status() {
+    STATUS=`adsl info | grep 'Status:' | awk '{print $2}'`
+}
+
+wait_dsl_up() {
+    local count=0
+    echo -n "Waiting DSL up"
+    while [ $STATUS != "Showtime" ]
+    do
+        echo -n .
+        count=$(($count + 1))
+        if [ $count -gt $TIMEOUT ]; then
+            echo
+            return 1
+        fi
+        sleep 1
+        status
+    done
+    echo
+    return 0
+}
+
+boot() {
+    adsl start
+
+    xtm start --rq0 256
+    xtm operate tdte --add ubr
+    xtm operate intf --state 1 enable
+
+    start "$@"
+}
+
+stop() {
+    stop_atm_conns
+    adsl connection --down
+}
+
+stop_atm_conns() {
+    local pvc_list=`xtm operate conn --show | grep ATM | awk '{printf("%s/%s\n",$2,$3)}'`
+
+    for pvc in $pvc_list
+    do
+        local port_id=`echo $pvc | awk -F / '{print $1}'`
+        local vpi=`echo $pvc | awk -F / '{print $2}'`
+        local vci=`echo $pvc | awk -F / '{print $3}'`
+
+        local pvc_id=${port_id}.${vpi}.${vci}
+
+        local ifname=`grep "^.*_${vpi}_${vci}:" /proc/net/dev`
+        if [ $? -eq 0 ]; then
+            ifname=`echo $ifname | awk -F : '{print $1}'`
+            ifconfig $ifname down &> /dev/null
+            xtm operate conn --deletenetdev $pvc_id
+        fi
+
+        xtm operate conn --delete $pvc_id
+    done
+}
+
+start_vcc() {
+    local cfg="$1"
+    config_get vpi "$cfg" vpi
+    config_get vci "$cfg" vci
+    config_get encaps "$cfg" encaps
+
+    case $encaps in
+        vc)
+            encaps=vcmux_eth;;
+        *)
+            encaps=llcsnap_eth;;
+    esac
+
+    local ifname=${cfg}_${vpi}_${vci}
+    if grep ^$ifname /proc/net/dev &> /dev/null; then
+        echo "error: interface $ifname already exists"
+        return 1
+    fi
+
+    local pvc_id=1.${vpi}.${vci}
+    xtm operate conn --add $pvc_id aal5 1 $encaps
+    xtm operate conn --addq $pvc_id 128 1
+    xtm operate conn --createnetdev $pvc_id $ifname
+}
+
+start() {
+    status
+    [ $STATUS = "Idle" ] || return 0
+
+    config_load modem
+    config_foreach start_vcc vcc
+
+    adsl connection --up
+    wait_dsl_up
+}

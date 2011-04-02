@@ -1,0 +1,4 @@
+#ohci-hcd
+#ehci-hcd
+#scsi_mod
+#usb-storage

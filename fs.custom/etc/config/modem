@@ -1,0 +1,4 @@
+#config vcc inet
+#       option vpi      8
+#       option vci      35
+#       option encaps   llc|vc

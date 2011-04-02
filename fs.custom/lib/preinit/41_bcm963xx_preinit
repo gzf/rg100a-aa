@@ -1,0 +1,43 @@
+#!/bin/sh
+# Copyright (C) 2006 OpenWrt.org
+# Copyright (C) 2010 Vertical Communications
+
+insert_bcm_kmods() {
+	insmod bcm_enet
+}
+
+mk_bcm_devs() {
+	mknod /dev/bcmatm0 c 205 0
+	mknod /dev/brcmboard c 206 0
+	mknod /dev/bcmvdsl0 c 207 0
+	mknod /dev/bcmadsl0 c 208 0
+	mknod /dev/bcmendpoint0 c 209 0
+	mknod /dev/bcmaal20 c 210 0
+	mknod /dev/bcmles0 c 211 0
+	mknod /dev/bcm c 212 0
+	mknod /dev/ac97 c 222 0
+	mknod /dev/slac c 223 0
+	mknod /dev/bcmprof c 224 0
+	mknod /dev/si3215 c 225 0
+	mknod /dev/bcmatmb0 c 226 0
+	mknod /dev/p8021ag0 c 227 0
+	mknod /dev/bcmxtmcfg0 c 228 0
+	mknod /dev/bcmgpon_bar3 c  229 0
+	mknod /dev/bcmgpon_ploam c 230 0
+	mknod /dev/bcmgpon c 231 0
+	mknod /dev/pktcmf c 232 0
+	mknod /dev/spu c 233 0
+	mknod /dev/pwrmngt c 240 0
+	mknod /dev/gpio c 241 0
+
+	mknod /dev/capi20 c 68 0
+	mknod /dev/isdninfo c 45 255
+	mknod /dev/ippp0 c 45 128
+	mknod /dev/ippp1 c 45 129
+	mknod /dev/isdnctrl0 c 45 64
+	mknod /dev/isdnctrl c 45 64
+	mknod /dev/isdn c 45 0
+}
+
+boot_hook_add preinit_essential insert_bcm_kmods
+boot_hook_add preinit_essential mk_bcm_devs

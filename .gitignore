@@ -1,0 +1,6 @@
+rootfs*
+vmlinux*
+modules
+openwrt*
+*.img
+.emacs*

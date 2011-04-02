@@ -1,0 +1,7 @@
+#!/bin/sh
+
+BCMROOT=/bcm
+EXEC=`basename $0`
+
+export LD_LIBRARY_PATH=/lib:/$BCMROOT/lib:$BCMROOT/lib/private:$BCMROOT/lib/public
+exec $BCMROOT/bin/$EXEC "$@"

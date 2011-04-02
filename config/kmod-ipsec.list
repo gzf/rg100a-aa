@@ -1,0 +1,14 @@
+kernel/net/ipv4/ah4.ko
+kernel/net/ipv4/esp4.ko
+kernel/net/ipv4/xfrm4_mode_beet.ko
+kernel/net/ipv4/xfrm4_mode_transport.ko
+kernel/net/ipv4/xfrm4_mode_tunnel.ko
+kernel/net/ipv4/xfrm4_tunnel.ko
+kernel/net/ipv6/ah6.ko
+kernel/net/ipv6/esp6.ko
+kernel/net/ipv6/xfrm6_mode_beet.ko
+kernel/net/ipv6/xfrm6_mode_transport.ko
+kernel/net/ipv6/xfrm6_mode_tunnel.ko
+kernel/net/ipv6/xfrm6_tunnel.ko
+kernel/net/key/af_key.ko
+kernel/net/xfrm/xfrm_user.ko
