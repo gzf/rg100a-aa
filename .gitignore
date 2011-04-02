@@ -4,3 +4,9 @@ modules
 openwrt*
 *.img
 .emacs*
+Module.symvers
+*.o
+*.ko
+*.mod.c
+.*.cmd
+.tmp*
