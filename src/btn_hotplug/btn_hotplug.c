@@ -3,8 +3,6 @@
 #include <bcm_intr.h>
 #include "btn_hotplug.h"
 
-#define NUM_OF_EXTIRQ   6
-
 static int ext_irqs[NUM_OF_EXTIRQ] = {
     INTERRUPT_ID_EXTERNAL_0,
     INTERRUPT_ID_EXTERNAL_1,
@@ -14,20 +12,25 @@ static int ext_irqs[NUM_OF_EXTIRQ] = {
     INTERRUPT_ID_EXTERNAL_5
 };
 
+#ifdef	CONFIG_HOTPLUG
+
+#endif
+
 static int general_isr(int irq, void* dev_id) {
     printk("irq=%x, dev_id=%p\n", irq, dev_id);
     return IRQ_HANDLED;
 }
 
-void __init ext_intr_init(void) {
+static int __init ext_intr_init(void) {
     int i;
     for (i=0; i<NUM_OF_EXTIRQ; i++) {
         BcmHalMapInterrupt(general_isr, 0, ext_irqs[i]);
         BcmHalInterruptEnable(ext_irqs[i]);
     }
+    return 0;
 }
 
-void __exit ext_intr_cleanup(void) {
+static void __exit ext_intr_cleanup(void) {
     int i;
     for (i=0; i<NUM_OF_EXTIRQ; i++)
         BcmHalInterruptDisable(ext_irqs[i]);
