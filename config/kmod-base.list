@@ -8,6 +8,7 @@ kernel/drivers/net/tun.ko
 kernel/drivers/net/slhc.ko
 kernel/drivers/net/ppp_generic.ko
 kernel/drivers/scsi/scsi_mod.ko
+kernel/drivers/scsi/sd_mod.ko
 kernel/drivers/usb/host/ohci-hcd.ko
 kernel/drivers/usb/host/ehci-hcd.ko
 kernel/drivers/usb/storage/usb-storage.ko
@@ -16,6 +17,7 @@ kernel/fs/mbcache.ko
 kernel/fs/ext3/ext3.ko
 kernel/fs/fuse/fuse.ko
 kernel/fs/jbd/jbd.ko
+kernel/fs/fat/fat.ko
 kernel/fs/vfat/vfat.ko
 kernel/fs/nls/nls_ascii.ko
 kernel/fs/nls/nls_utf8.ko
