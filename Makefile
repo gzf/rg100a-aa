@@ -53,16 +53,17 @@ rootfs.squashfs :
 	sudo rm -fr rootfs
 	mkdir rootfs
 	gzip -d < openwrt-brcm63xx-rootfs.cpio.gz | (cd rootfs && cpio -i)
+	rm -f  rootfs/init
 	rm -fr rootfs/etc/modules.d
 	rm -fr rootfs/lib/modules
-	rm -f  rootfs/usr/lib/opkg/info/*
-	rm -fr rootfs/lib/firmware
-	rm -fr rootfs/etc/hotplug.d/atm
+	rm -f  rootfs/usr/lib/opkg/lists/*
 	cd modules/lib/modules/$(KERNEL_VERSION) && \
-	cat $(PWD)/config/kmod-base.list $(PWD)/config/kmod-sched.list | \
+	cat $(PWD)/config/kmod-broadcom.list $(PWD)/config/kmod-base.list $(PWD)/config/kmod-sched.list | \
 	sudo cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
 	cd fs.custom  && find | sudo cpio -u -p -d ../rootfs
 	./tools/mksquashfs rootfs $@ -b 65536 -be -all-root
+#	rm -fr rootfs/lib/firmware
+#	rm -fr rootfs/etc/hotplug.d/atm
 
 clean:
 	rm -f rg100a.* vmlinux.lz.deadcode

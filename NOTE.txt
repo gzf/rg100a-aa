@@ -15,18 +15,4 @@ neufox wl wrapper
 ifconfig long interface name : /proc/net/dev
 hotplug2, skip atm devs
 
-kmod-nls-utf8
-kmod-fs-vfat
-kmod-fs-ext3
-kmod-fuse
-kmod-ipip
-kmod-gre
-kmod-ipt-nathelper
-kmod-ipt-nathelper-extra
-kmod-ipv6
-kmod-sit
-kmod-ip6-tunnel
-kmod-usb-storage
-kmod-usb-printer
-kmod-loop
-kmod-tun
+
