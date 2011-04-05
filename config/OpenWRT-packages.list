@@ -16,9 +16,7 @@ iptables
 iptables-mod-nat
 iptables-utils
 ntfs-3g
-tc
 ntpclient
-ez-ipupdate
 kmod-nls-utf8
 kmod-fs-vfat
 kmod-fs-ext3
@@ -32,6 +30,7 @@ kmod-usb-storage
 kmod-usb-printer
 kmod-loop
 kmod-tun
+kmod-sched
 kmod-ipt-conntrack
 kmod-ipt-conntrack-extra
 kmod-ipt-iprange
@@ -40,3 +39,5 @@ kmod-ipt-imq
 kmod-ipt-nat-extra
 kmod-ipt-nathelper
 kmod-ipt-nathelper-extra
+tc
+ez-ipupdate
