@@ -1,18 +1,10 @@
-rootfs_data size
-modem script/ refer to br2684ctl script
 udev/udevtrigger/udev rules
-remove wol (build minimum openwrt)
-revert br2684.c
-nls module
-try to remove dev except console
-update drivers (USB)
-
-pptp pptpd screen setterm wol samba vim-tiny ntpdate
-
 b43 driver
 neufox wl wrapper
 
-ifconfig long interface name : /proc/net/dev
-hotplug2, skip atm devs
+userspace packages:
+    pptp pptpd screen setterm wol samba vim-tiny ntpdate
 
-
+kmods:
+    kmod-ipt-imq
+    kmod-sched (tc dependency)
