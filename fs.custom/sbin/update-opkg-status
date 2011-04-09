@@ -1,0 +1,71 @@
+#!/bin/sh
+
+OPKGLIB=usr/lib/opkg
+IFS=
+LINE=
+PKGNAME=
+ECHOLINE=0
+
+# nothing changed, just print it
+if [ ! -e /overlay/$OPKGLIB/status ]; then
+    cat /rom/$OPKGLIB/status
+    exit 0
+fi
+
+curline_is_pkgdef() {
+    if [ ${#LINE} -gt 8 ] && [ "${LINE:0:8}" == "Package:" ]; then
+        PKGNAME=${LINE:9}
+        return 0
+    else
+        PKGNAME=
+        return 1
+    fi
+}
+
+# $1 status file
+# $2 package name
+status() {
+    ECHOLINE=0
+    cat $1 | \
+    while read LINE
+    do
+        if curline_is_pkgdef; then
+            if [ $ECHOLINE = 1 ]; then
+                return 0
+            elif [ $PKGNAME = $2 ]; then
+                ECHOLINE=1
+            fi
+        fi
+        if [ $ECHOLINE = 1 ]; then
+            echo "$LINE"
+        fi
+    done
+    if [ $ECHOLINE = 1 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# two stages
+# 1. validate exsiting entries
+grep "^Package:" /$OPKGLIB/status | \
+while read LINE
+do
+    PKGNAME=`echo "$LINE" | awk '{print $2}'`
+    if [ -e /overlay/$OPKGLIB/info/$PKGNAME.control ]; then
+        status /overlay/$OPKGLIB/status $PKGNAME
+    elif [ -e /rom/$OPKGLIB/info/$PKGNAME.control ]; then
+        status /rom/$OPKGLIB/status $PKGNAME
+    fi
+done
+
+# 2. add new-born entries
+opkg -o /rom list-installed | \
+while read LINE
+do
+    PKGNAME=`echo "$LINE" | awk '{print $1}'`
+    if [ `opkg status $PKGNAME | wc -l` -eq 0 ]; then
+        status /rom/$OPKGLIB/status $PKGNAME
+    fi
+done

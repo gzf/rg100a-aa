@@ -1,4 +1,5 @@
 #config vcc inet
 #       option vpi      8
 #       option vci      35
-#       option encaps   llc|vc
+#       option port     fast | interleave
+#       option encaps   llc | vc

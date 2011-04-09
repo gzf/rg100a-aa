@@ -1,0 +1,10 @@
+2011-04-09:
+	* add update-opkg-status to support firmware upgrade
+	* support option 'port' in modem config
+	* add kmod-ip6tables (xt_hashlimit depends on ip6_tables)
+	* add sd_mod in /etc/modules.d/60-usb-storage
+	* remove iptables_raw in /etc/modules.d/31-nat
+
+2011-04-08:
+	* add xt_hashlimit
+	* begin ChangeLog

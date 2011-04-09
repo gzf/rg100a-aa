@@ -38,4 +38,5 @@ kmod-ipt-conntrack-extra
 kmod-ipt-nat-extra
 kmod-ipt-nathelper
 kmod-ipt-nathelper-extra
+kmod-ip6tables
 ez-ipupdate

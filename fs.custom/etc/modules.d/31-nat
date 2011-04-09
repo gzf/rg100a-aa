@@ -2,13 +2,12 @@ x_tables
 xt_tcpudp
 ip_tables
 iptable_mangle
+iptable_nat
 nf_conntrack
 nf_defrag_ipv4
 nf_conntrack_ipv4
 xt_state
-iptable_raw
 nf_nat
-iptable_nat
 ipt_MASQUERADE
 
 nf_conntrack_ftp
