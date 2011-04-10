@@ -31,6 +31,7 @@ kmod-usb-storage
 kmod-usb-printer
 kmod-loop
 kmod-tun
+kmod-ipt-imq
 kmod-ipt-iprange
 kmod-ipt-ipopt
 kmod-ipt-conntrack

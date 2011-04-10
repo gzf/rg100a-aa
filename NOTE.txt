@@ -2,9 +2,12 @@ udev/udevtrigger/udev rules
 b43 driver
 neufox wl wrapper
 
+TODO:
+    btn_hotplug
+    QoS testing
+
 userspace packages:
     pptp pptpd screen setterm wol samba vim-tiny ntpdate
 
 kmods:
-    kmod-ipt-imq
     kmod-sched (tc dependency)
