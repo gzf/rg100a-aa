@@ -1,4 +1,8 @@
 #!/bin/sh /etc/rc.common
+#
+# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
+# Date: 2011/03
+# License: GPL
 
 START=38
 STOP=91

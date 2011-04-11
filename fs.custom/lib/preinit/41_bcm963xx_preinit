@@ -1,6 +1,8 @@
 #!/bin/sh
-# Copyright (C) 2006 OpenWrt.org
-# Copyright (C) 2010 Vertical Communications
+#
+# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
+# Date: 2011/03
+# License: GPL
 
 insert_bcm_kmods() {
 	insmod bcm_enet

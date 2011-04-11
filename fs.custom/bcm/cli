@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
+# Date: 2011/03
+# License: GPL
 
 BCMROOT=/bcm
 EXEC=`basename $0`

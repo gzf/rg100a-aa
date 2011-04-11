@@ -1,3 +1,7 @@
+# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
+# Date: 2011/03
+# License: GPL
+
 append DRIVERS "broadcom"
 
 WLCTL=/bin/wl

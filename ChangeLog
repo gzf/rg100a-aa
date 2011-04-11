@@ -1,3 +1,10 @@
+2011-04-10:
+	* patch ESFQ
+	* patch IMQ (debugging needed)
+	* backport xt_connlimit
+	* complete kmod-ip6tables
+	* add author/license header
+
 2011-04-09:
 	* add update-opkg-status to support firmware upgrade
 	* support option 'port' in modem config
