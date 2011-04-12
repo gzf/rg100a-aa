@@ -108,7 +108,6 @@ kernel/net/netfilter/xt_pkttype.ko
 kernel/net/netfilter/xt_quota.ko
 kernel/net/netfilter/xt_conntrack.ko
 kernel/net/netfilter/xt_connbytes.ko
-kernel/net/netfilter/xt_connlimit.ko
 kernel/net/netfilter/xt_connmark.ko
 kernel/net/netfilter/xt_CONNMARK.ko
 kernel/net/netfilter/xt_dscp.ko

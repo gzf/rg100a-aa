@@ -1,3 +1,7 @@
+2011-04-12:
+	* refactory directory structrue
+	* make xt_connlimit a separate module
+	
 2011-04-10:
 	* patch ESFQ
 	* patch IMQ (debugging needed)
