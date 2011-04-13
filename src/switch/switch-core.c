@@ -404,7 +404,7 @@ switch_vlan_config *switch_parse_vlan(switch_driver *driver, char *buf)
 
 int switch_device_registered (char* device) {
 	struct list_head *pos;
-	switch_driver *new;
+//	switch_driver *new;
 
 	list_for_each(pos, &drivers.list) {
 		if (strcmp(list_entry(pos, switch_driver, list)->interface, device) == 0) {
@@ -471,7 +471,7 @@ void switch_unregister_driver(char *name) {
 
 static int __init switch_init(void)
 {
-	if ((switch_root = proc_mkdir("switch", NULL)) == NULL) {
+	if ((switch_root = proc_mkdir("switch-cfg", NULL)) == NULL) {
 		printk("%s: proc_mkdir failed.\n", __FILE__);
 		return -ENODEV;
 	}
@@ -483,7 +483,7 @@ static int __init switch_init(void)
 
 static void __exit switch_exit(void)
 {
-	remove_proc_entry("switch", NULL);
+	remove_proc_entry("switch-cfg", NULL);
 }
 
 MODULE_AUTHOR("Felix Fietkau <openwrt@nbd.name>");

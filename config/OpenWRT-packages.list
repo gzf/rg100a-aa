@@ -18,6 +18,7 @@ iptables-mod-nat
 iptables-utils
 tc
 ntfs-3g
+kmod-switch
 kmod-nls-utf8
 kmod-fs-vfat
 kmod-fs-ext3

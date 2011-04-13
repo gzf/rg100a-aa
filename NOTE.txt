@@ -4,9 +4,9 @@ neufox wl wrapper
 
 TODO:
     btn_hotplug
-    QoS testing
-    bcm63xx_enet
-	kmod-switch/swconfig/robocfg
+    imq/connlimit testing
+    bcm63xx_enet/robocfg
+	kmod-switch/swconfig
 	TTL/IPID
 	try upgrade to kernel 2.6.27 in neufbox
 
