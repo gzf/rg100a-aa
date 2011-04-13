@@ -9,4 +9,5 @@
 /src/**/*.ko
 /src/**/*.mod.c
 /src/**/.*.cmd
+/src/**/.*.d
 .tmp*

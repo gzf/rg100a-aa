@@ -4,7 +4,8 @@
 	
 2011-04-10:
 	* patch ESFQ
-	* patch IMQ (debugging needed)
+	* patch IMQ (make use of the control buffer, 
+		     debugging needed, never touch skb_buff.h)
 	* backport xt_connlimit
 	* complete kmod-ip6tables
 	* add author/license header

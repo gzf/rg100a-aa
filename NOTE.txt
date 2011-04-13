@@ -5,11 +5,13 @@ neufox wl wrapper
 TODO:
     btn_hotplug
     QoS testing
+    bcm63xx_enet
+	kmod-switch/swconfig/robocfg
+	TTL/IPID
+	try upgrade to kernel 2.6.27 in neufbox
 
 userspace packages:
     pptp pptpd screen setterm wol samba vim-tiny ntpdate
 
 kmods:
     kmod-sched (tc dependency)
-    bcm63xx_enet/kmod-switch/swconfig
-	TTL/IPID    
