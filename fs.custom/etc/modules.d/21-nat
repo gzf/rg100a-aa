@@ -1,5 +1,7 @@
 x_tables
 ip_tables
+nf_conntrack
 nf_nat
+nf_conntrack_ipv4
 iptable_nat
 ipt_MASQUERADE

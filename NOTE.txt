@@ -4,9 +4,10 @@ neufox wl wrapper
 
 TODO:
     btn_hotplug
-    imq/connlimit testing
-    bcm63xx_enet/robocfg
+	gpio/ssb/userspace led
+    backport bcm63xx_enet/robocfg
 	swconfig
+    imq/connlimit testing
 	try upgrade to kernel 2.6.27 in neufbox
 
 userspace packages:
