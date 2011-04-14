@@ -1,3 +1,5 @@
+#ipt_NETMAP
+#ipt_REDIRECT
 #iptable_mangle
 #xt_mark
 #xt_MARK

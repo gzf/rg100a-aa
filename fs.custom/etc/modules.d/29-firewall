@@ -1,0 +1,28 @@
+# Firewall dependecies. If you don't use the firewall package, 
+# it is safe to remove this file to prevent unnecessary modules being loaded.
+
+# kmod-ipt-core
+x_tables
+xt_tcpudp
+ip_tables
+iptable_filter
+iptable_mangle
+xt_limit
+xt_mac
+xt_multiport
+xt_comment
+ipt_LOG
+xt_TCPMSS
+ipt_REJECT
+
+# kmod-ipt-conntrack
+nf_conntrack
+nf_conntrack_ipv4
+xt_state
+iptable_raw
+xt_NOTRACK
+
+# kmod-ipt-nat
+nf_nat
+iptable_nat
+ipt_MASQUERADE

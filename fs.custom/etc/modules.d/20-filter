@@ -1,0 +1,11 @@
+#x_tables
+#ip_tables
+#iptable_filter
+#nf_conntrack
+#nf_conntrack_ipv4
+#xt_state
+#xt_tcpudp
+#xt_mac
+#xt_multiport
+#ipt_LOG
+#ipt_REJECT

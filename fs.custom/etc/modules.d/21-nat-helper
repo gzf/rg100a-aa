@@ -1,3 +1,5 @@
+nf_conntrack
+nf_conntrack_ipv4
 nf_conntrack_ftp
 nf_nat_ftp
 nf_conntrack_proto_gre
