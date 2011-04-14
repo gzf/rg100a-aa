@@ -6,7 +6,5 @@ xt_state
 xt_limit
 xt_mac
 xt_multiport
-xt_comment
-xt_TCPMSS
 ipt_LOG
 ipt_REJECT
