@@ -6,12 +6,11 @@ TODO:
     btn_hotplug
     imq/connlimit testing
     bcm63xx_enet/robocfg
-	kmod-switch/swconfig
-	TTL/IPID
+	swconfig
 	try upgrade to kernel 2.6.27 in neufbox
 
 userspace packages:
-    pptp pptpd screen setterm wol samba vim-tiny ntpdate
+    pptp pptpd screen wol samba vim openvpn
 
 kmods:
     kmod-sched (tc dependency)
