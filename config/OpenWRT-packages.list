@@ -6,6 +6,7 @@ libgcc
 uclibcxx
 busybox
 dropbear
+swap-utils
 mtd
 uci
 opkg

@@ -7,10 +7,14 @@ TODO:
 	gpio/ssb/userspace led
     backport bcm63xx_enet/robocfg
 	swconfig
+	nf_defrag_ipv4
     imq/connlimit testing
 	try upgrade to kernel 2.6.27 in neufbox
 
 userspace packages:
+base:
+    gpioctl swconfig sudo
+opkg:
     pptp pptpd screen wol samba vim openvpn
 
 kmods:
