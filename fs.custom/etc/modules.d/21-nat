@@ -1,4 +1,5 @@
 x_tables
+xt_tcpudp
 ip_tables
 nf_conntrack
 nf_nat
