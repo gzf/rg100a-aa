@@ -3,3 +3,15 @@
 #ohci-hcd
 #ehci-hcd
 #usb-storage
+
+# EXT3
+#mbcache
+#jbd
+#ext3
+
+# VFAT 
+#fat
+#vfat
+
+# NTFS-3G
+#fuse

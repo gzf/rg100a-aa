@@ -6,7 +6,6 @@ libgcc
 uclibcxx
 busybox
 dropbear
-swap-utils
 mtd
 uci
 opkg
@@ -15,8 +14,11 @@ ntpclient
 ppp
 ppp-mod-pppoe
 iptables
+iptables-mod-conntrack
 iptables-mod-nat
 iptables-utils
+ip6tables
+ip6tables-utils
 tc
 ntfs-3g
 kmod-switch
@@ -32,14 +34,14 @@ kmod-ip6-tunnel
 kmod-usb-storage
 kmod-usb-printer
 kmod-loop
+kmod-ifb
 kmod-tun
 kmod-ipt-imq
 kmod-ipt-iprange
 kmod-ipt-ipopt
-kmod-ipt-conntrack
-kmod-ipt-conntrack-extra
+kmod-ipt-hashlimit
 kmod-ipt-nat-extra
+kmod-ipt-conntrack-extra
 kmod-ipt-nathelper
 kmod-ipt-nathelper-extra
-kmod-ip6tables
 ez-ipupdate

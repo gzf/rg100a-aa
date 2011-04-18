@@ -1,21 +1,18 @@
-udev/udevtrigger/udev rules
-b43 driver
-neufox wl wrapper
-
 TODO:
+ 1.0:
     btn_hotplug
 	gpio/ssb/userspace led
+    imq/connlimit testing
+	nf_defrag_ipv4
+	cls_basic vs. cls_flow ?
+ 2.0:
     backport bcm63xx_enet/robocfg
 	swconfig
-	nf_defrag_ipv4
-    imq/connlimit testing
 	try upgrade to kernel 2.6.27 in neufbox
+	b43 driver
 
 userspace packages:
 base:
-    gpioctl swconfig sudo
+    gpioctl swconfig 
 opkg:
-    pptp pptpd screen wol samba vim openvpn
-
-kmods:
-    kmod-sched (tc dependency)
+    pptp pptpd screen wol samba vim openvpn sudo

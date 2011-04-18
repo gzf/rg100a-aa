@@ -1,3 +1,19 @@
+2011-04-18:
+	* add 8021q in 01-switch
+	* add ip6tables, ip6tables-utils
+	* add iptables-mod-conntrack
+
+2011-04-17:
+	* upgrade to backfire r26688
+	* upgrade switch-robo
+	* add xt_tcpudp in 21-nat
+	* modify Makefile of DSL2760 to make it more flexible
+	* revert swap-utils, already upported by busybox
+	* update 90-usb-storage
+
+2011-04-16:
+	* add swap-utils
+
 2011-04-13:
 	* port kmod-switch
 	* port ipt_IPID
