@@ -36,12 +36,12 @@ kmod-usb-printer
 kmod-loop
 kmod-ifb
 kmod-tun
+kmod-ipt-nat-extra
+kmod-ipt-conntrack-extra
 kmod-ipt-imq
 kmod-ipt-iprange
 kmod-ipt-ipopt
 kmod-ipt-hashlimit
-kmod-ipt-nat-extra
-kmod-ipt-conntrack-extra
 kmod-ipt-nathelper
 kmod-ipt-nathelper-extra
 ez-ipupdate

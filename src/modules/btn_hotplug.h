@@ -5,6 +5,7 @@
 #include <net/sock.h>
 
 #define NUM_OF_EXTIRQ   6
+#define DRV_NAME	    "btn_hotplug"
 
 struct bh_event {
 	char			*name;
@@ -14,9 +15,5 @@ struct bh_event {
 	struct sk_buff		*skb;
 	struct work_struct	work;
 };
-
-extern struct sock *uevent_sock;
-extern u64 uevent_next_seqnum(void);
-
 
 #endif

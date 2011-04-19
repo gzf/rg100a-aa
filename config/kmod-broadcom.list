@@ -4,7 +4,5 @@ extra/bcmprocfs.ko
 extra/bcm_usb.ko
 extra/bcmxtmcfg.ko
 extra/bcmxtmrt.ko
-extra/gpio.ko
 extra/pktflow.ko
-extra/vnet.ko
 extra/wl.ko
