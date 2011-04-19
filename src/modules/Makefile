@@ -1,4 +1,7 @@
-include ../common.mk
+BCMPKG = DSL-2760U
+KERNEL = $(BCMPKG)/kernel/linux
+BRCM_BOARD = bcm963xx
+CROSS = mips-linux
 
 EXTRA_CFLAGS += -I$(M)/linux/include -I$(M)/linux/arch/mips/include/asm/mach-bcm63xx \
 				-DCONFIG_BCM63XX_CPU_6358
@@ -16,3 +19,10 @@ obj-m = xt_connlimit.o \
 
 xt_connlimit-objs := xt_connlimit_orig.o backport.o
 btn_hotplug-objs := button.o hotplug.o
+
+MDIR=$(shell pwd)
+all:
+	make -I$(MDIR) -C $(KERNEL) CC=$(CROSS)-gcc LD=$(CROSS)-ld M=$(MDIR) modules
+clean:
+	make -I$(MDIR) -C $(KERNEL) CC=$(CROSS)-gcc LD=$(CROSS)-ld M=$(MDIR) clean
+

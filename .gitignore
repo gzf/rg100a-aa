@@ -4,10 +4,11 @@
 /openwrt*
 /*.img
 /.emacs*
-/src/**/Module.symvers
-/src/**/*.o
-/src/**/*.ko
-/src/**/*.mod.c
-/src/**/.*.cmd
-/src/**/.*.d
+/src/modules/Module.symvers
+/src/modules/DSL-2760U
+/src/modules/*.o
+/src/modules/*.ko
+/src/modules/*.mod.c
+/src/modules/.*.cmd
+/src/modules/.*.d
 .tmp*
