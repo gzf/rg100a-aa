@@ -4,10 +4,6 @@
 # Date: 2011/03
 # License: GPL
 
-insert_bcm_kmods() {
-	insmod bcm_enet
-}
-
 mk_bcm_devs() {
 	mknod /dev/bcmatm0 c 205 0
 	mknod /dev/brcmboard c 206 0
@@ -41,5 +37,4 @@ mk_bcm_devs() {
 	mknod /dev/isdn c 45 0
 }
 
-boot_hook_add preinit_essential insert_bcm_kmods
 boot_hook_add preinit_essential mk_bcm_devs

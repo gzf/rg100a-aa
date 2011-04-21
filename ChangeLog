@@ -1,3 +1,12 @@
+2011-04-21:
+	* mv /etc/kernel.conf to /etc/config/kernel, 
+	  and accordingly re-write /etc/init.d/kconfig 
+	* add FAQ
+
+2011-04-20:
+	* add /etc/init.d/kconfig /etc/kernel.conf
+	* Makefile to Kbuild
+
 2011-04-18:
 	* add 8021q in 01-switch
 	* add ip6tables, ip6tables-utils

@@ -1,0 +1,2 @@
+config kernel
+	option vlan		off

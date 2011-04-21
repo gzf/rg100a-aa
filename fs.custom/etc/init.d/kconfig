@@ -1,0 +1,27 @@
+#!/bin/sh /etc/rc.common
+#
+# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
+# Date: 2011-04-20
+# License: GPL
+
+START=00
+
+config_kernel() {
+    local cfg="$1"
+    local vlan
+    
+    config_get_bool vlan "$cfg" vlan 0
+
+    if [ $vlan = 1 ]; then
+        insmod 8021q
+        insmod switch-core
+        insmod switch-robo
+    fi
+}
+
+boot() {
+    insmod bcm_enet
+
+    config_load kernel
+    config_foreach config_kernel kernel
+}

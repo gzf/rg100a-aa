@@ -1,0 +1,63 @@
+Q. 为什么制这个作固件
+A. 制作这个固件的目的是为了在RG100A-AA上运行OpenWRT的同时能够
+   使用该路由器自带的ADSL模块进行拨号。
+   基本思路是将OpenWRT的rootfs与DSL-2760的内核集成在一起。
+   
+Q. 固件支持ADSL驱动吗？
+A. 支持
+
+Q. 我的XXX路由器能不能刷这个固件？
+A. 不清楚，自己尝试。本人只在RG100A-AA上进行测试。
+
+Q. 有没有Web配置界面？
+A. 没有
+
+Q. 会不会支持Web配置界面？
+A. 不会
+
+Q. 如何配置ADSL？
+A. 第一步：ssh登录路由器
+
+   第二步：编辑/etc/config/modem，设置正确的vpi/vci。
+   通常只要设置vpi/vci即可，另外有两个可选的配置项：
+     1. option port: 用于设置ADSL通信模式，有两个可选值：fast（默认），interleave
+     2. option encaps: 用于设置ADSL封装方式，有两个可选值：llc（默认），vc
+   样例：
+   config vcc inet
+       option vpi      8
+       option vci      35
+  
+
+   第三步：修改/etc/config/network，将wan口的ifname设置为inet_vpi_vci，
+   此处vpi/vci用实际值填充，并正确设置pppoe的用户名密码。
+   样例：
+   config interface wan
+       option proto     pppoe
+       option ifname    inet_8_35
+       option username  XXXXXX
+       option password  YYYYYY
+
+
+   一切就绪后执行下面的命令尝试ADSL拨号：
+   /etc/init.d/modem boot
+
+   如果拨号成功，则执行下面的命令将modem设置为开机自动启动：
+   /etc/init.d/modem enable
+
+Q. 为什么*正确*配置ADSL参数后还是不能拨号上网？
+A. 执行logread，看pppd错误信息，自己摸索原因
+
+Q. 为什么路由器已经能拨号上网，但是内网机器无法上网？
+A. 固件没有安装firewall，有两种解决方法：
+    1. 安装firewall
+       opkg update
+       opkg install firewall
+       reboot
+    2. 自己编写iptables规则，比如
+       iptables -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE
+
+Q. 如何配置VLAN？
+A. ssh登录路由器，编辑/etc/config/kernel
+   option vlan   on
+   重启路由器，然后参考OpenWRT官方文档配置/etc/config/network
+   http://wiki.openwrt.org/doc/uci/network#switch
