@@ -27,9 +27,10 @@
 #include <net/netfilter/nf_conntrack.h>
 #include <net/netfilter/nf_conntrack_core.h>
 #include <net/netfilter/nf_conntrack_tuple.h>
-#include "backport.h"
 
 // back-compatibilty, from nf_conntrack_core.c
+#include "backport.h"
+
 int 
 nf_ct_get_tuplepr(const struct sk_buff *skb, unsigned int nhoff,
                   u_int16_t l3num, struct nf_conntrack_tuple *tuple)

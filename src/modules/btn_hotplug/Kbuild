@@ -1,6 +1,6 @@
-EXTRA_CFLAGS += -I$(BUILD_DIR)/bcmdrivers/broadcom/include/$(BRCM_BOARD) \
-        -I$(BUILD_DIR)/bcmdrivers/opensource/include/$(BRCM_BOARD) \
-        -I$(BUILD_DIR)/shared/opensource/include/$(BRCM_BOARD)
+EXTRA_CFLAGS += -I$(BCMROOT)/bcmdrivers/broadcom/include/$(BRCM_BOARD) \
+		        -I$(BCMROOT)/bcmdrivers/opensource/include/$(BRCM_BOARD) \
+				-I$(BCMROOT)/shared/opensource/include/$(BRCM_BOARD)
 
 obj-m = btn_hotplug.o
 

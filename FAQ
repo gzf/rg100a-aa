@@ -1,13 +1,14 @@
-Q. 为什么制这个作固件
-A. 制作这个固件的目的是为了在RG100A-AA上运行OpenWRT的同时能够
-   使用该路由器自带的ADSL模块进行拨号。
-   基本思路是将OpenWRT的rootfs与DSL-2760的内核集成在一起。
+Q. 为什么制作这个固件
+A. 制作这个固件的目的是为了鱼和熊掌兼得，实现在RG100A-AA（BCM96358 VW2）
+   上运行OpenWRT的同时能够使用该路由器自带的ADSL模块进行拨号。
+   基本方法是将OpenWRT的根文件系统与DSL-2760的内核集成在一起。
    
 Q. 固件支持ADSL驱动吗？
 A. 支持
 
 Q. 我的XXX路由器能不能刷这个固件？
 A. 不清楚，自己尝试。本人只在RG100A-AA上进行测试。
+   原理上只要是使用broadcom 96358 VW2芯片的路由器都可以尝试。
 
 Q. 有没有Web配置界面？
 A. 没有
@@ -27,9 +28,8 @@ A. 第一步：ssh登录路由器
        option vpi      8
        option vci      35
   
-
    第三步：修改/etc/config/network，将wan口的ifname设置为inet_vpi_vci，
-   此处vpi/vci用实际值填充，并正确设置pppoe的用户名密码。
+   此处vpi/vci用实际值填充，并正确设置pppoe用户名密码。
    样例：
    config interface wan
        option proto     pppoe
@@ -41,7 +41,7 @@ A. 第一步：ssh登录路由器
    一切就绪后执行下面的命令尝试ADSL拨号：
    /etc/init.d/modem boot
 
-   如果拨号成功，则执行下面的命令将modem设置为开机自动启动：
+   如果拨号成功，执行下面的命令将modem设置为开机自动启动：
    /etc/init.d/modem enable
 
 Q. 为什么*正确*配置ADSL参数后还是不能拨号上网？
