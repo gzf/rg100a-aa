@@ -10,11 +10,23 @@ Q. 我的XXX路由器能不能刷这个固件？
 A. 不清楚，自己尝试。本人只在RG100A-AA上进行测试。
    原理上只要是使用broadcom 96358 VW2芯片的路由器都可以尝试。
 
-Q. 有没有Web配置界面？
-A. 没有
+Q. 有没有Web管理界面？
+A. 没有。
+   本固件体积控制在4M以下，只集成最基本的包和常用的内核模块。
+   刷机成功后，只支持ssh登录进行命令行操作，默认用户名是：root，密码：admin
+   登录后可以用opkg安装Web管理模块，但是ADSL设置部分尚无对应的Web模块。
 
-Q. 会不会支持Web配置界面？
+Q. 以后会不会支持Web管理界面？
 A. 不会
+
+A. 怎么刷这个固件？
+Q. 如果已经刷过本固件的旧版本，则把固件上传到路由器后执行如下命令：
+   mtd -r write <固件文件名> linux
+   否则进入CFE的刷机界面进行更新。
+
+   本固件要求CFE版本1.0.37-102.9，如果刷完本固件后路由器无法启动，
+   可以尝试刷带CFE的版本。
+   注意：刷CFE的版本可能导致你的路由器变砖头，慎重！
 
 Q. 如何配置ADSL？
 A. 第一步：ssh登录路由器
@@ -37,7 +49,6 @@ A. 第一步：ssh登录路由器
        option username  XXXXXX
        option password  YYYYYY
 
-
    一切就绪后执行下面的命令尝试ADSL拨号：
    /etc/init.d/modem boot
 
@@ -59,5 +70,8 @@ A. 固件没有安装firewall，有两种解决方法：
 Q. 如何配置VLAN？
 A. ssh登录路由器，编辑/etc/config/kernel
    option vlan   on
-   重启路由器，然后参考OpenWRT官方文档配置/etc/config/network
+   然后参考OpenWRT官方文档配置/etc/config/network
    http://wiki.openwrt.org/doc/uci/network#switch
+   最后重启路由器
+   注意：错误的VLAN设置可能导致LAN无法连接，这种情况下只能拆机用TTL线连接后重新配置。
+

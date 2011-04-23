@@ -4,6 +4,7 @@ hotplug2
 libc
 libgcc
 uclibcxx
+block-hotplug
 busybox
 dropbear
 mtd
