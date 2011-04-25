@@ -151,10 +151,10 @@ clean:
 
 
 info:
-	$(MAKE) -s _call_info DEFAULT_PACKAGES="$(shell tr \\n ' ' < OpenWRT-packages.list)"
+	$(MAKE) -s _call_info DEFAULT_PACKAGES="$(shell tr \\n ' ' < rootfs-packages.list)"
 
 image:
-	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell tr \\n ' ' < OpenWRT-packages.list)" \
+	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell tr \\n ' ' < rootfs-packages.list)" \
 		USER_PROFILE="Empty"
 
 .SILENT: help info image
