@@ -65,7 +65,7 @@ A. 固件没有安装firewall，有两种解决方法：
        opkg install firewall
        reboot
     2. 自己编写iptables规则，比如
-       iptables -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE
+       iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE
 
 Q. 如何配置VLAN？
 A. ssh登录路由器，编辑/etc/config/kernel
