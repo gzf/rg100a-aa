@@ -149,12 +149,11 @@ build_image: FORCE
 clean:
 	rm -rf $(TOPDIR)/tmp $(TOPDIR)/dl $(TARGET_DIR) $(BIN_DIR)
 
-
 info:
-	$(MAKE) -s _call_info DEFAULT_PACKAGES="$(shell tr \\n ' ' < rootfs-packages.list)"
+	$(MAKE) -s _call_info DEFAULT_PACKAGES="$(shell tr \\n ' ' < packages-base.list)"
 
 image:
-	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell tr \\n ' ' < rootfs-packages.list)" \
+	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell tr \\n ' ' < packages-base.list)" \
 		USER_PROFILE="Empty"
 
 .SILENT: help info image

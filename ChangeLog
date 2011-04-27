@@ -1,3 +1,9 @@
+2011-04-26:
+	* add ip
+
+2011-04-25:
+	* add backfire config for rootfs and repository respectively
+
 2011-04-23:
 	* add block-hotplug
 

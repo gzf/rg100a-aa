@@ -20,6 +20,7 @@ iptables-mod-nat
 iptables-utils
 ip6tables
 ip6tables-utils
+ip
 tc
 ntfs-3g
 kmod-switch
