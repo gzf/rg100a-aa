@@ -75,3 +75,19 @@ A. ssh登录路由器，编辑/etc/config/kernel
    最后重启路由器
    注意：错误的VLAN设置可能导致LAN无法连接，这种情况下只能拆机用TTL线连接后重新配置。
 
+Q. 如何挂载USB硬盘
+A. 编辑/etc/modules.d/90-usb-storage，去掉相关模块的注释。
+   比如要加载ext3的usb2.0硬盘，应加载如下模块：
+	scsi_mod
+	sd_mod
+	ehci-hcd
+	usb-storage
+
+	# EXT3
+	mbcache
+	jbd
+	ext3
+   固件已经集成block-hotplug，可以通过配置/etc/config/fstab实现自动挂载硬盘分区，
+   具体方法请参考OpenWRT官方文档：
+   http://wiki.openwrt.org/doc/uci/fstab
+
