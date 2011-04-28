@@ -1,5 +1,1 @@
-ifneq ($(DEV),)
-obj-m := $(DEV)
-else
 obj-m := backports/ openwrt/ misc/
-endif

@@ -1,1 +1,12 @@
-obj-m := ipt_IPID.o
+ifneq (,$(btn_hotplug))
+	DEVMODS += btn_hotplug.o
+endif
+
+obj-m := ipt_IPID.o $(DEVMODS)
+
+btn_hotplug-y := button.o hotplug.o
+
+CFLAGS_button.o = -I$(BCMROOT)/bcmdrivers/broadcom/include/$(BRCM_BOARD) \
+                  -I$(BCMROOT)/bcmdrivers/opensource/include/$(BRCM_BOARD) \
+                  -I$(BCMROOT)/shared/opensource/include/$(BRCM_BOARD)
+
