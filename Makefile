@@ -60,6 +60,8 @@ rootfs.squashfs :
 	cd modules/lib/modules/$(KERNEL_VERSION) && \
 	cat $(PWD)/config/kmod-broadcom.list $(PWD)/config/kmod-base.list $(PWD)/config/kmod-sched.list | \
 	sudo cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
+	cd src/modules && cat $(PWD)/config/kmod-local.list | \
+	sudo cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
 	cd fs.custom  && find | sudo cpio -u -p -d ../rootfs
 	./tools/mksquashfs rootfs $@ -b 65536 -be -all-root
 #	rm -fr rootfs/lib/firmware

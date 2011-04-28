@@ -1,0 +1,4 @@
+EXTRA_CFLAGS += -I$(M)/linux/include -I$(M)/linux/arch/mips/include/asm/mach-bcm63xx \
+                -DCONFIG_BCM63XX_CPU_6358
+
+obj-m := xt_connlimit.o

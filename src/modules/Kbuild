@@ -1,9 +1,5 @@
 ifneq ($(DEV),)
 obj-m := $(DEV)
 else
-obj-m := xt_connlimit.o \
-		ipt_IPID.o \
-		switch/
-#		btn_hotplug/
-#		bcm63xx_enet.o
+obj-m := backports/ openwrt/ misc/
 endif
