@@ -1,5 +1,6 @@
 TODO:
  1.0:
+	fix /tmp permission
     btn_hotplug
 	gpio/ssb/userspace led
     imq/connlimit testing
