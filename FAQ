@@ -4,7 +4,7 @@ A. 制作这个固件的目的是为了鱼和熊掌兼得，实现在RG100A-AA�
    基本方法是将OpenWRT的根文件系统与DSL-2760的内核集成在一起。
    
 Q. 固件支持ADSL驱动吗？
-A. 支持
+A. 支持。
 
 Q. 我的XXX路由器能不能刷这个固件？
 A. 不清楚，自己尝试。本人只在RG100A-AA上进行测试。
@@ -14,10 +14,13 @@ Q. 有没有Web管理界面？
 A. 没有。
    本固件体积控制在4M以下，只集成最基本的包和常用的内核模块。
    刷机成功后，只支持ssh登录进行命令行操作，默认用户名是：root，密码：admin
-   登录后可以用opkg安装Web管理模块，但是ADSL设置部分尚无对应的Web模块。
+   注意：登录成功后请及时执行passwd修改密码。
+
+   需要Web管理的可以用opkg安装Web管理模块，
+   但是ADSL设置部分尚无对应的Web模块，只能通过文本编辑器修改。
 
 Q. 以后会不会支持Web管理界面？
-A. 不会
+A. 不会。
 
 A. 怎么刷这个固件？
 Q. 如果已经刷过本固件的旧版本，则把固件上传到路由器后执行如下命令：
@@ -56,7 +59,7 @@ A. 第一步：ssh登录路由器
    /etc/init.d/modem enable
 
 Q. 为什么*正确*配置ADSL参数后还是不能拨号上网？
-A. 执行logread，看pppd错误信息，自己摸索原因
+A. 执行logread，看pppd错误信息，自己摸索原因。
 
 Q. 为什么路由器已经能拨号上网，但是内网机器无法上网？
 A. 固件没有安装firewall，有两种解决方法：
@@ -72,7 +75,7 @@ A. ssh登录路由器，编辑/etc/config/kernel
    option vlan   on
    然后参考OpenWRT官方文档配置/etc/config/network
    http://wiki.openwrt.org/doc/uci/network#switch
-   最后重启路由器
+   最后重启路由器。
    注意：错误的VLAN设置可能导致LAN无法连接，这种情况下只能拆机用TTL线连接后重新配置。
 
 Q. 如何挂载USB硬盘
@@ -87,7 +90,7 @@ A. 编辑/etc/modules.d/90-usb-storage，去掉相关模块的注释。
 	mbcache
 	jbd
 	ext3
-   固件已经集成block-hotplug，可以通过配置/etc/config/fstab实现自动挂载硬盘分区，
+   此外，固件已经集成block-hotplug，可以通过配置/etc/config/fstab实现自动挂载硬盘分区，
    具体方法请参考OpenWRT官方文档：
    http://wiki.openwrt.org/doc/uci/fstab
 
