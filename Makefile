@@ -57,6 +57,7 @@ rootfs.squashfs :
 	rm -fr rootfs/etc/modules.d
 	rm -fr rootfs/lib/modules
 	rm -f  rootfs/usr/lib/opkg/lists/*
+	chmod 1777 rootfs/tmp
 	cd modules/lib/modules/$(KERNEL_VERSION) && \
 	cat $(PWD)/config/kmod-broadcom.list $(PWD)/config/kmod-base.list $(PWD)/config/kmod-sched.list | \
 	sudo cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)

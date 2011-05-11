@@ -1,3 +1,6 @@
+2011-05-11:
+	* fix /tmp permission bits to 1777
+
 2011-04-27:
 	* add rtnetlink/macvlan, prepare to port
 	* add new FAQ entry
