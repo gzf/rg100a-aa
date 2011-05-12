@@ -16,4 +16,4 @@ userspace packages:
 base:
     gpioctl swconfig 
 opkg:
-    pptp pptpd screen wol samba vim openvpn sudo
+    pptp pptpd screen wol vim openvpn rsync sudo git

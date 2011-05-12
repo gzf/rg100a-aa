@@ -94,3 +94,13 @@ A. 编辑/etc/modules.d/90-usb-storage，去掉相关模块的注释。
    具体方法请参考OpenWRT官方文档：
    http://wiki.openwrt.org/doc/uci/fstab
 
+Q. 更新固件后如何保持opkg的状态信息与实际安装内容一致？
+A. 有两种方法：
+   1. 执行update-opkg-status，这个脚本会在stdout上打印一份新的status文件，
+      先将其重定向到一个临时文件，然后覆盖/usr/lib/opkg/status即可，
+      覆盖前最好先备份一下，之所以不在脚本里直接覆盖旧版也是出于这方面的考虑。
+      注意：不要把update-opkg-status的输出直接重定向到/usr/lib/opkg/status
+   2. 保存配置，清空rootfs_data分区，重新安装需要的package并恢复配置信息。
+      清空命令如下：
+      mtd -r erase rootfs_data
+
