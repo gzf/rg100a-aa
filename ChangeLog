@@ -1,3 +1,10 @@
+2011-05-15:
+	* add openldap-utils in repository
+	* enable CONFIG_EPOLL
+	* enable CONFIG_TMPFS_POSIX_ACL (tmpfs permissions?)
+	* enable CONFIG_SHMEM, disable CONFIG_TINY_SHMEM
+	* enable CONFIG_FUTEX
+
 2011-05-11:
 	* fix /tmp permission bits to 1777
 
