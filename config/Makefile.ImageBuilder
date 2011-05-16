@@ -156,5 +156,12 @@ image:
 	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell tr \\n ' ' < packages-base.list)" \
 		USER_PROFILE="Empty"
 
+info-web:
+	$(MAKE) -s _call_info DEFAULT_PACKAGES="$(shell cat packages-base.list packages-enhanced.list | tr \\n ' ')"
+
+image-web:
+	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell cat packages-base.list packages-enhanced.list | tr \\n ' ')" \
+		USER_PROFILE="Empty"
+
 .SILENT: help info image
 
