@@ -17,4 +17,8 @@ userspace packages:
 base:
     gpioctl swconfig 
 opkg:
-    pptp pptpd screen wol vim openvpn rsync sudo git
+    pptpd screen wol vim openvpn rsync sudo git
+
+multi-lun:
+	http://www.groupsrv.com/linux/about163562.html
+	http://www.cs.sfu.ca/~ggbaker/personal/cf-linux

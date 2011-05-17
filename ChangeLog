@@ -1,3 +1,8 @@
+2011-05-17:
+	* enable multiple luns by max_scsi_luns
+	* add sr_mod/sg/st
+	* remove sudo in Makefile
+
 2011-05-16:
 	* add config for a web-integrated firmware (6M)
 

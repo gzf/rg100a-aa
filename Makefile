@@ -50,7 +50,7 @@ KERNEL_VERSION = 2.6.21.5
 PWD = $(shell pwd)
 
 rootfs.squashfs :
-	sudo rm -fr rootfs
+	rm -fr rootfs
 	mkdir rootfs
 	gzip -d < openwrt-brcm63xx-rootfs.cpio.gz | (cd rootfs && cpio -i)
 	rm -f  rootfs/init
@@ -60,9 +60,9 @@ rootfs.squashfs :
 	chmod 1777 rootfs/tmp
 	cd modules/lib/modules/$(KERNEL_VERSION) && \
 	cat $(PWD)/config/kmod-broadcom.list $(PWD)/config/kmod-base.list $(PWD)/config/kmod-sched.list | \
-	sudo cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
+	cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
 	cd src/modules && cat $(PWD)/config/kmod-local.list | \
-	sudo cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
+	cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
 	cd fs.custom  && find | sudo cpio -u -p -d ../rootfs
 	./tools/mksquashfs rootfs $@ -b 65536 -be -all-root
 #	rm -fr rootfs/lib/firmware
@@ -72,4 +72,4 @@ clean:
 	rm -f rg100a.* vmlinux.lz.deadcode
 
 distclean: clean
-	sudo rm -fr rootfs rootfs.squashfs
+	rm -fr rootfs rootfs.squashfs

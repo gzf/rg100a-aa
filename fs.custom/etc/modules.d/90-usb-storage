@@ -1,4 +1,4 @@
-#scsi_mod
+#scsi_mod max_scsi_luns=8
 #sd_mod
 #ohci-hcd
 #ehci-hcd
