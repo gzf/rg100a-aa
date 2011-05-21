@@ -1,4 +1,4 @@
-#scsi_mod max_scsi_luns=8
+#scsi_mod max_luns=8
 #sd_mod
 #ohci-hcd
 #ehci-hcd
@@ -12,6 +12,9 @@
 # VFAT 
 #fat
 #vfat
+#nls_base
+#nls_cp437
+#nls_utf8
 
 # NTFS-3G
 #fuse

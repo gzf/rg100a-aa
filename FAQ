@@ -67,8 +67,23 @@ A. 固件没有安装firewall，有两种解决方法：
        opkg update
        opkg install firewall
        reboot
-    2. 自己编写iptables规则，比如
+    2. 自己编写iptables规则，比如：
        iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -j MASQUERADE
+	可以把这个命令放入/etc/rc.local，以便每次开机自动执行。
+
+Q. 为什么ADSL频繁掉线？
+A. 执行logread，如果发现大量类似的消息：
+    Apr  9 00:33:31 OpenWrt daemon.info pppd[543]: No response to 5 echo-requests
+    Apr  9 00:33:31 OpenWrt daemon.notice pppd[543]: Serial link appears to be disconnected.
+   则可以尝试修改/etc/ppp/options，把lcp-echo-failure改得大一些，比如10。
+
+Q. 如何配置无线？
+A. 编辑/etc/config/wireless，将
+    option disabled 1
+   删除或者注释掉，并设置密码（option key），频道（option channel）
+   以及SSID（option ssid），最后执行wifi up启动无线。
+   注意：目前固件只支持psk2（即WPA2-PSK）加密方式，如果需要其它的加密方法，请自行研究
+   /lib/wifi/broadcom.sh。
 
 Q. 如何配置VLAN？
 A. ssh登录路由器，编辑/etc/config/kernel

@@ -21,7 +21,8 @@ kernel/fs/fuse/fuse.ko
 kernel/fs/jbd/jbd.ko
 kernel/fs/fat/fat.ko
 kernel/fs/vfat/vfat.ko
-kernel/fs/nls/nls_ascii.ko
+kernel/fs/nls/nls_base.ko
+kernel/fs/nls/nls_cp437.ko
 kernel/fs/nls/nls_utf8.ko
 kernel/lib/crc-ccitt.ko
 kernel/lib/ts_fsm.ko
