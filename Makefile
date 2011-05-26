@@ -11,12 +11,10 @@ FWLOCKTAG_HEAD="414c50484140$(PROFILE)$(BRCM_CHIP)"
 endif
 FIRMWARELOCKTAG="$(FWLOCKTAG_HEAD)$(GETFLASHREVISION)"
 
-HOST_ARCH := $(shell uname -m)
-ifneq ($(HOST_ARCH),x86_64)
-	HOST_ARCH=i386
-endif
-
 all : rg100a.img
+
+vmlinux.lz : vmlinux vmlinux.bin
+	./tools/cmplzma -k -2 vmlinux vmlinux.bin $@
 
 vmlinux.lz.deadcode : vmlinux.lz
 	cp $< $@
@@ -34,7 +32,7 @@ vmlinux.lz.deadcode : vmlinux.lz
 	./tools/addvtoken $*.cfe.tmp $*.cfe.img
 	rm -f $*.cfe.tmp $*.cfe
 #	./tools/createimg --boardid=96358VW2 --numbermac=11 --macaddr=02:10:18:01:00:01 \
-#	--tp=0 --psisize=24 --gponpw= --gponsn= --inputfile=$@.cfe --outputfile=$@.cfe.img.tmp
+		--tp=0 --psisize=24 --gponpw= --gponsn= --inputfile=$@.cfe --outputfile=$@.cfe.img.tmp
 #	./tools/addvtoken $@.cfe.img.tmp $@.cfe.img
 #	echo $(FIRMWARELOCKTAG) >> $@
 
@@ -51,31 +49,11 @@ vmlinux.lz.deadcode : vmlinux.lz
 #			-e $(ENTRY) -l $(LOADADDR) \
 #			-k 0x20000
 
-KERNEL_VERSION = 2.6.21.5
-PWD = $(shell pwd)
-
 rootfs.squashfs :
-	rm -fr rootfs
-	mkdir rootfs
-	gzip -d < openwrt-brcm63xx-rootfs.cpio.gz | (cd rootfs && cpio -i)
-	rm -f  rootfs/init
-	rm -fr rootfs/etc/modules.d
-	rm -fr rootfs/lib/modules
-	rm -f  rootfs/usr/lib/opkg/lists/*
-	chmod 1777 rootfs/tmp
-	cd modules/lib/modules/$(KERNEL_VERSION) && \
-	cat $(PWD)/config/kmod-broadcom.list $(PWD)/config/kmod-base.list $(PWD)/config/kmod-sched.list | \
-	cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
-	cd src/modules && cat $(PWD)/config/kmod-local.list | \
-	cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
-	cd fs.custom  && find | cpio -u -p -d ../rootfs
-	mknod rootfs/dev/console c 5 1
-	./tools/$(HOST_ARCH)/mksquashfs rootfs $@ -b 65536 -be -all-root
-#	rm -fr rootfs/lib/firmware
-#	rm -fr rootfs/etc/hotplug.d/atm
+	fakeroot ./buildrootfs $@
 
 clean:
-	rm -f rg100a.* vmlinux.lz.deadcode
+	rm -f rg100a.* vmlinux.lz vmlinux.lz.deadcode
 
 distclean: clean
 	rm -fr rootfs rootfs.squashfs
