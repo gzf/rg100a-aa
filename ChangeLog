@@ -1,6 +1,7 @@
 2011-05-21:
 	* fix vfat mount (add nls_base, nls_cp437)
 	* fix max_scsi_luns to max_luns
+	* add losetup in backfire config
 
 2011-05-20:
 	* add nls_utf8 in /etc/modules.d/90-usb-storage

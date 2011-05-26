@@ -11,6 +11,11 @@ FWLOCKTAG_HEAD="414c50484140$(PROFILE)$(BRCM_CHIP)"
 endif
 FIRMWARELOCKTAG="$(FWLOCKTAG_HEAD)$(GETFLASHREVISION)"
 
+HOST_ARCH := $(shell uname -m)
+ifneq ($(HOST_ARCH),x86_64)
+	HOST_ARCH=i386
+endif
+
 all : rg100a.img
 
 vmlinux.lz.deadcode : vmlinux.lz
@@ -64,7 +69,8 @@ rootfs.squashfs :
 	cd src/modules && cat $(PWD)/config/kmod-local.list | \
 	cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
 	cd fs.custom  && find | sudo cpio -u -p -d ../rootfs
-	./tools/mksquashfs rootfs $@ -b 65536 -be -all-root
+	mknod rootfs/dev/console c 5 1
+	./tools/$(HOST_ARCH)/mksquashfs rootfs $@ -b 65536 -be -all-root
 #	rm -fr rootfs/lib/firmware
 #	rm -fr rootfs/etc/hotplug.d/atm
 
