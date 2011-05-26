@@ -68,7 +68,7 @@ rootfs.squashfs :
 	cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
 	cd src/modules && cat $(PWD)/config/kmod-local.list | \
 	cpio -p -d $(PWD)/rootfs/lib/modules/$(KERNEL_VERSION)
-	cd fs.custom  && find | sudo cpio -u -p -d ../rootfs
+	cd fs.custom  && find | cpio -u -p -d ../rootfs
 	mknod rootfs/dev/console c 5 1
 	./tools/$(HOST_ARCH)/mksquashfs rootfs $@ -b 65536 -be -all-root
 #	rm -fr rootfs/lib/firmware
