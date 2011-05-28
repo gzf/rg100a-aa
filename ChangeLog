@@ -1,3 +1,8 @@
+2011-05-28:
+	* enable CONFIG_BUSYBOX_CONFIG_FEATURE_MOUNT_HELPERS
+	* enable CONFIG_BUSYBOX_CONFIG_FEATURE_MOUNT_LABEL
+	* fix fat dependency to nls_base
+
 2011-05-21:
 	* fix vfat mount (add nls_base, nls_cp437)
 	* fix max_scsi_luns to max_luns

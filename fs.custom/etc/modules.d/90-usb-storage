@@ -10,11 +10,11 @@
 #ext3
 
 # VFAT 
-#fat
-#vfat
 #nls_base
 #nls_cp437
 #nls_utf8
+#fat
+#vfat
 
 # NTFS-3G
 #fuse
