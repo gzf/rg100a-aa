@@ -119,3 +119,7 @@ A. 有两种方法：
       清空命令如下：
       mtd -r erase rootfs_data
 
+Q. 安装kmod-xxxx后为什么不起作用？
+A. kmod-xxxx安装的内核模块不能在本固件中使用，请下载内核源码后自行编译，源码地址：
+   http://ftp.dlink.ru/pub/ADSL/GPL_source_code/DSL-2760U_BRU_D/DLink_DSL-2760U_RU_1.04_GPL.zip
+   注意；由于固件内核为2.6.21.5，很多驱动是没有的，需要从新版内核移植回去。
