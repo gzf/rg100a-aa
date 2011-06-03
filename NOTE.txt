@@ -24,3 +24,6 @@ opkg:
 multi-lun:
 	http://www.groupsrv.com/linux/about163562.html
 	http://www.cs.sfu.ca/~ggbaker/personal/cf-linux
+
+gpio/led:
+	http://www.openwrt.org.cn/bbs/viewthread.php?tid=3306
