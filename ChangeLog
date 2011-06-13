@@ -1,3 +1,8 @@
+2011-06-13:
+	* enable CONFIG_BUSYBOX_CONFIG_FEATURE_ASSUME_UNICODE
+	* add busybox applets: su add/deluser add/delgroup realpath who
+	* update Makefile to support oldcfe target (CFE 1.0.37-10.3)
+
 2011-05-28:
 	* enable CONFIG_BUSYBOX_CONFIG_FEATURE_MOUNT_HELPERS
 	* enable CONFIG_BUSYBOX_CONFIG_FEATURE_MOUNT_LABEL
