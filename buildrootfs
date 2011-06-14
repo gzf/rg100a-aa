@@ -20,6 +20,7 @@ rm -fr rootfs/etc/modules.d
 rm -fr rootfs/lib/modules
 rm -f  rootfs/usr/lib/opkg/lists/*
 mkdir -p rootfs/lib/functions/fsck # eliminate "WARNING: /lib/functions/fsck not found"
+chmod +s rootfs/bin/busybox
 chmod 1777 rootfs/tmp
 cd $TOPDIR/modules/lib/modules/$KERNEL_VERSION
 cat $TOPDIR/config/kmod-broadcom.list $TOPDIR/config/kmod-base.list $TOPDIR/config/kmod-sched.list | \
