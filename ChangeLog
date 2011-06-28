@@ -1,10 +1,13 @@
+2011-06-28:
+	* enable wait instruction
+
 2011-06-14:
 	* set suid/guid of busybox
 	* add /etc/busybox.conf
 
 2011-06-13:
 	* enable CONFIG_BUSYBOX_CONFIG_FEATURE_ASSUME_UNICODE
-	* add busybox applets: su add/deluser add/delgroup realpath who
+	* add busybox applets: su add/deluser add/delgroup realpath
 	* update Makefile to support oldcfe target (CFE 1.0.37-10.3)
 
 2011-05-28:
