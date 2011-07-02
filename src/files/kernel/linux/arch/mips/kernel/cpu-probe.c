@@ -146,6 +146,7 @@ static inline void check_wait(void)
     case CPU_BCM6348:
     case CPU_BCM6358:
     case CPU_BCM6368:
+    case CPU_BCM6816:
 		cpu_wait = r4k_wait;
 		break;
 	case CPU_TX49XX:
