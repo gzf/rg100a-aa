@@ -11,6 +11,7 @@
 Module.symvers
 *.o
 *.mod.c
+.*.swp
 .*.cmd
 .*.d
 .tmp*

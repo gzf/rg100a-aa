@@ -65,6 +65,7 @@ static int parse_cfe_partitions( struct mtd_info *master, struct mtd_partition *
 	char *boardid;
     char *tagversion;
     unsigned int imgstart, offset, len;
+	int align, min_offset;
 
 
 	/* Allocate memory for buffer */
@@ -126,13 +127,14 @@ static int parse_cfe_partitions( struct mtd_info *master, struct mtd_partition *
 	//sscanf(buf->totalLength, "%u", &len);
 	//offset = roundup(len, master->erasesize) + master->erasesize;
 	parts[5].name = "rootfs_data";
-    int align = DEFAULT_ALIGN;
-    int min_offset = parts[1].offset > parts[2].offset ? 
-        parts[1].offset + parts[1].size :
-        parts[2].offset + parts[2].size;
 #ifdef CONFIG_ROOTFS_DATA_ALIGN
     align = CONFIG_ROOTFS_DATA_ALIGN;
+#else
+    align = DEFAULT_ALIGN;
 #endif
+    min_offset = parts[1].offset > parts[2].offset ? 
+        parts[1].offset + parts[1].size :
+        parts[2].offset + parts[2].size;
     parts[5].offset = roundup(roundup(min_offset, align), master->erasesize);
 	parts[5].size = master->size - parts[5].offset - parts[3].size;
 

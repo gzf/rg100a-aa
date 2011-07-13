@@ -1,6 +1,7 @@
 TODO:
  1.0:
     btn_hotplug
+	wireless sta mode
 	gpio/ssb/userspace led
     imq/connlimit testing
 	macvlan
@@ -8,7 +9,6 @@ TODO:
 	xt_ipp2p/ipt_ipp2p
 	nf_defrag_ipv4
 	cls_basic vs. cls_flow ?
-	support CFE 1.0.37-10.3
  2.0:
     backport bcm63xx_enet/robocfg
 	swconfig
