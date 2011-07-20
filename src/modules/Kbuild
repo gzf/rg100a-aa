@@ -1,1 +1,1 @@
-obj-m := backports/ openwrt/ misc/
+obj-m := backports/ openwrt/ misc/ test/

@@ -47,7 +47,7 @@
 #include <linux/interrupt.h>
 #include <asm/semaphore.h>
 #include <asm/delay.h>
-#include <bcm_map_part.h>       
+#include <bcm_map_part.h>    
 #define CFI_USLEEP(x) udelay(x)
 #endif
 
@@ -238,6 +238,42 @@ static flash_device_info_t flash_cfi_dev =
         cfi_flash_get_total_size
     };
 
+#define ASSUME_SECTORS 128
+#define ASSUME_SECSIZE (128 * 1024)
+static int unknown_cfi_flash_write_buf (unsigned short sector, int offset,
+                                        unsigned char *buffer, int numbytes) {
+    printk(KERN_WARNING "cfi_flash_write_buf is invoked\n");
+    return FLASH_API_ERROR;
+}
+
+static int unknown_cfi_flash_get_sector_size (unsigned short sector) {
+    return ASSUME_SECSIZE;
+}
+
+static int unknown_cfi_flash_get_total_size (void) {
+    return ASSUME_SECTORS * ASSUME_SECSIZE;
+}
+
+static int unknown_cfi_flash_sector_erase_int(unsigned short sector) {
+    printk(KERN_WARNING "cfi_flash_sector_erase_int is invoked\n");
+    return FLASH_API_ERROR;
+}
+
+static flash_device_info_t unknown_flash_cfi_dev = 
+{
+    0xffff,
+    "UNKNOWN",
+    unknown_cfi_flash_sector_erase_int,
+    cfi_flash_read_buf,
+    unknown_cfi_flash_write_buf,
+    cfi_flash_get_numsectors,
+    unknown_cfi_flash_get_sector_size,
+    cfi_flash_get_memptr,
+    cfi_flash_get_blk,
+    unknown_cfi_flash_get_total_size,
+    unknown_cfi_flash_get_total_size
+};
+
 /*********************************************************************/
 /* 'meminfo' should be a pointer, but most C compilers will not      */
 /* allocate static storage for a pointer without calling             */
@@ -328,7 +364,29 @@ static struct flash_name_from_id fnfi[] = CFI_FLASH_DEVICES;
 /* on the value of the define MAXSECTORS.  Adjust to suit            */
 /* application                                                       */ 
 /*********************************************************************/
+static int cfi_flash_init_orig(flash_device_info_t **flash_info);
+
 int cfi_flash_init(flash_device_info_t **flash_info)
+{
+    int result, i, basecount = 0;
+
+    result = cfi_flash_init_orig(flash_info);
+    if (result == FLASH_API_ERROR) {
+        for(i=0; i<ASSUME_SECTORS; i++) {
+            meminfo.sec[i].size = unknown_cfi_flash_get_sector_size(i);
+            meminfo.sec[i].base = basecount;
+            basecount += unknown_cfi_flash_get_sector_size(i);
+        }
+        meminfo.nsect = ASSUME_SECTORS;
+
+        unknown_flash_cfi_dev.flash_device_id = (*flash_info)->flash_device_id;
+        *flash_info = &unknown_flash_cfi_dev;
+    }
+    
+    return FLASH_API_OK;
+}
+
+static int cfi_flash_init_orig(flash_device_info_t **flash_info)
 {
     struct flash_name_from_id *fnfi_ptr;
     int i=0, j=0, count=0;
@@ -1021,6 +1079,8 @@ static int cfi_flash_wait(unsigned short sector, int offset, unsigned short data
 /* flash device, and return the device id of the component.          */
 /* This function automatically resets to read mode.                  */
 /*********************************************************************/
+#define OFFSET_FACTOR 2
+
 static unsigned short cfi_flash_get_device_id(void)
 {
     volatile unsigned short *fwp; /* flash window */
@@ -1029,6 +1089,7 @@ static unsigned short cfi_flash_get_device_id(void)
     fwp = (unsigned short *) cfi_flash_get_memptr(0);
     
     cfi_flash_command(FLASH_READ_ID, 0, 0, 0);
+
     answer = *(fwp + 1);
     printk("C1: 0x%4.4x\n", answer);
     if (answer == ID_AM29LV320M) {
@@ -1037,7 +1098,6 @@ static unsigned short cfi_flash_get_device_id(void)
         answer = *(fwp + 0xf);
         printk("C3: 0x%4.4x\n", answer);
     }
-    answer = ID_AM29LV320MT;
 
     cfi_flash_command(FLASH_RESET, 0, 0, 0);
     return( (unsigned short) answer );
@@ -1099,9 +1159,15 @@ static int cfi_flash_get_cfi(struct cfi_query *query, unsigned short *cfi_struct
 }
 
 #ifndef _CFE_
+#ifndef M29_TESTING_MODULE
 static int __init cfi_flash_sched_init(void) {
     cfi_flash_sched = 1;    /* voluntary schedule() enabled */
     return 0;
 }
 late_initcall(cfi_flash_sched_init);
+#else
+void __init cfi_flash_sched_init(void) {
+    cfi_flash_sched = 1;
+}
+#endif
 #endif

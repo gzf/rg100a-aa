@@ -194,6 +194,8 @@ static int __xipram cfi_chip_setup(struct map_info *map,
 	cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
 	cfi->mfr = cfi_read_query16(map, base);
 	cfi->id = cfi_read_query16(map, base + ofs_factor);
+    //printk("base: 0x%x, interleave: 0x%x, device_type: 0x%x, id: 0x%4.4x\n", 
+    //       base, cfi->interleave, cfi->device_type, cfi->id);
 
 	/* Get AMD/Spansion extended JEDEC ID */
 	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)

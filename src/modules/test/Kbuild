@@ -1,0 +1,14 @@
+ifneq (,$(m29))
+	DEVMODS += m29.o
+endif
+
+EXTRA_CFLAGS = -I$(BCMROOT)/bcmdrivers/broadcom/include/$(BRCM_BOARD) \
+               -I$(BCMROOT)/bcmdrivers/opensource/include/$(BRCM_BOARD) \
+               -I$(BCMROOT)/shared/opensource/include/$(BRCM_BOARD)
+
+obj-m := $(DEVMODS)
+
+m29-y := m29test.o flash_api.o cfiflash.o
+
+CFLAGS_cfiflash.o = -DM29_TESTING_MODULE
+CFLAGS_flash_api.o = -DINC_SPI_FLASH_DRIVER=0
