@@ -372,6 +372,8 @@ int cfi_flash_init(flash_device_info_t **flash_info)
 
     result = cfi_flash_init_orig(flash_info);
     if (result == FLASH_API_ERROR) {
+        printk(KERN_WARNING "Fail to probe flash chip, using hardcoded geometry (128K x 128)\n");
+
         for(i=0; i<ASSUME_SECTORS; i++) {
             meminfo.sec[i].size = unknown_cfi_flash_get_sector_size(i);
             meminfo.sec[i].base = basecount;
@@ -1091,12 +1093,12 @@ static unsigned short cfi_flash_get_device_id(void)
     cfi_flash_command(FLASH_READ_ID, 0, 0, 0);
 
     answer = *(fwp + 1);
-    printk("C1: 0x%4.4x\n", answer);
+//    printk("C1: 0x%4.4x\n", answer);
     if (answer == ID_AM29LV320M) {
         answer = *(fwp + 0xe);
-        printk("C2: 0x%4.4x\n", answer);
+//        printk("C2: 0x%4.4x\n", answer);
         answer = *(fwp + 0xf);
-        printk("C3: 0x%4.4x\n", answer);
+//        printk("C3: 0x%4.4x\n", answer);
     }
 
     cfi_flash_command(FLASH_RESET, 0, 0, 0);
