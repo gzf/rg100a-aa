@@ -22,7 +22,7 @@ ip6tables
 ip6tables-utils
 ip
 tc
-ntfs-3g
+vim
 kmod-switch
 kmod-nls-utf8
 kmod-fs-vfat

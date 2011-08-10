@@ -1,0 +1,13 @@
+Index: utils/vim/Makefile
+===================================================================
+--- utils/vim/Makefile	(revision 27933)
++++ utils/vim/Makefile	(working copy)
+@@ -103,7 +103,7 @@
+ define Build/Compile/vim
+ 	$(call Build/Configure/Default, \
+ 	  --with-features=tiny \
+-	  --disable-multibyte \
++	  --enable-multibyte \
+ 	 )
+ 	$(MAKE) -C $(PKG_BUILD_DIR) clean
+ 	$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
