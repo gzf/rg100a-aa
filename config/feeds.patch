@@ -1,13 +1,44 @@
+Index: utils/vim/files/vimrc
+===================================================================
+--- utils/vim/files/vimrc	(revision 27933)
++++ utils/vim/files/vimrc	(working copy)
+@@ -9,5 +9,5 @@
+ set linebreak         " Don't wrap words by default
+ set textwidth=0         " Don't wrap lines by default
+ set ruler               " show the cursor position all the time
++set encoding=utf-8
+ 
+-
 Index: utils/vim/Makefile
 ===================================================================
 --- utils/vim/Makefile	(revision 27933)
 +++ utils/vim/Makefile	(working copy)
-@@ -103,7 +103,7 @@
+@@ -102,8 +102,8 @@
+ ifneq ($(CONFIG_PACKAGE_vim),)
  define Build/Compile/vim
  	$(call Build/Configure/Default, \
- 	  --with-features=tiny \
+-	  --with-features=tiny \
 -	  --disable-multibyte \
++	  --with-features=small \
 +	  --enable-multibyte \
  	 )
  	$(MAKE) -C $(PKG_BUILD_DIR) clean
  	$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
+@@ -147,7 +147,7 @@
+ 	$(INSTALL_DIR) $(1)/usr/bin
+ 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vim_tiny $(1)/usr/bin/vim
+ 	$(INSTALL_DIR) $(1)/usr/share/vim
+-	$(INSTALL_CONF) ./files/vimrc $(1)/usr/share/vim/
++	$(INSTALL_DATA) ./files/vimrc $(1)/usr/share/vim/
+ endef
+ 
+ 
+@@ -155,7 +155,7 @@
+ 	$(INSTALL_DIR) $(1)/usr/bin
+ 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vim_normal $(1)/usr/bin/vim
+ 	$(INSTALL_DIR) $(1)/usr/share/vim
+-	$(INSTALL_CONF) ./files/vimrc.full $(1)/usr/share/vim/vimrc
++	$(INSTALL_DATA) ./files/vimrc.full $(1)/usr/share/vim/vimrc
+ endef
+ 
+ define Package/vim-runtime/install
