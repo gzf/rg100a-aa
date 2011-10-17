@@ -1,3 +1,6 @@
+2011-10-17:
+	* add ebtables
+
 2011-10-15:
 	* enable CONFIG_EFI_PARTITION to support GPT
 

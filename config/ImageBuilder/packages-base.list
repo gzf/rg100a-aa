@@ -14,6 +14,8 @@ dnsmasq
 ntpclient
 ppp
 ppp-mod-pppoe
+ebtables
+ebtables-utils
 iptables
 iptables-mod-conntrack
 iptables-mod-nat
@@ -38,6 +40,7 @@ kmod-usb-printer
 kmod-loop
 kmod-ifb
 kmod-tun
+kmod-ebtables
 kmod-ipt-nat-extra
 kmod-ipt-conntrack-extra
 kmod-ipt-imq
