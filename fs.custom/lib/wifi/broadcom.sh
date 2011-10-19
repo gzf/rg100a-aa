@@ -38,15 +38,38 @@ disable_broadcom() {
 
 enable_broadcom() {
     local device="$1"
+    local channel country macfilter
 
-    config_get channel "$device" channel
-    config_get country "$device" country
+    config_get channel $device channel
+    config_get country $device country
+    config_get macfilter $device macfilter
 
     kill_nas
 
+    if [ -n "$country" ]; then
+        $WLCTL -i $device country $country
+    fi
+
     $WLCTL -i $device channel ${channel:-11}
+
+    if [ -z "$macfilter" ]; then
+        macfilter=disable
+    fi
+    case $macfilter in
+        disable)
+            $WLCTL -i $device macmode 0 ;;
+        deny)
+            $WLCTL -i $device macmode 1 ;;
+        allow)
+            $WLCTL -i $device macmode 2 ;;
+    esac
+    if [ $macfilter != disable ]
+        local maclist
+        config_get maclist $device maclist
+        $WLCTL -i $device mac $maclist ;;
+    fi
     
-    config_get vifs "$device" vifs
+    config_get vifs $device vifs
     for vif in $vifs; do
         setup_iface $vif
     done
@@ -127,8 +150,10 @@ setup_iface() {
 
     $WLCTL -i $ifname ssid $ssid
     [ $mode = ap ] && {
+        local isolate
+        config_get isolate "$vif" isolate
         $WLCTL -i $ifname ap 1
-        $WLCTL -i $ifname ap_isolate 1
+        $WLCTL -i $ifname ap_isolate ${isolate:-0}
     }
 	[ $mode = monitor ] && {
 		$WLCTL -i $ifname monitor $monitor

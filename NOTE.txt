@@ -3,7 +3,6 @@ TODO:
     btn_hotplug
 	extroot
 	wireless sta mode
-	wireless option isolate
     imq/connlimit testing
 	xt_ipp2p/ipt_ipp2p
 	nf_defrag_ipv4
@@ -18,6 +17,9 @@ TODO:
 	b43 driver
 
 maximum firmware size: 4063232 / 0x3E0000
+openwrt compile single package:
+        make package/pkg/compile
+        make package/pkg/install
 
 userspace packages:
 base:

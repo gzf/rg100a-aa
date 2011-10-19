@@ -1,3 +1,10 @@
+2011-10-19:
+	* enable macfilter/maclist of wireless config
+	* port block-mount on trunk to support extroot
+
+2011-10-18:
+	* enable isolate option for wireless configuration
+
 2011-10-17:
 	* add ebtables
 
