@@ -38,7 +38,7 @@ disable_broadcom() {
 
 enable_broadcom() {
     local device="$1"
-    local channel country macfilter
+    local channel country macfilter maclist
 
     config_get channel $device channel
     config_get country $device country
@@ -52,21 +52,17 @@ enable_broadcom() {
 
     $WLCTL -i $device channel ${channel:-11}
 
-    if [ -z "$macfilter" ]; then
-        macfilter=disable
-    fi
     case $macfilter in
-        disable)
-            $WLCTL -i $device macmode 0 ;;
         deny)
             $WLCTL -i $device macmode 1 ;;
         allow)
             $WLCTL -i $device macmode 2 ;;
+        *)
+            $WLCTL -i $device macmode 0 ;;
     esac
-    if [ $macfilter != disable ]
-        local maclist
+    if [ -n "$macfilter" ] && ( [ "$macfilter" = deny ] || [ "$macfilter" = allow ] ); then
         config_get maclist $device maclist
-        $WLCTL -i $device mac $maclist ;;
+        $WLCTL -i $device mac $maclist
     fi
     
     config_get vifs $device vifs
