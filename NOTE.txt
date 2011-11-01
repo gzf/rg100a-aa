@@ -1,7 +1,6 @@
 TODO:
  1.0:
     btn_hotplug
-	extroot
 	wireless sta mode
     imq/connlimit testing
 	xt_ipp2p/ipt_ipp2p
