@@ -4,7 +4,7 @@
 #include <linux/init.h>
 #include <net/sock.h>
 
-#define NUM_OF_EXTIRQ   6
+#define NUM_OF_EXTIRQ   4
 #define DRV_NAME	    "btn_hotplug"
 
 struct bh_event {

@@ -1,7 +1,8 @@
 TODO:
  1.0:
-    btn_hotplug
 	wireless sta mode
+    backport bcm63xx_enet
+	gpioctl/userspace led
     imq/connlimit testing
 	xt_ipp2p/ipt_ipp2p
 	nf_defrag_ipv4
@@ -9,8 +10,7 @@ TODO:
 
  2.0:
 	macvlan
-	gpio/ssb/userspace led
-    backport bcm63xx_enet/robocfg
+	gpio/ssb/
 	swconfig
 	try upgrade to kernel 2.6.27 in neufbox
 	b43 driver

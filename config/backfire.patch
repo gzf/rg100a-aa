@@ -488,6 +488,51 @@ Index: package/block-mount/Makefile
  $(eval $(call BuildPackage,block-mount))
 -$(eval $(call BuildPackage,block-hotplug))
 -
+Index: package/base-files/files/sbin/wifi
+===================================================================
+--- package/base-files/files/sbin/wifi	(revision 27608)
++++ package/base-files/files/sbin/wifi	(working copy)
+@@ -89,11 +89,16 @@
+ 		scan_wifi
+ 	}
+ 	for device in ${2:-$DEVICES}; do (
+-		config_get disabled "$device" disabled
+-		[ 1 == "$disabled" ] && {
+-			echo "'$device' is disabled"
+-			set disable
+-		}
++        [ -n "$target_dev" ] && [ $target_dev != $device ] && {
++            continue
++        }
++        if [ $force_up = 0 ]; then
++            config_get disabled "$device" disabled
++            [ 1 == "$disabled" ] && {
++                echo "'$device' is disabled"
++                set disable
++            }
++        fi
+ 		config_get iftype "$device" type
+ 		if eval "type ${1}_$iftype" 2>/dev/null >/dev/null; then
+ 			eval "scan_$iftype '$device'"
+@@ -166,6 +171,18 @@
+ 	config_load "${cfgfile:-wireless}"
+ }
+ 
++local force_up=0 target_dev
++while getopts ":fd:" opt
++do
++    case $opt in
++        f)  force_up=1 ;;
++        d)  target_dev="$OPTARG" ;;
++        *)  echo "Usage: `basename $0` [-f] [-d device] [up | down | detect]"
++            exit 1 ;;
++    esac
++done
++shift $(($OPTIND - 1))
++
+ DEVICES=
+ DRIVERS=
+ include /lib/wifi
 Index: package/block-extroot/files/55_determine_extroot_sysupgrade
 ===================================================================
 --- package/block-extroot/files/55_determine_extroot_sysupgrade	(revision 27608)

@@ -1,4 +1,9 @@
+#include <linux/workqueue.h>
+#include <linux/skbuff.h>
+#include <linux/netlink.h>
 #include "btn_hotplug.h"
+
+#define BH_SKB_SIZE	2048
 
 #undef BH_DEBUG
 
@@ -109,7 +114,7 @@ static void button_hotplug_work(struct work_struct *work)
 	kfree(event);
 }
 
-static int button_hotplug_create_event(char *name, unsigned long seen,
+int button_hotplug_create_event(char *name, unsigned long seen,
 		int pressed)
 {
 	struct bh_event *event;
@@ -131,7 +136,7 @@ static int button_hotplug_create_event(char *name, unsigned long seen,
 	return 0;
 }
 
-
+/*
 #ifdef	CONFIG_HOTPLUG
 static void button_hotplug_event(struct input_handle *handle,
 			   unsigned int type, unsigned int code, int value)
@@ -158,6 +163,6 @@ static void button_hotplug_event(struct input_handle *handle,
 			   unsigned int type, unsigned int code, int value)
 {
 }
-#endif	/* CONFIG_HOTPLUG */
+#endif	*/ /* CONFIG_HOTPLUG */
 
 

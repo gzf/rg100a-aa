@@ -1,3 +1,7 @@
+2011-11-04:
+	* btn_hotplug works
+	* add -f, -i ifname to /sbin/wifi
+
 2011-10-19:
 	* enable macfilter/maclist of wireless config
 	* port block-mount on trunk to support extroot
