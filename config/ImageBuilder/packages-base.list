@@ -2,6 +2,7 @@ base-files
 udevtrigger
 hotplug2
 libc
+libpthread
 libgcc
 uclibcxx
 block-mount
