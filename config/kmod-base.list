@@ -13,6 +13,8 @@ kernel/drivers/scsi/scsi_mod.ko
 kernel/drivers/scsi/sd_mod.ko
 kernel/drivers/usb/host/ohci-hcd.ko
 kernel/drivers/usb/host/ehci-hcd.ko
+kernel/drivers/usb/serial/option.ko
+kernel/drivers/usb/serial/usbserial.ko
 kernel/drivers/usb/storage/usb-storage.ko
 kernel/drivers/usb/class/usblp.ko
 kernel/fs/mbcache.ko

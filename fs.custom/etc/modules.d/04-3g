@@ -1,0 +1,8 @@
+#crc-ccitt
+#slhc
+#ppp_generic
+#ppp_async
+#ohci-hcd
+#ehci-hcd
+#usbserial
+#option

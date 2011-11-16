@@ -1,8 +1,4 @@
-ifneq (,$(btn_hotplug))
-	DEVMODS += btn_hotplug.o
-endif
-
-obj-m := ipt_IPID.o $(DEVMODS)
+obj-m := ipt_IPID.o btn_hotplug.o
 
 btn_hotplug-y := button.o hotplug.o
 
