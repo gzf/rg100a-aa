@@ -138,10 +138,15 @@ Index: package/block-mount/files/extfs.sh
 ===================================================================
 --- package/block-mount/files/extfs.sh	(revision 0)
 +++ package/block-mount/files/extfs.sh	(revision 0)
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,22 @@
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
 +# Date: 2011/10
 +# License: GPL
++
++extfs_ext2() {
++    insmod mbcache
++    insmod ext2
++}
 +
 +extfs_ext3() {
 +    insmod mbcache

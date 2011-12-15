@@ -201,7 +201,7 @@ config wifi-iface
     option mode        ap
     option ssid        OpenWrt${i#0}
     option encryption  psk2
-    option key         <secret-key>
+    option key         secret-key
 EOF
 	done
 }

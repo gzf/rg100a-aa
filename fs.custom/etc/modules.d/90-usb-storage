@@ -4,6 +4,10 @@
 #ehci-hcd
 #usb-storage
 
+# EXT2
+#mbcache
+#ext2
+
 # EXT3
 #mbcache
 #jbd

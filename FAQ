@@ -40,18 +40,18 @@ A. 第一步：ssh登录路由器
      1. option port: 用于设置ADSL通信模式，有两个可选值：fast（默认），interleave
      2. option encaps: 用于设置ADSL封装方式，有两个可选值：llc（默认），vc
    样例：
-   config vcc inet
-       option vpi      8
-       option vci      35
+config vcc inet
+    option vpi      8
+    option vci      35
   
    第三步：修改/etc/config/network，将wan口的ifname设置为inet_vpi_vci，
    此处vpi/vci用实际值填充，并正确设置pppoe用户名密码。
    样例：
-   config interface wan
-       option proto     pppoe
-       option ifname    inet_8_35
-       option username  XXXXXX
-       option password  YYYYYY
+config interface wan
+    option proto     pppoe
+    option ifname    inet_8_35
+    option username  XXXXXX
+    option password  YYYYYY
 
    一切就绪后执行下面的命令尝试ADSL拨号：
    /etc/init.d/modem boot
@@ -110,15 +110,15 @@ A. ssh登录路由器，编辑/etc/config/kernel
 Q. 如何挂载USB硬盘
 A. 编辑/etc/modules.d/90-usb-storage，去掉相关模块的注释。
    比如要加载ext3的usb2.0硬盘，应加载如下模块：
-	scsi_mod
-	sd_mod
-	ehci-hcd
-	usb-storage
+scsi_mod
+sd_mod
+ehci-hcd
+usb-storage
 
-	# EXT3
-	mbcache
-	jbd
-	ext3
+# EXT3
+mbcache
+jbd
+ext3
    此外，固件已经集成trunk分支的block-mount，可以通过配置/etc/config/fstab实现自动挂载硬盘分区，
    具体方法请参考OpenWRT官方文档：
    http://wiki.openwrt.org/doc/uci/fstab
@@ -127,14 +127,33 @@ Q. 如何配置extroot
 A. 固件集成了trunk分支的block-mount，包含对extroot的支持，配置方法请参考官方文档：
 	http://wiki.openwrt.org/doc/howto/extroot
    典型配置（/etc/config/fstab）：
-	config mount
-        option target        /overlay
-        option device        /dev/sda1
-        option fstype        ext3
-        option options       rw
-        option enabled       1
-        option enabled_fsck  0
-   注意：由于内核的问题，目前extroot只支持ext3分区
+config mount
+    option target        /overlay
+    option device        /dev/sda1
+    option fstype        ext3
+    option options       rw
+    option enabled       1
+    option enabled_fsck  0
+   注意：由于内核的问题，目前extroot只支持ext2, ext3分区
+
+Q. 如何使用3g上网卡
+A. 首先编辑/etc/modules.d/04-3g，加载相应的内核模块，然后修改/etc/config/network，
+   定义相应的wan口。对于联通WCDMA，wan口定义如下：
+config interface wan
+    option proto    3g
+    option service  umts
+    option device   /dev/ttyUSB0
+    option apn      3gnet
+
+   电信CDMA2000的wan口定义如下：
+config interface wan
+    option proto    3g
+    option service  evdo
+    option device   /dev/ttyUSB0
+    option username ctnet@mycdma.cn
+    option password vnet.mobi
+    以上配置在华为E261，EC122上测试通过。
+
 
 Q. 更新固件后如何保持opkg的状态信息与实际安装内容一致？
 A. 有两种方法：
