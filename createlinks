@@ -1,24 +1,24 @@
 #!/bin/sh
 
 installd() {
-    local DESTDIR=$BCMROOT/$1
-    if [ ! -e $DESTDIR ]; then
+    local DESTDIR="$BCMROOT/$1"
+    if [ ! -e "$DESTDIR" ]; then
         echo "Creating directory: $DESTDIR"
-        mkdir -p $DESTDIR
+        mkdir -p "$DESTDIR"
         return
     fi
-    if [ ! -d $DESTDIR ]; then
+    if [ ! -d "$DESTDIR" ]; then
         echo error: $DESTDIR exists, but not a directory.
         exit 1
     fi
 }
 
 installf() {
-    local DESTFILE=$BCMROOT/$1
-    if [ -e $DESTFILE ]; then
-        rm -f $DESTFILE
+    local DESTFILE="$BCMROOT/$1"
+    if [ -e "$DESTFILE" ]; then
+        rm -f "$DESTFILE"
     fi
-    ln -s `realpath $1` $DESTFILE
+    ln -s "$PWD/$1" "$DESTFILE"
 }
 
 
@@ -27,17 +27,17 @@ if [ ! -e DSL-2760U/README ]; then
     exit 1
 fi
 
-BCMROOT=`realpath DSL-2760U`
+BCMROOT="$PWD/DSL-2760U"
 
 cd src/files
 
 find * | while read LINE 
 do
     if [ -d "$LINE" ]; then
-        installd $LINE
+        installd "$LINE"
     else
         echo "Overwriting $LINE"
-        installf $LINE
+        installf "$LINE"
     fi
 done
 
