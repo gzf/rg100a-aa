@@ -23,12 +23,11 @@
 #
 ############################################
 
-
 all: make_version_check kernel_version_check all_postcheck1
 
-all_postcheck1: sanity_check \
-     create_install kernelbuild modbuild kernelbuildlite \
-     userspace hosttools buildimage
+#all_postcheck1: sanity_check \
+#     create_install kernelbuild modbuild kernelbuildlite \
+#     userspace hosttools buildimage
 
 ############################################################################
 #
@@ -48,6 +47,14 @@ ifneq ($(strip $(BUILD_VODSL)),)
 include $(BUILD_DIR)/make.voice
 endif
 
+
+all_postcheck1: sanity_check \
+     kernelbuild modbuild $(PROFILE_DIR)/vmlinux.bin
+
+$(PROFILE_DIR)/vmlinux.bin : $(KERNEL_DIR)/vmlinux 
+	cp $< $(PROFILE_DIR)
+	$(STRIP) --remove-section=.note --remove-section=.comment $(PROFILE_DIR)/vmlinux
+	$(OBJCOPY) -O binary $(PROFILE_DIR)/vmlinux $@
 
 ############################################################################
 #
@@ -747,7 +754,8 @@ endif
 #$(patsubst %, _dir_%, $(SUBDIRS)) :
 #	$(MAKE) -C $(patsubst _dir_%, %, $@) $(TGT)
 
-clean: target_clean userspace_clean kernel_clean hosttools_clean voice_clean xchange_clean wlan_clean pptp_clean samba_clean
+#clean: target_clean userspace_clean kernel_clean hosttools_clean voice_clean xchange_clean wlan_clean pptp_clean samba_clean
+clean: target_clean kernel_clean
 	rm -f $(HOSTTOOLS_DIR)/scripts/lxdialog/*.o
 	rm -f .tmpconfig*
 
@@ -1027,4 +1035,5 @@ WL_SSID_FACTORY_SETTING	\
 CORRECT_WAN_MAC_FROM_TR69		\
 BUILD_3G_USB_DEVICE			\
 PPPD_VERSION        \
-DSL_2760BN
+DSL_2760BN		\
+PROFILE
