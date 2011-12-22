@@ -1,6 +1,7 @@
 #BRCM_CHIP=6358
 #BRCM_BOARD_ID="96358VW2"
 
+VPATH = DSL-2760U/targets/DSL-2760U
 CMPLZMA = ./tools/cmplzma
 
 all : rg100a.img 
@@ -10,7 +11,7 @@ cfe : rg100a.cfe.img
 oldcfe : rg100a-oldcfe.img
 
 %.vmlinux.lz : vmlinux vmlinux.bin
-	$(CMPLZMA) -k -2 vmlinux vmlinux.bin $@
+	$(CMPLZMA) -k -2 $^ $@
 
 %-oldcfe.img : CMPLZMA = ./tools/cmplzma-oldcfe
 

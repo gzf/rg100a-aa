@@ -22,7 +22,7 @@ rm -f  rootfs/usr/lib/opkg/lists/*
 mkdir -p rootfs/lib/functions/fsck # eliminate "WARNING: /lib/functions/fsck not found"
 chmod +s rootfs/bin/busybox
 chmod 1777 rootfs/tmp
-cd $TOPDIR/modules/lib/modules/$KERNEL_VERSION
+cd $TOPDIR/DSL-2760U/targets/DSL-2760U/modules/lib/modules/$KERNEL_VERSION
 cat $TOPDIR/config/kmod-broadcom.list \
 	$TOPDIR/config/kmod-base.list \
 	$TOPDIR/config/kmod-ebtables.list \
