@@ -1,6 +1,6 @@
 #!/bin/sh
 
-KERNEL_VERSION=2.6.21.5
+. ./Build.defs
 
 HOST_ARCH=`uname -m`
 case $HOST_ARCH in 
@@ -10,11 +10,11 @@ case $HOST_ARCH in
 	    HOST_ARCH=i386;;
 esac
 
-TOPDIR=$PWD
+TOPDIR="$PWD"
 
 rm -fr rootfs
 mkdir rootfs
-gzip -d < openwrt-brcm63xx-rootfs.cpio.gz | (cd rootfs && cpio -i)
+gzip -d < "$IMAGEBUILDER/bin/brcm63xx/openwrt-brcm63xx-rootfs.cpio.gz" | (cd rootfs && cpio -i)
 rm -f  rootfs/init
 rm -fr rootfs/etc/modules.d
 rm -fr rootfs/lib/modules
@@ -22,7 +22,7 @@ rm -f  rootfs/usr/lib/opkg/lists/*
 mkdir -p rootfs/lib/functions/fsck # eliminate "WARNING: /lib/functions/fsck not found"
 chmod +s rootfs/bin/busybox
 chmod 1777 rootfs/tmp
-cd $TOPDIR/DSL-2760U/targets/DSL-2760U/modules/lib/modules/$KERNEL_VERSION
+cd "$BCMFW/targets/DSL-2760U/modules/lib/modules/$KERNEL_VERSION"
 cat $TOPDIR/config/kmod-broadcom.list \
 	$TOPDIR/config/kmod-base.list \
 	$TOPDIR/config/kmod-ebtables.list \

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 installd() {
-    local DESTDIR="$BCMROOT/$1"
+    local DESTDIR="$2/$1"
     if [ ! -e "$DESTDIR" ]; then
         echo "Creating directory: $DESTDIR"
         mkdir -p "$DESTDIR"
@@ -14,31 +14,41 @@ installd() {
 }
 
 installf() {
-    local DESTFILE="$BCMROOT/$1"
-    if [ -e "$DESTFILE" ]; then
+    local DESTFILE="$3/$1"
+    if [ -e "$DESTFILE" ] || [ -h "$DESTFILE" ]; then
         rm -f "$DESTFILE"
     fi
-    ln -s "$PWD/$1" "$DESTFILE"
+    ln -s "$2/$1" "$DESTFILE"
 }
 
+lndir() {
+    local SRCROOT="$1"
+    local DESROOT="$2"
+    (cd "$SRCROOT"; find *) | while read LINE 
+    do
+        if [ -d "$SRCROOT/$LINE" ]; then
+            installd "$LINE" "$DESROOT"
+        else
+            echo "Overwriting $LINE"
+            installf "$LINE" "$SRCROOT" "$DESROOT"
+        fi
+    done
+}
 
-if [ ! -e DSL-2760U/README ]; then
-    echo "Create the DSL-2760U symbolic link first."
+. ./Build.defs
+
+if [ ! -e "$BCMFW/README" ]; then
+    echo "fail to verify $BCMFW"
+    exit 1
+fi
+if [ ! -e "$IMAGEBUILDER/Makefile" ]; then
+    echo "fail to verify $IMAGEBUILDER"
     exit 1
 fi
 
-BCMROOT="$PWD/DSL-2760U"
-
-cd src/files
-
-find * | while read LINE 
-do
-    if [ -d "$LINE" ]; then
-        installd "$LINE"
-    else
-        echo "Overwriting $LINE"
-        installf "$LINE"
-    fi
-done
+echo "Processing DSL-2760U ..."
+lndir "$PWD/src/files" "$BCMFW"
+echo "Processing ImageBuilder ..."
+lndir "$PWD/config/ImageBuilder" "$IMAGEBUILDER"
 
 echo Done.

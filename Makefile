@@ -1,7 +1,9 @@
 #BRCM_CHIP=6358
 #BRCM_BOARD_ID="96358VW2"
 
-VPATH = DSL-2760U/targets/DSL-2760U
+include Build.defs
+
+VPATH = $(BCMFW)/targets/DSL-2760U
 CMPLZMA = ./tools/cmplzma
 
 all : rg100a.img 
