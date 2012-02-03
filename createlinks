@@ -37,18 +37,22 @@ lndir() {
 
 . ./Build.defs
 
-if [ ! -e "$BCMFW/README" ]; then
-    echo "fail to verify $BCMFW"
-    exit 1
-fi
-if [ ! -e "$IMAGEBUILDER/Makefile" ]; then
-    echo "fail to verify $IMAGEBUILDER"
-    exit 1
+if [ -z "$1" ] || [ "$1" = all ] || [ "$1" = fw ]; then 
+    if [ ! -e "$BCMFW/README" ]; then
+        echo "fail to verify $BCMFW"
+        exit 1
+    fi
+    echo "Processing DSL-2760U ..."
+    lndir "$PWD/src/files" "$BCMFW"
 fi
 
-echo "Processing DSL-2760U ..."
-lndir "$PWD/src/files" "$BCMFW"
-echo "Processing ImageBuilder ..."
-lndir "$PWD/config/ImageBuilder" "$IMAGEBUILDER"
+if [ -z "$1" ] || [ "$1" = all ] || [ "$1" = im ]; then 
+    if [ ! -e "$IMAGEBUILDER/repositories.conf" ]; then
+        echo "fail to verify $IMAGEBUILDER"
+        exit 1
+    fi
+    echo "Processing ImageBuilder ..."
+    lndir "$PWD/backfire/ImageBuilder" "$IMAGEBUILDER"
+fi
 
 echo Done.

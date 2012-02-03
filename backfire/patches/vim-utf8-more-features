@@ -1,18 +1,7 @@
-Index: utils/vim/files/vimrc
+Index: backfire/feeds/packages/utils/vim/Makefile
 ===================================================================
---- utils/vim/files/vimrc	(revision 27933)
-+++ utils/vim/files/vimrc	(working copy)
-@@ -9,5 +9,5 @@
- set linebreak         " Don't wrap words by default
- set textwidth=0         " Don't wrap lines by default
- set ruler               " show the cursor position all the time
-+set encoding=utf-8
- 
--
-Index: utils/vim/Makefile
-===================================================================
---- utils/vim/Makefile	(revision 27933)
-+++ utils/vim/Makefile	(working copy)
+--- backfire.orig/feeds/packages/utils/vim/Makefile	2012-02-03 16:01:38.000000000 +0800
++++ backfire/feeds/packages/utils/vim/Makefile	2012-02-03 16:02:16.000000000 +0800
 @@ -102,8 +102,8 @@
  ifneq ($(CONFIG_PACKAGE_vim),)
  define Build/Compile/vim
@@ -42,3 +31,14 @@ Index: utils/vim/Makefile
  endef
  
  define Package/vim-runtime/install
+Index: backfire/feeds/packages/utils/vim/files/vimrc
+===================================================================
+--- backfire.orig/feeds/packages/utils/vim/files/vimrc	2012-02-03 16:01:48.000000000 +0800
++++ backfire/feeds/packages/utils/vim/files/vimrc	2012-02-03 16:02:16.000000000 +0800
+@@ -9,5 +9,5 @@
+ set linebreak         " Don't wrap words by default
+ set textwidth=0         " Don't wrap lines by default
+ set ruler               " show the cursor position all the time
+-
++set encoding=utf-8
+ 

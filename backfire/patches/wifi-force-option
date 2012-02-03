@@ -1,0 +1,45 @@
+Index: package/base-files/files/sbin/wifi
+===================================================================
+--- package/base-files/files/sbin/wifi.orig	2012-02-03 12:37:59.000000000 +0800
++++ package/base-files/files/sbin/wifi	2012-02-03 15:59:56.000000000 +0800
+@@ -89,11 +89,16 @@
+ 		scan_wifi
+ 	}
+ 	for device in ${2:-$DEVICES}; do (
+-		config_get disabled "$device" disabled
+-		[ 1 == "$disabled" ] && {
+-			echo "'$device' is disabled"
+-			set disable
+-		}
++        [ -n "$target_dev" ] && [ $target_dev != $device ] && {
++            continue
++        }
++        if [ $force_up = 0 ]; then
++            config_get disabled "$device" disabled
++            [ 1 == "$disabled" ] && {
++                echo "'$device' is disabled"
++                set disable
++            }
++        fi
+ 		config_get iftype "$device" type
+ 		if eval "type ${1}_$iftype" 2>/dev/null >/dev/null; then
+ 			eval "scan_$iftype '$device'"
+@@ -168,6 +173,18 @@
+ 	config_load "${cfgfile:-wireless}"
+ }
+ 
++local force_up=0 target_dev
++while getopts ":fd:" opt
++do
++    case $opt in
++        f)  force_up=1 ;;
++        d)  target_dev="$OPTARG" ;;
++        *)  echo "Usage: `basename $0` [-f] [-d device] [up | down | detect]"
++            exit 1 ;;
++    esac
++done
++shift $(($OPTIND - 1))
++
+ DEVICES=
+ DRIVERS=
+ include /lib/wifi

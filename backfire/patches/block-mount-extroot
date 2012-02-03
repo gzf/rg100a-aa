@@ -1,7 +1,7 @@
 Index: package/block-mount/files/55_determine_extroot_sysupgrade
 ===================================================================
---- package/block-mount/files/55_determine_extroot_sysupgrade	(revision 0)
-+++ package/block-mount/files/55_determine_extroot_sysupgrade	(revision 0)
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ package/block-mount/files/55_determine_extroot_sysupgrade	2012-02-03 15:42:29.000000000 +0800
 @@ -0,0 +1,63 @@
 +#!/bin/sh
 +# Copyright (C) 2010 Daniel Dickinson
@@ -68,8 +68,8 @@ Index: package/block-mount/files/55_determine_extroot_sysupgrade
 +
 Index: package/block-mount/files/fstab.init
 ===================================================================
---- package/block-mount/files/fstab.init	(revision 27608)
-+++ package/block-mount/files/fstab.init	(working copy)
+--- package/block-mount/files/fstab.init.orig	2012-02-02 10:18:22.000000000 +0800
++++ package/block-mount/files/fstab.init	2012-02-03 15:42:29.000000000 +0800
 @@ -8,6 +8,31 @@
  
  START=20
@@ -104,8 +104,8 @@ Index: package/block-mount/files/fstab.init
  	config_mount_by_section "$cfg"
 Index: package/block-mount/files/60_pivot_usb_root
 ===================================================================
---- package/block-mount/files/60_pivot_usb_root	(revision 0)
-+++ package/block-mount/files/60_pivot_usb_root	(revision 0)
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ package/block-mount/files/60_pivot_usb_root	2012-02-03 15:42:29.000000000 +0800
 @@ -0,0 +1,27 @@
 +#!/bin/sh
 +# Copyright (C) 2010 Vertical Communications
@@ -136,8 +136,8 @@ Index: package/block-mount/files/60_pivot_usb_root
 +
 Index: package/block-mount/files/extfs.sh
 ===================================================================
---- package/block-mount/files/extfs.sh	(revision 0)
-+++ package/block-mount/files/extfs.sh	(revision 0)
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ package/block-mount/files/extfs.sh	2012-02-03 15:42:29.000000000 +0800
 @@ -0,0 +1,22 @@
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
 +# Date: 2011/10
@@ -163,8 +163,8 @@ Index: package/block-mount/files/extfs.sh
 +}
 Index: package/block-mount/files/fstab.config
 ===================================================================
---- package/block-mount/files/fstab.config	(revision 27608)
-+++ package/block-mount/files/fstab.config	(working copy)
+--- package/block-mount/files/fstab.config.orig	2012-02-02 10:18:22.000000000 +0800
++++ package/block-mount/files/fstab.config	2012-02-03 15:42:29.000000000 +0800
 @@ -9,7 +9,7 @@
  config mount
  	option target	/home
@@ -176,15 +176,15 @@ Index: package/block-mount/files/fstab.config
  	option enabled_fsck 0
 Index: package/block-mount/files/extroot
 ===================================================================
---- package/block-mount/files/extroot	(revision 0)
-+++ package/block-mount/files/extroot	(revision 0)
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ package/block-mount/files/extroot	2012-02-03 15:42:29.000000000 +0800
 @@ -0,0 +1,2 @@
 +config extroot
 +	option max_settle_time	30
 Index: package/block-mount/files/mount.sh
 ===================================================================
---- package/block-mount/files/mount.sh	(revision 27608)
-+++ package/block-mount/files/mount.sh	(working copy)
+--- package/block-mount/files/mount.sh.orig	2012-02-02 10:18:22.000000000 +0800
++++ package/block-mount/files/mount.sh	2012-02-03 15:42:29.000000000 +0800
 @@ -31,16 +31,31 @@
  		
  		found_device="$(libmount_find_device_by_id "$uuid" "$label" "$device" "$cfgdevice")"
@@ -227,18 +227,18 @@ Index: package/block-mount/files/mount.sh
 -		[ "$is_rootfs" -eq 1 ] && [ "$find_rootfs" -eq 1 ] && {
 +		[ "$find_rootfs" = "1" ] && {
 +		    [ "$target" = "/overlay" ] && {
- 			rootfs_found=1
++			rootfs_found=1
 +		    }
 +		    [ "$target" = "/rom" ] && {
-+			rootfs_found=1
+ 			rootfs_found=1
 +		    }
  		}
  		return 0	
  	}
 Index: package/block-mount/files/extmount.sh
 ===================================================================
---- package/block-mount/files/extmount.sh	(revision 0)
-+++ package/block-mount/files/extmount.sh	(revision 0)
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ package/block-mount/files/extmount.sh	2012-02-03 15:42:29.000000000 +0800
 @@ -0,0 +1,24 @@
 +#!/bin/sh
 +# Copyright 2010 Vertical Communications
@@ -266,8 +266,8 @@ Index: package/block-mount/files/extmount.sh
 +
 Index: package/block-mount/files/50_determine_usb_root
 ===================================================================
---- package/block-mount/files/50_determine_usb_root	(revision 0)
-+++ package/block-mount/files/50_determine_usb_root	(revision 0)
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ package/block-mount/files/50_determine_usb_root	2012-02-03 15:42:29.000000000 +0800
 @@ -0,0 +1,125 @@
 +#!/bin/sh
 +# Copyright (C) 2010 Vertical Communications
@@ -396,8 +396,8 @@ Index: package/block-mount/files/50_determine_usb_root
 +boot_hook_add preinit_mount_root determine_external_root
 Index: package/block-mount/Config.in
 ===================================================================
---- package/block-mount/Config.in	(revision 0)
-+++ package/block-mount/Config.in	(revision 0)
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ package/block-mount/Config.in	2012-02-03 15:42:29.000000000 +0800
 @@ -0,0 +1,17 @@
 +#
 +# Copyright (C) 2010 Vertical Communications
@@ -418,20 +418,20 @@ Index: package/block-mount/Config.in
 +
 Index: package/block-mount/Makefile
 ===================================================================
---- package/block-mount/Makefile	(revision 27608)
-+++ package/block-mount/Makefile	(working copy)
+--- package/block-mount/Makefile.orig	2012-02-03 15:34:51.000000000 +0800
++++ package/block-mount/Makefile	2012-02-03 15:56:23.000000000 +0800
 @@ -8,8 +8,8 @@
  include $(TOPDIR)/rules.mk
  
  PKG_NAME:=block-mount
 -PKG_VERSION:=0.1.0
--PKG_RELEASE:=2.1
+-PKG_RELEASE:=2.2
 +PKG_VERSION:=0.2.0
 +PKG_RELEASE:=6
  
  include $(INCLUDE_DIR)/package.mk
  
-@@ -21,22 +21,23 @@
+@@ -21,20 +21,21 @@
  define Package/block-mount
    $(call Package/block-mount/Default)
    TITLE:=Block device mounting and checking
@@ -453,17 +453,15 @@ Index: package/block-mount/Makefile
 -  $(call Package/block-mount/Default)
 -  TITLE:=Automount and autocheck block devices
 -  DEPENDS:=+block-mount +hotplug2
+-endef
+-
+-define Package/block-hotplug/description
+-  Scripts used to automatically check and mount filesystem and/or swap
 +define Package/block-mount/config
 +	source "$(SOURCE)/Config.in"
  endef
  
--define Package/block-hotplug/description
--  Scripts used to automatically check and mount filesystem and/or swap
--endef
--
  define Build/Compile
- endef
- 
 @@ -49,19 +50,22 @@
  	$(INSTALL_BIN) ./files/fstab.init $(1)/etc/init.d/fstab
  	$(INSTALL_DIR) $(1)/etc/config
@@ -493,55 +491,10 @@ Index: package/block-mount/Makefile
  $(eval $(call BuildPackage,block-mount))
 -$(eval $(call BuildPackage,block-hotplug))
 -
-Index: package/base-files/files/sbin/wifi
-===================================================================
---- package/base-files/files/sbin/wifi	(revision 27608)
-+++ package/base-files/files/sbin/wifi	(working copy)
-@@ -89,11 +89,16 @@
- 		scan_wifi
- 	}
- 	for device in ${2:-$DEVICES}; do (
--		config_get disabled "$device" disabled
--		[ 1 == "$disabled" ] && {
--			echo "'$device' is disabled"
--			set disable
--		}
-+        [ -n "$target_dev" ] && [ $target_dev != $device ] && {
-+            continue
-+        }
-+        if [ $force_up = 0 ]; then
-+            config_get disabled "$device" disabled
-+            [ 1 == "$disabled" ] && {
-+                echo "'$device' is disabled"
-+                set disable
-+            }
-+        fi
- 		config_get iftype "$device" type
- 		if eval "type ${1}_$iftype" 2>/dev/null >/dev/null; then
- 			eval "scan_$iftype '$device'"
-@@ -166,6 +171,18 @@
- 	config_load "${cfgfile:-wireless}"
- }
- 
-+local force_up=0 target_dev
-+while getopts ":fd:" opt
-+do
-+    case $opt in
-+        f)  force_up=1 ;;
-+        d)  target_dev="$OPTARG" ;;
-+        *)  echo "Usage: `basename $0` [-f] [-d device] [up | down | detect]"
-+            exit 1 ;;
-+    esac
-+done
-+shift $(($OPTIND - 1))
-+
- DEVICES=
- DRIVERS=
- include /lib/wifi
 Index: package/block-extroot/files/55_determine_extroot_sysupgrade
 ===================================================================
---- package/block-extroot/files/55_determine_extroot_sysupgrade	(revision 27608)
-+++ package/block-extroot/files/55_determine_extroot_sysupgrade	(working copy)
+--- package/block-extroot/files/55_determine_extroot_sysupgrade	2012-02-02 10:18:25.000000000 +0800
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
 @@ -1,57 +0,0 @@
 -#!/bin/sh
 -# Copyright (C) 2010 Daniel Dickinson
@@ -602,8 +555,8 @@ Index: package/block-extroot/files/55_determine_extroot_sysupgrade
 -
 Index: package/block-extroot/files/60_pivot_usb_root
 ===================================================================
---- package/block-extroot/files/60_pivot_usb_root	(revision 27608)
-+++ package/block-extroot/files/60_pivot_usb_root	(working copy)
+--- package/block-extroot/files/60_pivot_usb_root	2012-02-02 10:18:25.000000000 +0800
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
 @@ -1,20 +0,0 @@
 -#!/bin/sh
 -# Copyright (C) 2010 Vertical Communications
@@ -627,8 +580,8 @@ Index: package/block-extroot/files/60_pivot_usb_root
 -
 Index: package/block-extroot/files/50_determine_usb_root
 ===================================================================
---- package/block-extroot/files/50_determine_usb_root	(revision 27608)
-+++ package/block-extroot/files/50_determine_usb_root	(working copy)
+--- package/block-extroot/files/50_determine_usb_root	2012-02-02 10:18:25.000000000 +0800
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
 @@ -1,50 +0,0 @@
 -#!/bin/sh
 -# Copyright (C) 2010 Vertical Communications
@@ -682,9 +635,9 @@ Index: package/block-extroot/files/50_determine_usb_root
 -
 Index: package/block-extroot/files/extmount.sh
 ===================================================================
---- package/block-extroot/files/extmount.sh	(revision 27608)
-+++ package/block-extroot/files/extmount.sh	(working copy)
-@@ -1,26 +0,0 @@
+--- package/block-extroot/files/extmount.sh	2012-02-03 15:51:39.000000000 +0800
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,30 +0,0 @@
 -#!/bin/sh
 -# Copyright 2010 Vertical Communications
 -
@@ -706,15 +659,19 @@ Index: package/block-extroot/files/extmount.sh
 -	ln -sf /lib/modules/*/* /tmp/overlay/lib/modules/*/* /tmp/extroot_modules/modules
 -    	local modules="$(grep -l '# May be required for rootfs' /tmp/extroot_modules/modules.d/*)"
 -	cd /tmp/extroot_modules/modules && {
--		cat $modules | sed -e 's/^\([^#].*\)/insmod \.\/\1.ko/'| sh 2>&- || :
+-		module_suffix=ko
+-		case "$(uname -r)" in
+-			2.4.*) module_suffix=o ;;
+-		esac
+-		cat $modules | sed -e 's/^\([^#].*\)/insmod \.\/\1.'$module_suffix'/'| sh 2>&- || :
 -	}
 -	rm -rf /tmp/extroot_modules
 -}
 -
 Index: package/block-extroot/Config.in
 ===================================================================
---- package/block-extroot/Config.in	(revision 27608)
-+++ package/block-extroot/Config.in	(working copy)
+--- package/block-extroot/Config.in	2012-02-02 10:18:25.000000000 +0800
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
 @@ -1,17 +0,0 @@
 -#
 -# Copyright (C) 2010 Vertical Communications
@@ -735,8 +692,8 @@ Index: package/block-extroot/Config.in
 -
 Index: package/block-extroot/Makefile
 ===================================================================
---- package/block-extroot/Makefile	(revision 27608)
-+++ package/block-extroot/Makefile	(working copy)
+--- package/block-extroot/Makefile	2012-02-03 15:51:39.000000000 +0800
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
 @@ -1,64 +0,0 @@
 -#
 -# Copyright (C) 2009-2010 OpenWrt.org
@@ -750,7 +707,7 @@ Index: package/block-extroot/Makefile
 -
 -PKG_NAME:=block-extroot
 -PKG_VERSION:=0.0.1
--PKG_RELEASE:=2
+-PKG_RELEASE:=2.1
 -
 -PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 -

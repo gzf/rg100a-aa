@@ -1,0 +1,3 @@
+block-mount-extroot -p0
+wifi-force-option -p0
+vim-utf8-more-features
