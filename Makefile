@@ -4,7 +4,8 @@
 include Build.defs
 
 VPATH = $(BCMFW)/targets/DSL-2760U
-CMPLZMA = ./tools/cmplzma
+CMPLZMA = $(BCMFW)/hostTools/cmplzma
+CFE = $(BCMFW)/targets/cfe/cfe6358.bin
 
 all : rg100a.img 
 
@@ -15,20 +16,20 @@ oldcfe : rg100a-oldcfe.img
 %.vmlinux.lz : vmlinux vmlinux.bin
 	$(CMPLZMA) -k -2 $^ $@
 
-%-oldcfe.img : CMPLZMA = ./tools/cmplzma-oldcfe
+%-oldcfe.img : CMPLZMA = ./misc/cmplzma-oldcfe
 
-%.cfe.img : %.vmlinux.lz cfe6358.bin rootfs.squashfs
-	./tools/bcmImageBuilder --chip 6358 --board 96358VW2 --blocksize 128 \
-			--output $*.cfe.1 --cfefile cfe6358.bin --rootfsfile rootfs.squashfs \
+%.cfe.img : %.vmlinux.lz rootfs.squashfs
+	$(BCMFW)/hostTools/bcmImageBuilder --chip 6358 --board 96358VW2 --blocksize 128 \
+			--output $*.cfe.1 --cfefile $(CFE) --rootfsfile rootfs.squashfs \
 			--kernelfile $*.vmlinux.lz --include-cfe
-	./tools/createimg --boardid=96358VW2 --numbermac=11 --macaddr=02:10:18:01:00:01 \
+	$(BCMFW)/hostTools/createimg --boardid=96358VW2 --numbermac=11 --macaddr=02:10:18:01:00:01 \
 	--tp=0 --psisize=24 --gponpw= --gponsn= --inputfile=$*.cfe.1 --outputfile=$*.cfe.2
-	./tools/addvtoken $*.cfe.2 $@
+	$(BCMFW)/hostTools/addvtoken $*.cfe.2 $@
 	rm -f $*.cfe.1 $*.cfe.2
 
-%.img : %.vmlinux.lz cfe6358.bin rootfs.squashfs
-	./tools/bcmImageBuilder --chip 6358 --board 96358VW2 --blocksize 128 \
-			--output $@ --cfefile cfe6358.bin --rootfsfile rootfs.squashfs \
+%.img : %.vmlinux.lz rootfs.squashfs
+	$(BCMFW)/hostTools/bcmImageBuilder --chip 6358 --board 96358VW2 --blocksize 128 \
+			--output $@ --cfefile $(CFE) --rootfsfile rootfs.squashfs \
 			--kernelfile $*.vmlinux.lz
 
 .INTERMEDIATE: %.vmlinux.lz
@@ -51,7 +52,7 @@ oldcfe : rg100a-oldcfe.img
 #	echo -n -e '\0336\0255\0300\0336' >> $@ # DEADCODE
 
 rootfs.squashfs :
-	fakeroot ./buildrootfs $@
+	$(BCMFW)/hostTools/fakeroot/fakeroot ./buildfs $@
 
 clean:
 	rm -f *.img

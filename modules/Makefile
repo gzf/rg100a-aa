@@ -1,6 +1,6 @@
-include ../../Build.defs
+include ../Build.defs
 
-export BCMROOT = $(PWD)/../../$(BCMFW)
+export BCMROOT = $(PWD)/../$(BCMFW)
 export BRCM_BOARD = bcm963xx
 
 KERNEL = $(BCMROOT)/kernel/linux

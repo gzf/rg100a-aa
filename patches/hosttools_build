@@ -1,0 +1,42 @@
+Index: DSL-2760U/hostTools/Makefile
+===================================================================
+--- DSL-2760U.orig/hostTools/Makefile	2012-02-07 14:57:21.000000000 +0800
++++ DSL-2760U/hostTools/Makefile	2012-02-07 15:32:21.000000000 +0800
+@@ -1,6 +1,12 @@
+ 
+ all:
++	make -C lzma/7zip/Compress/LZMA_Alone/ -f makefile.gcc
++	make -C lzma/7zip/Compress/LZMA_C/ -f makefile.gcc
++	make -C squashfs Sqlzma=. LzmaAlone=../lzma/7zip/Compress/LZMA_Alone LzmaC=../lzma/7zip/Compress/LZMA_C
++	cd fakeroot; ./configure; make
+ 
+ clean:
+-
+-
++	make -C lzma/7zip/Compress/LZMA_Alone/ -f makefile.gcc clean
++	make -C lzma/7zip/Compress/LZMA_C/ -f makefile.gcc clean
++	make -C squashfs Sqlzma=. LzmaAlone=../lzma/7zip/Compress/LZMA_Alone LzmaC=../lzma/7zip/Compress/LZMA_C clean
++	[ ! -e fakeroot/Makefile ] || (make -C fakeroot clean)
+Index: DSL-2760U/hostTools/fakeroot/fakeroot
+===================================================================
+--- DSL-2760U.orig/hostTools/fakeroot/fakeroot	2012-02-07 14:58:10.000000000 +0800
++++ DSL-2760U/hostTools/fakeroot/fakeroot	2012-02-07 14:35:24.000000000 +0800
+@@ -15,13 +15,12 @@
+ }
+ 
+ # strip /bin/fakeroot to find install prefix
+-PREFIX=/mnt/22_hd/home/joan/gpl/2760/r/1/hostTools/fakeroot
+-BINDIR=/mnt/22_hd/home/joan/gpl/2760/r/1/hostTools/fakeroot
+-    
++FAKEROOT_SRC=$(dirname $(readlink -f $0))
++ 
+ USEABSLIBPATH=0
+-LIB=libfakeroot.so
+-PATHS=/mnt/22_hd/home/joan/gpl/2760/r/1/hostTools/fakeroot/.libs:/lib:/usr/lib
+-FAKED=${BINDIR}/faked
++LIB=libfakeroot-0.so
++PATHS=$FAKEROOT_SRC/.libs:/usr/lib:/lib
++FAKED=$FAKEROOT_SRC/faked
+ 
+ FAKED_MODE="unknown-is-root"
+ export FAKED_MODE

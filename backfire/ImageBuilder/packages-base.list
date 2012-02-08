@@ -12,7 +12,6 @@ mtd
 uci
 opkg
 dnsmasq
-ntpclient
 ppp
 ppp-mod-pppoe
 ebtables

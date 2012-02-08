@@ -1,15 +1,11 @@
 /DSL-2760U
 /ImageBuilder
 /rootfs*
-/vmlinux*
-/modules
 /openwrt*
 /*.img
 /.emacs*
 /tmp
-/src/modules/DSL-2760U
-/src/modules/*.ko
-/src/modules/**/*.ko
+/modules/**/*.ko
 Module.symvers
 *.o
 *.mod.c
