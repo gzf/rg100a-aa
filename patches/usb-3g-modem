@@ -1,7 +1,7 @@
 Index: DSL-2760U/kernel/linux/drivers/usb/serial/option.c
 ===================================================================
 --- DSL-2760U.orig/kernel/linux/drivers/usb/serial/option.c	2012-02-07 15:54:25.000000000 +0800
-+++ DSL-2760U/kernel/linux/drivers/usb/serial/option.c	2012-02-07 22:05:54.000000000 +0800
++++ DSL-2760U/kernel/linux/drivers/usb/serial/option.c	2012-02-11 21:53:06.000000000 +0800
 @@ -82,45 +82,298 @@
  #define OPTION_PRODUCT_VIPER			0x6600
  #define OPTION_PRODUCT_VIPER_BUS		0x6601
@@ -860,47 +860,6 @@ Index: DSL-2760U/kernel/linux/drivers/usb/serial/option.c
  	{ } /* Terminating entry */
  };
  MODULE_DEVICE_TABLE(usb, option_ids);
-@@ -556,6 +1273,7 @@
- 	portdata = usb_get_serial_port_data(port);
- 
- 	dbg("%s", __FUNCTION__);
-+    printk(">>>>>option_open is invoked\n");
- 
- 	/* Set some sane defaults */
- 	portdata->rts_state = 1;
-@@ -616,13 +1334,14 @@
- 	struct option_port_private *portdata;
- 
- 	dbg("%s", __FUNCTION__);
-+    printk(">>>>>option_close is invoked\n");
- 	portdata = usb_get_serial_port_data(port);
- 
- 	portdata->rts_state = 0;
- 	portdata->dtr_state = 0;
- 
- 	if (serial->dev) {
--		option_send_setup(port);
-+		//option_send_setup(port);
- 
- 		/* Stop reading/writing urbs */
- 		for (i = 0; i < N_IN_URB; i++)
-@@ -720,6 +1439,7 @@
- 	struct option_port_private *portdata;
- 
- 	dbg("%s", __FUNCTION__);
-+    printk(">>>>>option_startup is invoked\n");
- 
- 	/* Now setup per port private data */
- 	for (i = 0; i < serial->num_ports; i++) {
-@@ -754,6 +1474,8 @@
- 
- 	dbg("%s", __FUNCTION__);
- 
-+    printk(">>>>>option_shutdown is invoked\n");
-+
- 	/* Stop reading/writing urbs */
- 	for (i = 0; i < serial->num_ports; ++i) {
- 		port = serial->port[i];
 Index: DSL-2760U/kernel/linux/include/linux/usb.h
 ===================================================================
 --- DSL-2760U.orig/kernel/linux/include/linux/usb.h	2012-02-07 15:54:25.000000000 +0800

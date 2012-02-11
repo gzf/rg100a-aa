@@ -140,10 +140,11 @@ Q. 如何使用3g上网卡
 A. 首先编辑/etc/modules.d/04-3g，加载相应的内核模块，然后修改/etc/config/network，
    定义相应的wan口。对于联通WCDMA，wan口定义如下：
 config interface wan
-    option proto    3g
-    option service  umts
-    option device   /dev/ttyUSB0
-    option apn      3gnet
+    option proto    	3g
+    option service  	umts
+    option device   	/dev/ttyUSB0
+    option apn      	3gnet
+    option pppd_options noipdefault
 
    电信CDMA2000的wan口定义如下：
 config interface wan

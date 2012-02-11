@@ -25,6 +25,14 @@ base:
     gpioctl swconfig
 opkg:
     wol rsync git sudo openvpn openvpn-easy-rsa
+3g:
+	usb-modeswitch comgt [ usb-modeswitch-data ]
+	usb-modeswitch -> libusb
+	comgt -> chat
+
+wl power:
+	http://www.openwrt.org.cn/bbs/forum.php?mod=viewthread&tid=7264
+	http://www.dd-wrt.com/wiki/index.php/WL#txpwr
 
 multi-lun:
 	http://www.groupsrv.com/linux/about163562.html
