@@ -1,0 +1,390 @@
+Index: DSL-2760U/kernel/linux/drivers/mtd/maps/Makefile
+===================================================================
+--- DSL-2760U.orig/kernel/linux/drivers/mtd/maps/Makefile	2012-02-14 15:46:46.000000000 +0800
++++ DSL-2760U/kernel/linux/drivers/mtd/maps/Makefile	2011-03-12 00:06:38.000000000 +0800
+@@ -74,6 +74,7 @@
+ obj-$(CONFIG_MTD_TQM834x)	+= tqm834x.o
+ 
+ # CONFIG_MIPS_BRCM Begin Broadcom changed code.
+-obj-$(CONFIG_MTD_BCM963XX)      += bcm963xx.o
++#obj-$(CONFIG_MTD_BCM963XX)      += bcm963xx.o
++obj-$(CONFIG_MTD_BCM963XX)      += bcm963xx-flash.o
+ EXTRA_CFLAGS    		+= -I$(INC_BRCMDRIVER_PUB_PATH)/$(BRCM_BOARD) -I$(INC_BRCMSHARED_PUB_PATH)/$(BRCM_BOARD)
+ # CONFIG_MIPS_BRCM End Broadcom changed code.
+Index: DSL-2760U/kernel/linux/drivers/mtd/maps/bcm963xx-flash.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ DSL-2760U/kernel/linux/drivers/mtd/maps/bcm963xx-flash.c	2011-07-13 14:50:53.000000000 +0800
+@@ -0,0 +1,298 @@
++/*
++ * Copyright (C) 2006-2008  Florian Fainelli <florian@openwrt.org>
++ * 			    Mike Albon <malbon@openwrt.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/vmalloc.h>
++#include <linux/platform_device.h>
++
++#include <bcm_tag.h>
++#include <asm/io.h>
++
++#define BUSWIDTH 2                     /* Buswidth */
++#define EXTENDED_SIZE 0xBFC00000       /* Extended flash address */
++
++#define FLASH_VIRT_START   0xBE000000
++#define FLASH_PHYS_START   0x1E000000
++//#define FLASH_SIZE       0x01000000       // 16M
++#define DEFAULT_ALIGN      0x200000         // align to 2M
++
++#define PFX KBUILD_MODNAME ": "
++
++#define rounddown(x, y) ((x) - ((x) % (y)))
++
++extern int parse_redboot_partitions(struct mtd_info *master, struct mtd_partition **pparts, unsigned long fis_origin);
++static struct mtd_partition *parsed_parts;
++
++static struct mtd_info *bcm963xx_mtd_info;
++
++static struct map_info bcm963xx_map = {
++       .name		= "bcm963xx",
++       .bankwidth	= BUSWIDTH,
++};
++
++
++static int parse_cfe_partitions( struct mtd_info *master, struct mtd_partition **pparts)
++{
++	const int nrparts = 6; /* CFE,NVRAM, kernel, rootfs, rootfs_data and global LINUX. */
++	struct bcm_tag *buf;
++	struct mtd_partition *parts;
++	int ret;
++	size_t retlen;
++	//unsigned int rootfsaddr, kerneladdr, spareaddr, imagestart;
++	//unsigned int rootfslen, kernellen, sparelen, totallen;
++	//int namelen = 0;
++	int i;
++	char *boardid;
++    char *tagversion;
++    unsigned int imgstart, offset, len;
++	int align, min_offset;
++
++
++	/* Allocate memory for buffer */
++	buf = vmalloc(sizeof(struct bcm_tag));
++	if (!buf)
++		return -ENOMEM;
++
++	/* Get the tag */
++	ret = master->read(master,master->erasesize,sizeof(struct bcm_tag), &retlen, (void *)buf);
++	if (retlen != sizeof(struct bcm_tag)){
++		vfree(buf);
++		return -EIO;
++	}
++
++	tagversion = &(buf->tagVersion[0]);
++	boardid = &(buf->boardid[0]);
++	printk(KERN_INFO PFX "CFE boot tag found with version %s and board type %s\n",tagversion, boardid);
++
++	/* Ask kernel for more memory */
++	//parts = kzalloc(sizeof(*parts) * nrparts + 10 * nrparts, GFP_KERNEL);
++	parts = kzalloc(sizeof(struct mtd_partition) * nrparts, GFP_KERNEL);
++	if (!parts) {
++		vfree(buf);
++		return -ENOMEM;
++	};
++
++	/* Start building partition list */
++	sscanf(buf->flashImageStart, "%u", &imgstart);
++
++	parts[0].name = "CFE";
++	sscanf(buf->cfeLength, "%u", &len);
++	parts[0].offset = 0;
++	parts[0].size = rounddown(imgstart - EXTENDED_SIZE, master->erasesize);
++	parts[0].mask_flags = MTD_WRITEABLE;
++
++    parts[1].name = "kernel";
++	sscanf(buf->kernelAddress, "%u", &offset);
++	sscanf(buf->kernelLength, "%u", &len);
++    parts[1].offset = offset - EXTENDED_SIZE;
++    parts[1].size = len;
++	parts[1].mask_flags = MTD_WRITEABLE;
++
++    parts[2].name = "rootfs";
++	sscanf(buf->rootLength, "%u", &len);
++    parts[2].offset = imgstart == offset ? parts[1].offset + parts[1].size : imgstart - EXTENDED_SIZE;
++    parts[2].size = len;
++	parts[2].mask_flags = MTD_WRITEABLE;
++
++	parts[3].name = "nvram";
++	parts[3].offset = master->size - master->erasesize;
++	parts[3].size = master->erasesize;
++
++	/* Global partition "linux" to make easy firmware upgrade */
++	parts[4].name = "linux";
++	parts[4].offset = parts[0].size;
++	parts[4].size = master->size - parts[0].size - parts[3].size;
++
++    // Spare partition rootfs_data
++	//sscanf(buf->totalLength, "%u", &len);
++	//offset = roundup(len, master->erasesize) + master->erasesize;
++	parts[5].name = "rootfs_data";
++#ifdef CONFIG_ROOTFS_DATA_ALIGN
++    align = CONFIG_ROOTFS_DATA_ALIGN;
++#else
++    align = DEFAULT_ALIGN;
++#endif
++    min_offset = parts[1].offset > parts[2].offset ? 
++        parts[1].offset + parts[1].size :
++        parts[2].offset + parts[2].size;
++    parts[5].offset = roundup(roundup(min_offset, align), master->erasesize);
++	parts[5].size = master->size - parts[5].offset - parts[3].size;
++
++	for (i = 0; i < nrparts; i++)
++		printk(KERN_INFO PFX "Partition %d is %s offset %lx and length %lx\n", i, parts[i].name, (long unsigned int)(parts[i].offset), (long unsigned int)(parts[i].size));
++
++ 	//printk(KERN_INFO PFX "Spare partition is %x offset and length %x\n", offset, len);
++	*pparts = parts;
++	vfree(buf);
++
++	return nrparts;
++};
++
++/*
++static int bcm963xx_detect_cfe(struct mtd_info *master)
++{
++	int idoffset = 0x4e0;
++	static char idstring[8] = "CFE1CFE1";
++	char buf[9];
++	int ret;
++	size_t retlen;
++
++	ret = master->read(master, idoffset, 8, &retlen, (void *)buf);
++	buf[retlen] = 0;
++	printk(KERN_INFO PFX "Read Signature value of %s\n", buf);
++
++	return strncmp(idstring, buf, 8);
++}
++*/
++static int bcm963xx_probe(struct platform_device *pdev)
++{
++	int err = 0;
++	int parsed_nr_parts = 0;
++//	char *part_type;
++	struct resource *r;
++
++	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	bcm963xx_map.phys = r->start;
++	bcm963xx_map.size = (r->end - r->start) + 1;
++	bcm963xx_map.virt = ioremap(r->start, r->end - r->start + 1);
++
++	if (!bcm963xx_map.virt) {
++		printk(KERN_ERR PFX "Failed to ioremap\n");
++		return -EIO;
++	}
++	printk(KERN_INFO PFX "0x%08lx at 0x%08x\n", bcm963xx_map.size, bcm963xx_map.phys);
++
++	simple_map_init(&bcm963xx_map);
++
++	bcm963xx_mtd_info = do_map_probe("cfi_probe", &bcm963xx_map);
++	if (!bcm963xx_mtd_info) {
++		printk(KERN_ERR PFX "Failed to probe using CFI\n");
++		err = -EIO;
++		goto err_probe;
++	}
++
++	bcm963xx_mtd_info->owner = THIS_MODULE;
++
++	/* This is mutually exclusive */
++/*
++//	if (bcm963xx_detect_cfe(bcm963xx_mtd_info) == 0) {
++	if (1) {
++		printk(KERN_INFO PFX "CFE bootloader detected\n");
++		if (parsed_nr_parts == 0) {
++			int ret = parse_cfe_partitions(bcm963xx_mtd_info, &parsed_parts);
++			if (ret > 0) {
++				part_type = "CFE";
++				parsed_nr_parts = ret;
++			}
++		}
++	} else {
++		printk(KERN_INFO PFX "assuming RedBoot bootloader\n");
++		if (bcm963xx_mtd_info->size > 0x00400000) {
++			printk(KERN_INFO PFX "Support for extended flash memory size : 0x%x ; ONLY 64MBIT SUPPORT\n", bcm963xx_mtd_info->size);
++			bcm963xx_map.virt = (u32)(EXTENDED_SIZE);
++		}
++
++#ifdef CONFIG_MTD_REDBOOT_PARTS
++		if (parsed_nr_parts == 0) {
++			int ret = parse_redboot_partitions(bcm963xx_mtd_info, &parsed_parts, 0);
++			if (ret > 0) {
++				part_type = "RedBoot";
++				parsed_nr_parts = ret;
++			}
++		}
++#endif
++	}
++*/
++
++	parsed_nr_parts = parse_cfe_partitions(bcm963xx_mtd_info, &parsed_parts);
++	return add_mtd_partitions(bcm963xx_mtd_info, parsed_parts, parsed_nr_parts);
++
++err_probe:
++	iounmap(bcm963xx_map.virt);
++	return err;
++}
++
++static int bcm963xx_remove(struct platform_device *pdev)
++{
++	if (bcm963xx_mtd_info) {
++		del_mtd_partitions(bcm963xx_mtd_info);
++		map_destroy(bcm963xx_mtd_info);
++	}
++
++	if (bcm963xx_map.virt) {
++		iounmap(bcm963xx_map.virt);
++		bcm963xx_map.virt = 0;
++	}
++
++	return 0;
++}
++
++static struct platform_driver bcm63xx_mtd_dev = {
++	.probe	= bcm963xx_probe,
++	.remove = bcm963xx_remove,
++	.driver = {
++		.name	= "bcm963xx-flash",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static struct resource mtd_resources[] = {
++    {
++        .start      = FLASH_PHYS_START,
++        .end        = 0x1FFFFFFF,
++//      .end        = FLASH_PHYS_START + FLASH_SIZE - 1,
++        .flags      = IORESOURCE_MEM
++    }
++};
++
++static struct platform_device mtd_dev = {
++    .name           = "bcm963xx-flash",
++    .resource       = mtd_resources,
++    .num_resources  = ARRAY_SIZE(mtd_resources),
++};
++
++
++static int __init bcm963xx_mtd_init(void)
++{
++    int err;
++
++	err = platform_driver_register(&bcm63xx_mtd_dev);
++	if (err == 0)
++		platform_device_register(&mtd_dev);
++
++    return err;
++}
++
++static void __exit bcm963xx_mtd_exit(void)
++{
++	platform_device_unregister(&mtd_dev);
++	platform_driver_unregister(&bcm63xx_mtd_dev);
++}
++
++module_init(bcm963xx_mtd_init);
++module_exit(bcm963xx_mtd_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Broadcom BCM63xx MTD partition parser/mapping for CFE and RedBoot");
++MODULE_AUTHOR("Florian Fainelli <florian@openwrt.org>");
++MODULE_AUTHOR("Mike Albon <malbon@openwrt.org>");
+Index: DSL-2760U/kernel/linux/include/asm-mips/mach-bcm963xx/bcm_tag.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ DSL-2760U/kernel/linux/include/asm-mips/mach-bcm963xx/bcm_tag.h	2011-01-29 15:46:40.000000000 +0800
+@@ -0,0 +1,69 @@
++#ifndef __BCM63XX_TAG_H
++#define __BCM63XX_TAG_H
++
++#define TAGVER_LEN 4                   /* Length of Tag Version */
++#define TAGLAYOUT_LEN 4                /* Length of FlashLayoutVer */
++#define SIG1_LEN 20		       /* Company Signature 1 Length */
++#define SIG2_LEN 14                    /* Company Signature 2 Lenght */
++#define BOARDID_LEN 16		       /* Length of BoardId */
++#define ENDIANFLAG_LEN 2               /* Endian Flag Length */
++#define CHIPID_LEN 6		       /* Chip Id Length */
++#define IMAGE_LEN 10                   /* Length of Length Field */
++#define ADDRESS_LEN 12                 /* Length of Address field */
++#define DUALFLAG_LEN 2		       /* Dual Image flag Length */
++#define INACTIVEFLAG_LEN 2	       /* Inactie Flag Length */
++#define RSASIG_LEN 20   	       /* Length of RSA Signature in tag */
++#define TAGINFO1_LEN 30                /* Length of vendor information field1 in tag */
++#define FLASHLAYOUTVER_LEN 4	       /* Length of Flash Layout Version String tag */
++#define TAGINFO2_LEN 16                /* Length of vendor information field2 in tag */
++#define CRC_LEN 4                      /* Length of CRC in bytes */
++#define ALTTAGINFO_LEN 54              /* Alternate length for vendor information; Pirelli */
++
++#define NUM_PIRELLI 2
++#define IMAGETAG_CRC_START		0xFFFFFFFF
++
++#define PIRELLI_BOARDS { \
++  "AGPF-S0", \
++  "DWV-S0", \
++}
++
++/*
++ * The broadcom firmware assumes the rootfs starts the image,
++ * therefore uses the rootfs start (flashImageAddress)
++ * to determine where to flash the image.  Since we have the kernel first
++ * we have to give it the kernel address, but the crc uses the length
++ * associated with this address (rootLength), which is added to the kernel
++ * length (kernelLength) to determine the length of image to flash and thus
++ * needs to be rootfs + deadcode (jffs2 EOF marker)
++*/
++
++struct bcm_tag {
++	char tagVersion[TAGVER_LEN];           // 0-3: Version of the image tag
++	char sig_1[SIG1_LEN];                  // 4-23: Company Line 1
++	char sig_2[SIG2_LEN];                  // 24-37: Company Line 2
++	char chipid[CHIPID_LEN];               // 38-43: Chip this image is for
++	char boardid[BOARDID_LEN];             // 44-59: Board name
++	char big_endian[ENDIANFLAG_LEN];       // 60-61: Map endianness -- 1 BE 0 LE
++	char totalLength[IMAGE_LEN];           // 62-71: Total length of image
++	char cfeAddress[ADDRESS_LEN];          // 72-83: Address in memory of CFE
++	char cfeLength[IMAGE_LEN];             // 84-93: Size of CFE
++	char flashImageStart[ADDRESS_LEN];     // 94-105: Address in memory of image start (kernel for OpenWRT, rootfs for stock firmware)
++	char rootLength[IMAGE_LEN];            // 106-115: Size of rootfs
++	char kernelAddress[ADDRESS_LEN];       // 116-127: Address in memory of kernel
++	char kernelLength[IMAGE_LEN];          // 128-137: Size of kernel
++	char dualImage[DUALFLAG_LEN];          // 138-139: Unused at present
++	char inactiveFlag[INACTIVEFLAG_LEN];   // 140-141: Unused at present
++        char rsa_signature[RSASIG_LEN];        // 142-161: RSA Signature (unused at present; some vendors may use this)
++	char information1[TAGINFO1_LEN];       // 162-191: Compilation and related information (not generated/used by OpenWRT)
++        char flashLayoutVer[FLASHLAYOUTVER_LEN];// 192-195: Version flash layout
++        char fskernelCRC[CRC_LEN];             // 196-199: kernel+rootfs CRC32
++	char information2[TAGINFO2_LEN];       // 200-215: Unused at present except Alice Gate where is is information
++	char imageCRC[CRC_LEN];                // 216-219: CRC32 of image less imagetag (kernel for Alice Gate)
++        char rootfsCRC[CRC_LEN];               // 220-223: CRC32 of rootfs partition
++        char kernelCRC[CRC_LEN];               // 224-227: CRC32 of kernel partition
++        char reserved1[8];                     // 228-235: Unused at present
++        char headerCRC[CRC_LEN];               // 236-239: CRC32 of header excluding tagVersion
++        char reserved2[16];                    // 240-255: Unused at present
++};
++
++#endif /* __BCM63XX_TAG_H */

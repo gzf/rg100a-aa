@@ -1,5 +1,0 @@
-#!/bin/sh
-
-TEMPLATE=$HOSTTOOLS_DIR/scripts/defconfig-bcm.template
-
-cp $TEMPLATE $KERNEL_DIR/arch/mips/defconfig

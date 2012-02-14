@@ -1,0 +1,47 @@
+Index: DSL-2760U/kernel/linux/lib/kobject_uevent.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/lib/kobject_uevent.c	2012-02-14 16:09:50.000000000 +0800
++++ DSL-2760U/kernel/linux/lib/kobject_uevent.c	2011-03-19 13:29:35.000000000 +0800
+@@ -30,7 +30,8 @@
+ char uevent_helper[UEVENT_HELPER_PATH_LEN] = "/sbin/hotplug";
+ static DEFINE_SPINLOCK(sequence_lock);
+ #if defined(CONFIG_NET)
+-static struct sock *uevent_sock;
++struct sock *uevent_sock = NULL;
++EXPORT_SYMBOL_GPL(uevent_sock);
+ #endif
+ 
+ static char *action_to_string(enum kobject_action action)
+@@ -57,6 +58,18 @@
+ 	}
+ }
+ 
++u64 uevent_next_seqnum(void)
++{
++	u64 seq;
++
++	spin_lock(&sequence_lock);
++	seq = ++uevent_seqnum;
++	spin_unlock(&sequence_lock);
++
++	return seq;
++}
++EXPORT_SYMBOL_GPL(uevent_next_seqnum);
++
+ /**
+  * kobject_uevent_env - send an uevent with environmental data
+  *
+@@ -171,9 +184,10 @@
+ 	}
+ 
+ 	/* we will send an event, request a new sequence number */
+-	spin_lock(&sequence_lock);
+-	seq = ++uevent_seqnum;
+-	spin_unlock(&sequence_lock);
++//	spin_lock(&sequence_lock);
++//	seq = ++uevent_seqnum;
++//	spin_unlock(&sequence_lock);
++	seq = uevent_next_seqnum();
+ 	sprintf(seq_buff, "SEQNUM=%llu", (unsigned long long)seq);
+ 
+ #if defined(CONFIG_NET)

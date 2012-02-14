@@ -37,15 +37,6 @@ lndir() {
 
 . ./Build.defs
 
-if [ -z "$1" ] || [ "$1" = all ] || [ "$1" = fw ]; then 
-    if [ ! -e "$BCMFW/README" ]; then
-        echo "fail to verify $BCMFW"
-        exit 1
-    fi
-    echo "Processing DSL-2760U ..."
-    lndir "$PWD/src/files" "$BCMFW"
-fi
-
 if [ -z "$1" ] || [ "$1" = all ] || [ "$1" = im ]; then 
     if [ ! -e "$IMAGEBUILDER/repositories.conf" ]; then
         echo "fail to verify $IMAGEBUILDER"

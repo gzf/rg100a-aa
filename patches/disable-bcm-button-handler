@@ -1,0 +1,125 @@
+Index: DSL-2760U/bcmdrivers/opensource/char/board/bcm963xx/impl1/board.c
+===================================================================
+--- DSL-2760U.orig/bcmdrivers/opensource/char/board/bcm963xx/impl1/board.c	2012-02-14 15:37:49.000000000 +0800
++++ DSL-2760U/bcmdrivers/opensource/char/board/bcm963xx/impl1/board.c	2011-03-26 17:46:49.000000000 +0800
+@@ -57,6 +57,7 @@
+ #include "board.h"
+ #include "bcm_map_part.h"
+ 
++
+ /* Typedefs. */
+ 
+ #if defined (WIRELESS)
+@@ -184,8 +185,8 @@
+ static ssize_t sesBtn_read(struct file *file,  char __user *buffer, size_t count, loff_t *ppos);
+ static void __init sesLed_mapGpio(void);
+ static void sesLed_ctrl(int action);
+-static void __init ses_board_init(void);
+-static void __exit ses_board_deinit(void);
++//static void __init ses_board_init(void);
++//static void __exit ses_board_deinit(void);
+ static void __init kerSysScreenPciDevices(void);
+ static void kerSetWirelessPD(int state);
+ #endif
+@@ -418,7 +419,7 @@
+         init_waitqueue_head(&g_board_wait_queue);
+ #if defined (WIRELESS)
+         kerSysScreenPciDevices();   
+-        ses_board_init();
++//        ses_board_init();
+         kerSetWirelessPD(WLAN_ON);     	
+ #endif        
+         kerSysInitDyingGaspHandler();
+@@ -439,12 +440,13 @@
+ 		usbledflag = 1;
+ 	 }
+ #endif
+-        if( BpGetResetToDefaultExtIntr(&rstToDflt_irq) == BP_SUCCESS )
+-        {
+-            rstToDflt_irq = map_external_irq (rstToDflt_irq) ;
+-            BcmHalMapInterrupt((FN_HANDLER)reset_isr, 0, rstToDflt_irq);
+-            BcmHalInterruptEnable(rstToDflt_irq);
+-        }
++
++//        if( BpGetResetToDefaultExtIntr(&rstToDflt_irq) == BP_SUCCESS )
++//        {
++//            rstToDflt_irq = map_external_irq (rstToDflt_irq) ;
++//            BcmHalMapInterrupt((FN_HANDLER)reset_isr, 0, rstToDflt_irq);
++//            BcmHalInterruptEnable(rstToDflt_irq);
++//        }
+     }
+ 
+     add_proc_files();
+@@ -547,8 +549,8 @@
+     if (board_major != -1) 
+     {
+ #if defined (WIRELESS)    	
+-    	ses_board_deinit();
+-#endif    	
++//    	ses_board_deinit();
++#endif
+         kerSysDeinitDyingGaspHandler();
+         unregister_chrdev(board_major, "board_ioctl");
+     }
+@@ -1787,6 +1789,7 @@
+     return 0;
+ }
+ 
++/*
+ static irqreturn_t sesBtn_isr(int irq, void *dev_id)
+ {   
+     if (sesBtn_pressed()){
+@@ -1798,6 +1801,12 @@
+     }
+ }
+ 
++static irqreturn_t sesBtn_isr(int irq, void *dev_id)
++{
++	printk("Button Event\n");
++	return IRQ_HANDLED;
++}
++
+ static void __init sesBtn_mapIntr(int context)
+ {    	
+     if( BpGetWirelessSesExtIntr(&sesBtn_irq) == BP_SUCCESS )
+@@ -1814,7 +1823,7 @@
+     }    
+     BcmHalInterruptEnable(sesBtn_irq);
+ }
+-
++*/
+ 
+ static unsigned int sesBtn_poll(struct file *file, struct poll_table_struct *wait)
+ {
+@@ -1843,6 +1852,7 @@
+     return ret;	
+ }
+ 
++/*
+ static void __init sesLed_mapGpio()
+ {	
+     if( BpGetWirelessSesLedGpio(&sesLed_gpio) == BP_SUCCESS )
+@@ -1850,6 +1860,7 @@
+         printk("SES: LED GPIO 0x%x is enabled\n", sesLed_gpio);    
+     }
+ }
++*/
+ 
+ static void sesLed_ctrl(int action)
+ {
+@@ -1886,6 +1897,7 @@
+     kerSysLedCtrl(kLedSes, led);
+ }
+ 
++/*
+ static void __init ses_board_init()
+ {
+     sesBtn_mapIntr(0);
+@@ -1896,6 +1908,7 @@
+     if(sesBtn_irq)
+         BcmHalInterruptDisable(sesBtn_irq);
+ }
++*/
+ #endif
+ 
+ /***************************************************************************

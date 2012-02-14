@@ -1,0 +1,14 @@
+Index: DSL-2760U/kernel/linux/net/netfilter/xt_connbytes.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/net/netfilter/xt_connbytes.c	2012-02-14 17:05:26.000000000 +0800
++++ DSL-2760U/kernel/linux/net/netfilter/xt_connbytes.c	2011-12-16 21:47:28.000000000 +0800
+@@ -25,7 +25,8 @@
+ MODULE_ALIAS("ipt_connbytes");
+ 
+ /* 64bit divisor, dividend and result. dynamic precision */
+-static u_int64_t div64_64(u_int64_t dividend, u_int64_t divisor)
++//static u_int64_t div64_64(u_int64_t dividend, u_int64_t divisor)
++u_int64_t div64_64(u_int64_t dividend, u_int64_t divisor)
+ {
+ 	u_int32_t d = divisor;
+ 

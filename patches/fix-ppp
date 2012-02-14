@@ -1,0 +1,122 @@
+Index: DSL-2760U/kernel/linux/drivers/net/ppp_generic.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/drivers/net/ppp_generic.c	2012-02-14 15:26:58.000000000 +0800
++++ DSL-2760U/kernel/linux/drivers/net/ppp_generic.c	2011-03-26 16:39:01.000000000 +0800
+@@ -2638,10 +2638,11 @@
+ 	struct net_device *dev = NULL;
+ 	int ret = -ENOMEM;
+ 	int i;
++/*
+ #if defined(CONFIG_MIPS_BRCM)
+ 	unsigned num[3]={0,0,0};
+ #endif
+-
++*/
+ 	ppp = kzalloc(sizeof(struct ppp), GFP_KERNEL);
+ 	if (!ppp)
+ 		goto out;
+@@ -2652,7 +2653,7 @@
+ 	ppp->mru = PPP_MRU;
+ /*Colin add.20091228*/	
+ #ifdef SUPPORT_PPTP_CLIENT
+-  ppp->mru_alloc = PPP_MRU;
++    ppp->mru_alloc = PPP_MRU;
+ #endif
+ 	init_ppp_file(&ppp->file, INTERFACE);
+ 	ppp->file.hdrlen = PPP_HDRLEN - 2;	/* don't count proto bytes */
+@@ -2683,51 +2684,51 @@
+ 	ppp->file.index = unit;
+ 
+ 
+-#if defined(CONFIG_MIPS_BRCM)
+-#ifdef SUPPORT_PPTP_CLIENT
+-   if (unit >= 0 && unit!=9)
+-#else
+-    if (unit >= 0)
+-#endif 
+-   {
+-      unsigned u=unit;
++/* #if defined(CONFIG_MIPS_BRCM) */
++/* #ifdef SUPPORT_PPTP_CLIENT */
++/*    if (unit >= 0 && unit!=9) */
++/* #else */
++/*     if (unit >= 0) */
++/* #endif  */
++/*    { */
++/*       unsigned u=unit; */
+       
+-     /* req_name will beused as ifname and  for
+-     * num[1] == 0:  default connection mdoe: ppp0, ppp1...
+-     * num[1] == 1:  vlanMux mode: ppp0.100, ppp1.200...  
+-     * num[1] == 2:  msc (multiple service mode) ppp0_1, ppp1_3...
+-     * num[1] == 3:  pppoa0, pppoa1...
+-     *
+-     */
+-      num[0] = u<<(32-(FIELD2+FIELD1+FIELD0))>>(32-FIELD0);
+-      num[1] = u<<(32-(FIELD2+FIELD1))>>(32-FIELD1);
+-      num[2] = u<<(32-(FIELD2))>>(32-FIELD2);
+-      if (num[1] == 0)
+-      {
+-         sprintf(dev->name, "ppp%d", num[0]);
+-      }
+-      else if (num[1] == 1) /* vlan mux */
+-      {
+-         sprintf(dev->name, "ppp%d.%d", num[0], num[2]);
+-      }
+-      else if (num[1] == 2) /* msc */
+-      {
+-         sprintf(dev->name, "ppp%d_%d", num[0], num[2]);
+-      }
+-      else if (num[1] == 3) /* pppoa */
+-      {
+-         sprintf(dev->name, "pppoa%d", num[0]);
+-      }
+-   }
+-#ifdef SUPPORT_PPTP_CLIENT
+-   else if (unit==9)
+-   {		      
+-     sprintf(dev->name, "ppp%d", unit);
+-   }
+-#endif
+-#else
+-   sprintf(dev->name, "ppp%d", unit);
+-#endif
++/*      /\* req_name will beused as ifname and  for */
++/*      * num[1] == 0:  default connection mdoe: ppp0, ppp1... */
++/*      * num[1] == 1:  vlanMux mode: ppp0.100, ppp1.200...   */
++/*      * num[1] == 2:  msc (multiple service mode) ppp0_1, ppp1_3... */
++/*      * num[1] == 3:  pppoa0, pppoa1... */
++/*      * */
++/*      *\/ */
++/*       num[0] = u<<(32-(FIELD2+FIELD1+FIELD0))>>(32-FIELD0); */
++/*       num[1] = u<<(32-(FIELD2+FIELD1))>>(32-FIELD1); */
++/*       num[2] = u<<(32-(FIELD2))>>(32-FIELD2); */
++/*       if (num[1] == 0) */
++/*       { */
++/*          sprintf(dev->name, "ppp%d", num[0]); */
++/*       } */
++/*       else if (num[1] == 1) /\* vlan mux *\/ */
++/*       { */
++/*          sprintf(dev->name, "ppp%d.%d", num[0], num[2]); */
++/*       } */
++/*       else if (num[1] == 2) /\* msc *\/ */
++/*       { */
++/*          sprintf(dev->name, "ppp%d_%d", num[0], num[2]); */
++/*       } */
++/*       else if (num[1] == 3) /\* pppoa *\/ */
++/*       { */
++/*          sprintf(dev->name, "pppoa%d", num[0]); */
++/*       } */
++/*    } */
++/* #ifdef SUPPORT_PPTP_CLIENT */
++/*    else if (unit==9) */
++/*    {		       */
++/*      sprintf(dev->name, "ppp%d", unit); */
++/*    } */
++/* #endif */
++/* #else */
++    sprintf(dev->name, "ppp%d", unit);
++/* #endif */
+ 
+ 	ret = register_netdev(dev);
+ 	if (ret != 0) {

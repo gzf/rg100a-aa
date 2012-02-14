@@ -1,0 +1,32 @@
+Index: DSL-2760U/kernel/linux/arch/mips/kernel/cpu-probe.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/arch/mips/kernel/cpu-probe.c	2012-02-14 16:01:32.000000000 +0800
++++ DSL-2760U/kernel/linux/arch/mips/kernel/cpu-probe.c	2011-06-30 21:00:27.000000000 +0800
+@@ -142,6 +142,11 @@
+ 	case CPU_34K:
+ 	case CPU_74K:
+  	case CPU_PR4450:
++    case CPU_BCM6338:
++    case CPU_BCM6348:
++    case CPU_BCM6358:
++    case CPU_BCM6368:
++    case CPU_BCM6816:
+ 		cpu_wait = r4k_wait;
+ 		break;
+ 	case CPU_TX49XX:
+@@ -176,6 +181,7 @@
+ }
+ 
+ /* for power management */
++/*
+ #if defined(CONFIG_MIPS_BRCM) 
+ static void set_cpu_r4k_wait(int enable)
+ {
+@@ -197,6 +203,7 @@
+ EXPORT_SYMBOL(set_cpu_r4k_wait);
+ EXPORT_SYMBOL(get_cpu_r4k_wait);
+ #endif 
++*/
+ 
+ void __init check_bugs32(void)
+ {

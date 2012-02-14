@@ -1,26 +1,26 @@
-Index: DSL-2760U/hostTools/Makefile
+Index: DSL2760/hostTools/Makefile
 ===================================================================
---- DSL-2760U.orig/hostTools/Makefile	2012-02-07 14:57:21.000000000 +0800
-+++ DSL-2760U/hostTools/Makefile	2012-02-07 15:32:21.000000000 +0800
+--- DSL2760.orig/hostTools/Makefile	2010-08-17 16:14:21.000000000 +0800
++++ DSL2760/hostTools/Makefile	2012-02-14 17:30:32.000000000 +0800
 @@ -1,6 +1,12 @@
  
  all:
-+	make -C lzma/7zip/Compress/LZMA_Alone/ -f makefile.gcc
-+	make -C lzma/7zip/Compress/LZMA_C/ -f makefile.gcc
++	make -C lzma/7zip/Compress/LZMA_Alone/ -f sqlzma.mk Sqlzma=../../../../squashfs
++	make -C lzma/7zip/Compress/LZMA_C/ -f sqlzma.mk Sqlzma=../../../../squashfs
 +	make -C squashfs Sqlzma=. LzmaAlone=../lzma/7zip/Compress/LZMA_Alone LzmaC=../lzma/7zip/Compress/LZMA_C
 +	cd fakeroot; ./configure; make
  
  clean:
 -
 -
-+	make -C lzma/7zip/Compress/LZMA_Alone/ -f makefile.gcc clean
-+	make -C lzma/7zip/Compress/LZMA_C/ -f makefile.gcc clean
++	make -C lzma/7zip/Compress/LZMA_Alone/ -f sqlzma.mk Sqlzma=../../../../squashfs clean
++	make -C lzma/7zip/Compress/LZMA_C/ -f sqlzma.mk Sqlzma=../../../../squashfs clean
 +	make -C squashfs Sqlzma=. LzmaAlone=../lzma/7zip/Compress/LZMA_Alone LzmaC=../lzma/7zip/Compress/LZMA_C clean
 +	[ ! -e fakeroot/Makefile ] || (make -C fakeroot clean)
-Index: DSL-2760U/hostTools/fakeroot/fakeroot
+Index: DSL2760/hostTools/fakeroot/fakeroot
 ===================================================================
---- DSL-2760U.orig/hostTools/fakeroot/fakeroot	2012-02-07 14:58:10.000000000 +0800
-+++ DSL-2760U/hostTools/fakeroot/fakeroot	2012-02-07 14:35:24.000000000 +0800
+--- DSL2760.orig/hostTools/fakeroot/fakeroot	2010-08-17 16:03:32.000000000 +0800
++++ DSL2760/hostTools/fakeroot/fakeroot	2012-02-14 17:15:56.000000000 +0800
 @@ -15,13 +15,12 @@
  }
  

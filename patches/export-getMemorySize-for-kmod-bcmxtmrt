@@ -1,0 +1,12 @@
+Index: DSL-2760U/kernel/linux/arch/mips/brcm-boards/bcm963xx/setup.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/arch/mips/brcm-boards/bcm963xx/setup.c	2012-02-14 15:45:15.000000000 +0800
++++ DSL-2760U/kernel/linux/arch/mips/brcm-boards/bcm963xx/setup.c	2011-12-16 21:47:28.000000000 +0800
+@@ -933,6 +933,7 @@
+ void *dsp_init;
+ EXPORT_SYMBOL(dsp_core);
+ EXPORT_SYMBOL(dsp_init);
++EXPORT_SYMBOL(getMemorySize);
+ void __init allocDspModBuffers(void);
+ /*
+ *****************************************************************************
