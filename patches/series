@@ -1,7 +1,6 @@
 hosttools_build
 export-getMemorySize-for-kmod-bcmxtmrt
 build-config-and-scripts
-backport-mtd-chips
 flash-map-driver
 vfs_path_lookup
 mini_fo
@@ -13,5 +12,6 @@ fix-xt_connbytes
 kobject_uevent
 disable-bcm-button-handler
 enable-wait-instruction
-m29-flash-support
+m29-backport-mtd-chips
+m29-cfiflash-workaround
 usb-3g-modem
