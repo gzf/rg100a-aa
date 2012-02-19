@@ -1,0 +1,131 @@
+>>>WPA2-PSK:
+wl channel 8
+wl wsec 4
+wl wpa_auth 128
+wl wsec_restrict 1
+wl eap 0
+wl ssid OpenWRT
+wl ap 1
+wl ap_isolate 0
+nas -P /var/run/nas.OpenWRT.pid -l br-lan -i wl0 -A -m 128 -w 4 -s OpenWRT -g 3600 -k password &
+wl up
+ifconfig wl0 up
+brctl addif br-lan wl0
+
+>>WEP-Open
+wl channel 8
+wl wsec 1
+wl auth 0
+wl addwep 0 test0
+wl wsec_restrict 1
+wl wpa_auth 0
+wl eap 0
+wl ssid OpenWRT
+wl ap 1
+wl ap_isolate 0
+wl up
+ifconfig wl0 up
+brctl addif br-lan wl0
+
+>>None
+wl channel 8
+wl wsec 0
+wl auth 0
+wl wsec_restrict 0
+wl wpa_auth 0
+wl eap 0
+wl ssid OpenWRT
+wl ap 1
+wl ap_isolate 0
+wl up
+ifconfig wl0 up
+brctl addif br-lan wl0
+
+>>Shutdown:
+for pid in `find /var/run -name "nas.*.pid"`; do
+    start-stop-daemon -K -s KILL -p $pid 1>&- 2>&-
+    rm -f $pid
+done
+brctl delif br-lan wl0
+ifconfig wl0 down
+wl down 
+
+=======================
+nas
+http://freewrt.org/trac/wiki/Documentation/Packages/broadcom-nas
+=======================
+
+This is a proprietary application from Broadcom, which is needed to
+provide WPA/WPA2 security on a Linux 2.4 system with broadcom-wl
+driver. The daemon is automatically started by fwifupdown, if security
+parameters are configured in /etc/network/interfaces as documented in
+the FreeWRT handbook.
+
+Usage: nas [options]
+        -l    LAN interface name (for network bridges)
+        -i    Wireless interface name 
+        -k    WPA share-key
+        -m    2 - WPA
+              4 - PSK
+              32 - 802.1X
+              64 - WPA2
+              66 - WPA WPA2
+              128 - PSK2
+              132 - PSK PSK2             
+        -g    WPA GTK rotation interval
+        -h    RADIUS server IP address
+        -r    RADIUS secret
+        -p    RADIUS server authentication UDP port
+        -s    SSID
+        -w    1 - WEP
+              2 - TKIP
+              4 - AES
+              6 - AES+TKIP
+        -P    nas pid file
+        -I    WEP key index
+        -K    WEP share key
+        -H    UDP port on which to listen to requests
+
+The -l <lan> option must be present first and then followed by -i <wl>
+... options for each wireless interface.  On "Supplicant"/"Client"
+side -l <lan> option can't be used.
+
+-S|-A = Authenticator (NAS) or Supplicant
+
+=======================
+wl
+http://www.dd-wrt.com/wiki/index.php/WL
+=======================
+wsec    wireless security bit vector
+        1 - WEP enabled
+        2 - TKIP enabled
+        4 - AES enabled
+        8 - WSEC in software
+        0x80 - FIPS enabled
+
+wpa_auth
+        Bitvector of WPA authorization modes:
+        1       WPA-NONE
+        2       WPA-802.1X/WPA-Professional
+        4       WPA-PSK/WPA-Personal
+        64      WPA2-802.1X/WPA2-Professional
+        128     WPA2-PSK/WPA2-Personal
+        0       disable WPA
+
+auth    set/get 802.11 authentication type. 0 = OpenSystem, 1= SharedKey
+
+wsec_restrict
+        Drop unencrypted packets if WSEC is enabled
+        0 - disable
+        1 - enable
+
+eap     restrict traffic to 802.1X packets until 802.1X authorization succeeds
+        0 - disable
+        1 - enable
+
+addwep  Set an encryption key.  The key must be 5, 13 or 16 bytes long, or
+        10, 26, 32, or 64 hex digits long.  The encryption algorithm is
+        automatically selected based on the key size. keytype is accepted
+        only when key length is 16 bytes/32 hex digits and specifies
+        whether AES-OCB or AES-CCM encryption is used. Default is ccm.
+        addwep <keyindex> <keydata> [ocb | ccm] [notx] [xx:xx:xx:xx:xx:xx]

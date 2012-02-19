@@ -30,10 +30,6 @@ opkg:
 	usb-modeswitch -> libusb
 	comgt -> chat
 
-wl power:
-	http://www.openwrt.org.cn/bbs/forum.php?mod=viewthread&tid=7264
-	http://www.dd-wrt.com/wiki/index.php/WL#txpwr
-
 multi-lun:
 	http://www.groupsrv.com/linux/about163562.html
 	http://www.cs.sfu.ca/~ggbaker/personal/cf-linux

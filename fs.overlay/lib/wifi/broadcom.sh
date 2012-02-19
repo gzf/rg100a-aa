@@ -35,14 +35,14 @@ disable_broadcom() {
 	true
 }
 
-
 enable_broadcom() {
     local device="$1"
-    local channel country macfilter maclist
+    local channel country macfilter maclist txpower
 
     config_get channel $device channel
     config_get country $device country
     config_get macfilter $device macfilter
+    config_get txpower $device txpower
 
     kill_nas
 
@@ -64,7 +64,11 @@ enable_broadcom() {
         config_get maclist $device maclist
         $WLCTL -i $device mac $maclist
     fi
-    
+
+    if [ -n "$txpower" ]; then
+        $WLCTL -i $device txpwr1 -o -d $txpower
+    fi
+
     config_get vifs $device vifs
     for vif in $vifs; do
         setup_iface $vif
@@ -77,95 +81,119 @@ enable_broadcom() {
     done
 }
 
-setup_iface() {    
-    local vif="$1"
+genwepkey() {
+    for keylen in 5 13 16; do
+        if [ ${#1} -eq $keylen ]; then
+            echo -n "$1" | hexdump -e "$keylen/1 \"%02x\""
+            return
+        fi
+    done
+    echo -n $1
+}
 
-	local wsec_r=0
-	local eap_r=0
-	local wsec=0
-	local auth=0
-	local nasopts=
+setup_iface() {
+    local vif="$1"
+    local ifname mode ssid
 
 	config_get ifname "$vif" device
-	config_get enc "$vif" encryption
-
-	case "$enc" in
-		*WEP*|*wep*)
-			wsec_r=1
-			wsec=1
-			defkey=1
-			config_get key "$vif" key
-			case "$enc" in
-				*shared*) $WLCTL -i $ifname wepauth 1;;
-				*) $WLCTL -i $ifname wepauth 0;;
-			esac
-			case "$key" in
-				[1234])
-					for knr in 1 2 3 4; do
-						config_get k "$vif" key$knr
-						[ -n "$k" ] || continue
-						$WLCTL -i $ifname addwep $knr $k
-					done
-					;;
-				"");;
-				*) $WLCTL -i $ifname addwep 1 $key;;
-			esac
-			;;
-		*psk*|*PSK*)
-			wsec_r=1
-			config_get key "$vif" key
-			case "$enc" in
-				wpa*+wpa2*|WPA*+WPA2*|*psk+*psk2|*PSK+*PSK2) auth=132; wsec=6;;
-				wpa2*|WPA2*|*PSK2|*psk2) auth=128; wsec=4;;
-				*aes|*AES) auth=4; wsec=4;;
-				*) auth=4; wsec=2;;
-			esac
-			nasopts="-k $key"
-			;;
-		*wpa*|*WPA*)
-			wsec_r=1
-			eap_r=1
-			config_get key "$vif" key
-			config_get server "$vif" server
-			config_get port "$vif" port
-			case "$enc" in
-				wpa*+wpa2*|WPA*+WPA2*) auth=66; wsec=6;;
-				wpa2*|WPA2*) auth=64; wsec=4;;
-				*) auth=2; wsec=2;;
-			esac
-			nasopts="-r $key -h $server -p ${port:-1812}"
-			;;
-	esac
-    $WLCTL -i $ifname wsec $wsec
-    $WLCTL -i $ifname wpa_auth $auth
-    $WLCTL -i $ifname wsec_restrict $wsec_r
-    $WLCTL -i $ifname eap_restrict $eap_r
+    config_get mode "$vif" mode
+    case $mode in
+        ap)
+            local isolate
+            config_get isolate "$vif" isolate
+            $WLCTL -i $ifname ap 1
+            $WLCTL -i $ifname ap_isolate ${isolate:-0}
+            ;;
+        *)
+            echo "wireless mode \`$mode\' not supported yet."
+            return 1
+            ;;
+    esac
 
     config_get ssid "$vif" ssid
-    config_get mode "$vif" mode
-
     $WLCTL -i $ifname ssid $ssid
-    [ $mode = ap ] && {
-        local isolate
-        config_get isolate "$vif" isolate
-        $WLCTL -i $ifname ap 1
-        $WLCTL -i $ifname ap_isolate ${isolate:-0}
-    }
-	[ $mode = monitor ] && {
-		$WLCTL -i $ifname monitor $monitor
-		$WLCTL -i $ifname passive $passive
-	}
+
+    local wsec=0 auth=0 wpa=0 ciphers=0 eap=0 enc key nasopts
+	config_get enc "$vif" encryption
+	config_get key "$vif" key
+
+    case "$enc" in
+        psk2*)
+            wpa=128; ciphers=4;;
+        wpa2*)
+            wpa=64;  ciphers=4;;
+        psk*)
+            wpa=4;   ciphers=2;;
+        wpa*)
+            wpa=2;   ciphers=2;;
+        mixed-psk*)
+            wpa=132; ciphers=6;;
+        mixed-wpa*)
+            wpa=66;  ciphers=6;;
+        wep*)
+            wsec=1
+            if [ "$enc" = wep+shared ]; then
+                auth=1
+            fi
+            if [ -z "$key" ]; then
+                for index in 1 2 3 4; do
+				    config_get key "$vif" key$index
+				    [ -n "$key" ] || continue
+				    $WLCTL -i $ifname addwep $((index - 1)) `genwepkey $key`
+                done
+            else
+                if [ "$key" -ge 1 ] &> /dev/null && [ "$key" -le 4 ] &> /dev/null; then
+	                config_get key "$vif" key$key
+                fi
+			    $WLCTL -i $ifname addwep 0 `genwepkey $key`
+            fi
+            ;;
+        none)
+            ;;
+        *)
+            echo "unknown encryption method: $enc"
+            return 2
+    esac
+
+    case "$enc" in
+        *+tkip*) wsec=$(($wsec + 2))
+    esac
+    case "$enc" in
+        *+ccmp*|*+aes*) wsec=$(($wsec + 4))
+    esac
+    # if no +tkip or +ccmp specified, then using the default ciphers
+    if [ $wpa -ne 0 ] && [ $wsec -eq 0 ]; then
+        wsec=$ciphers
+    fi
+
+    case "$enc" in
+        *psk*)
+            nasopts="-k $key";;
+        *wpa*)
+            eap=1
+            local server port
+	        config_get server "$vif" server
+	        config_get port "$vif" port
+	        nasopts="-r $key -h $server -p ${port:-1812}"
+    esac
+
+    $WLCTL -i $ifname wsec $wsec
+    $WLCTL -i $ifname auth $auth
+    $WLCTL -i $ifname wpa_auth $wpa
+    if [ $wsec -ne 0 ]; then
+        $WLCTL -i $ifname wsec_restrict 1
+    else
+        $WLCTL -i $ifname wsec_restrict 0
+    fi
+    $WLCTL -i $ifname eap $eap
 
 	[ -z "$nasopts" ] || {
-		local nas_mode="-A"
-		[ $mode = sta ] && nas_mode="-S"
-
 	    local netcfg bridge
         netcfg="$(find_net_config "$vif")"
 	    bridge="$(bridge_interface "$netcfg")"
 
 		nas -P /var/run/nas.$ssid.pid ${bridge:+ -l $bridge} -i $ifname \
-            $nas_mode -m $auth -w $wsec -s $ssid -g 3600 $nasopts &
+            -A -m $wpa -w $wsec -s $ssid -g 3600 $nasopts &
 	}
 }
 
@@ -197,9 +225,9 @@ config wifi-device  wl${i}
 
 config wifi-iface
     option device      wl${i}
-    option network	   lan
+    option network     lan
     option mode        ap
-    option ssid        OpenWrt${i#0}
+    option ssid        OpenWrt${i}
     option encryption  psk2
     option key         secret-key
 EOF

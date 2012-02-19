@@ -1,3 +1,9 @@
+2012-02-19:
+	* support new wireless encryption modes: psk/wep
+
+2012-02-01:
+	* upgrade to backfire 10.03.1
+
 2011-11-22:
 	* add ext2 for flash drives
 
