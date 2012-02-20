@@ -81,16 +81,6 @@ enable_broadcom() {
     done
 }
 
-genwepkey() {
-    for keylen in 5 13 16; do
-        if [ ${#1} -eq $keylen ]; then
-            echo -n "$1" | hexdump -e "$keylen/1 \"%02x\""
-            return
-        fi
-    done
-    echo -n $1
-}
-
 setup_iface() {
     local vif="$1"
     local ifname mode ssid
@@ -139,13 +129,13 @@ setup_iface() {
                 for index in 1 2 3 4; do
 				    config_get key "$vif" key$index
 				    [ -n "$key" ] || continue
-				    $WLCTL -i $ifname addwep $((index - 1)) `genwepkey $key`
+				    $WLCTL -i $ifname addwep $((index - 1)) $key
                 done
             else
                 if [ "$key" -ge 1 ] &> /dev/null && [ "$key" -le 4 ] &> /dev/null; then
 	                config_get key "$vif" key$key
                 fi
-			    $WLCTL -i $ifname addwep 0 `genwepkey $key`
+			    $WLCTL -i $ifname addwep 0 $key
             fi
             ;;
         none)
