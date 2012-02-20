@@ -1,5 +1,9 @@
+2012-02-20:
+	* remove ez-ipupdate in base system
+	* make ez-ipupdate of 3322 a package
+
 2012-02-19:
-	* support new wireless encryption modes: psk/wep
+	* support new wireless encryption modes: psk/wep/none
 
 2012-02-01:
 	* upgrade to backfire 10.03.1

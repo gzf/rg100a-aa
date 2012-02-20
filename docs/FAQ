@@ -97,7 +97,7 @@ A. 目前固件的无线配置脚本仅支持以下配置项：
 	isolate
     txpower
 	mode (仅支持ap)
-	encryption （支持psk2,psk,wep）
+	encryption （支持psk2,psk,wep,none）
    如果需要其它配置项，请根据wl命令的帮助信息自行修改/lib/wifi/broadcom.sh。
 
 Q. 如何配置VLAN？
