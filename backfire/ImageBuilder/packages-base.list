@@ -28,7 +28,9 @@ vim
 kmod-switch
 kmod-nls-utf8
 kmod-fs-vfat
+kmod-fs-ext2
 kmod-fs-ext3
+kmod-fs-autofs4
 kmod-fuse
 kmod-ipip
 kmod-gre

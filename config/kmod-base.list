@@ -18,6 +18,7 @@ kernel/drivers/usb/serial/usbserial.ko
 kernel/drivers/usb/storage/usb-storage.ko
 kernel/drivers/usb/class/usblp.ko
 kernel/fs/mbcache.ko
+kernel/fs/autofs4/autofs4.ko
 kernel/fs/ext2/ext2.ko
 kernel/fs/ext3/ext3.ko
 kernel/fs/fuse/fuse.ko

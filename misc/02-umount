@@ -1,0 +1,11 @@
+D_BTN=BTN_36
+
+if [ $BUTTON = $D_BTN ]; then
+	if [ $ACTION = pressed ] && [ $SEEN -eq 0 ] && ! grep -q /home /proc/mounts; then
+	    /etc/init.d/fstab start
+	    mount /home
+    fi
+	if [ $ACTION = pressed ] && [ $SEEN -eq 3 ] && grep -q /home /proc/mounts; then
+	    umount /home
+    fi
+fi
