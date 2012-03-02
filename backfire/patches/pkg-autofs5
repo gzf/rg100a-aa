@@ -2,7 +2,7 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/Makefile
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,52 @@
 +# 
 +# Copyright (C) 2006-2010 OpenWrt.org
 +#
@@ -44,10 +44,14 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +	$(INSTALL_DIR) $(1)/usr/lib/autofs
 +	$(CP) $(PKG_INSTALL_DIR)/usr/lib/autofs/*.so $(1)/usr/lib/autofs
 +	$(INSTALL_DIR) $(1)/etc/config
-+	$(INSTALL_CONF) ./files/autofs.conf $(1)/etc/config/autofs
++	$(INSTALL_DATA) ./files/autofs.conf $(1)/etc/config/autofs
 +	$(INSTALL_DIR) $(1)/etc/init.d
 +	$(INSTALL_BIN) ./files/autofs.init $(1)/etc/init.d/autofs
-+	ln -sf /tmp/auto.master /tmp/auto.direct $(1)/etc/
++	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
++	$(INSTALL_DATA) ./files/50-autofs $(1)/etc/hotplug.d/block
++	$(INSTALL_DIR) $(1)/lib/functions/autofs
++	$(INSTALL_BIN) ./files/direct.fstab $(1)/lib/functions/autofs
++	ln -sf /tmp/auto.master $(1)/etc/
 +endef
 +
 +$(eval $(call BuildPackage,autofs5))
@@ -7256,7 +7260,7 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/files/autofs.init
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,82 @@
 +#!/bin/sh /etc/rc.common
 +#
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
@@ -7264,5 +7268,164 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 +# License: GPL
 +
 +START=21
++STOP=98
 +
++MASTER_FILE=/tmp/auto.master
++AUTOMOUNT_PIDFILE=/tmp/automount.pid
++AUTOMOUNT_OPTS=
 +
++is_running() {
++    ps -A | grep -q automount
++    return $?
++}
++
++create_map_entry() {
++    local cfg="$1"
++    local entry type maptype mountpoint map timeout
++
++    config_get type "$cfg" type
++    case "$type" in
++        direct)
++            mountpoint=/-
++            ;;
++        indirect)
++            config_get mountpoint "$cfg" mountpoint
++            ;;
++        *)
++            logger -t "autofs" "unknown map type: $type"
++            return
++    esac
++
++    config_get maptype "$cfg" maptype
++    config_get map "$cfg" map
++
++    entry="$mountpoint\t\t$maptype:$map"
++
++    config_get timeout "$cfg" timeout
++    if [ -n "$timeout" ]; then
++        entry="$entry\t\t-DTIMEOUT=$timeout"
++    fi
++
++    echo -e $entry >> $MASTER_FILE
++}
++
++automount_options() {
++    local cfg="$1"
++    local timeout
++
++    config_get timeout "$cfg" timeout
++    if [ -n "$timeout" ]; then
++        AUTOMOUNT_OPTS="$AUTOMOUNT_OPTS -t $timeout"
++    fi
++}
++
++start() {
++    if is_running; then
++        logger -t "autofs" "automount is already running"
++        return
++    fi
++
++    . /etc/functions.sh
++
++    config_load autofs
++    echo "# Auto generated map entries, please modify /etc/config/autofs." > $MASTER_FILE
++    config_foreach create_map_entry mapentry
++    config_foreach automount_options automount
++    automount -p $AUTOMOUNT_PIDFILE $AUTOMOUNT_OPTS
++}
++
++stop() {
++    killall -TERM automount
++    rm -f $AUTOMOUNT_PIDFILE
++    echo "# Autofs is stopped" > $MASTER_FILE
++}
++
++restart() {
++    killall -HUP automount
++}
+Index: backfire/feeds/packages/utils/autofs/files/50-autofs
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/files/50-autofs
+@@ -0,0 +1,9 @@
++#!/bin/sh
++# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
++# Date: 2012/03
++# License: GPL
++
++blkdev=`dirname $DEVPATH`
++if [ `basename $blkdev` != "block" ]; then
++    killall -HUP automount
++fi
+Index: backfire/feeds/packages/utils/autofs/files/autofs.conf
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/files/autofs.conf
+@@ -0,0 +1,13 @@
++config automount
++       option timeout   60
++
++config mapentry
++       option type      direct
++       option maptype   program
++       option map       /lib/functions/autofs/direct.fstab
++
++#config mapentry
++#       option type         indirect
++#       option mountpoint   /home
++#       option maptype      file
++#       option map          /etc/auto.home
+Index: backfire/feeds/packages/utils/autofs/files/direct.fstab
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/files/direct.fstab
+@@ -0,0 +1,49 @@
++#!/bin/sh
++# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
++# Date: 2012/03
++# License: GPL
++
++. /etc/functions.sh
++
++direct_mount() {
++    local cfg="$1"
++    local is_rootfs target uuid device label fstype options enabled
++
++    # ignore rootfs targets
++    config_get_bool is_rootfs "$cfg" is_rootfs 0
++    if [ "is_rootfs" = 1 ]; then
++        return
++    fi
++    config_get target "$cfg" target
++    if [ -z "$target" ] || [ "$target" = / ] || [ "$target" = /overlay ]; then
++        return
++    fi
++    # ignore enabled mount entries
++    config_get_bool enabled "$cfg" enabled 1
++    if [ "$enabled" = 1 ]; then
++        return
++    fi
++
++    config_get device "$cfg" device
++    config_get label "$cfg" label
++    config_get uuid "$cfg" uuid
++    if [ -n "$uuid" ] && blkid | grep -q UUID=\"$uuid\"; then
++        device="UUID=$uuid"
++    elif [ -n "$label" ] && blkid | grep -q LABEL=\"$label\"; then
++        device="LABEL=$label"
++    elif [ -z "$device" ] || ! blkid | grep -q ^$device; then
++        return
++    fi
++
++    config_get fstype "$cfg" fstype "auto"
++    config_get options "$cfg" options
++    if [ -z "$options" ]; then
++        options="-fstype=$fstype"
++    else
++        options="-fstype=$fstype,$options"
++    fi
++    echo -e "$target\t\t$options\t\t:$device"
++}
++
++config_load fstab
++config_foreach direct_mount mount
