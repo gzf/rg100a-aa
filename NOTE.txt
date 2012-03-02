@@ -1,7 +1,7 @@
 TODO:
  1.0:
-	wireless sta mode
     backport bcm63xx_enet
+	fix usb-storage/scsi
 	gpioctl/userspace led
     imq/connlimit testing
 	xt_ipp2p/ipt_ipp2p
@@ -19,6 +19,8 @@ maximum firmware size: 4063232 / 0x3E0000
 openwrt compile single package:
         make package/pkg/compile
         make package/pkg/install
+
+E261: 12d1:1446 -> 12d1:1436
 
 userspace packages:
 base:

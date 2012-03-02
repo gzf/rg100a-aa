@@ -1,0 +1,48 @@
+Index: DSL-2760U/kernel/linux/drivers/scsi/sd.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/drivers/scsi/sd.c
++++ DSL-2760U/kernel/linux/drivers/scsi/sd.c
+@@ -1025,7 +1025,7 @@
+  * spinup disk - called only in sd_revalidate_disk()
+  */
+ static void
+-sd_spinup_disk(struct scsi_disk *sdkp, char *diskname)
++sd_spinup_disk(struct scsi_disk *sdkp, char* diskname)
+ {
+ 	unsigned char cmd[10];
+ 	unsigned long spintime_expire = 0;
+@@ -1078,23 +1078,19 @@
+ 		/*
+ 		 * The device does not want the automatic start to be issued.
+ 		 */
+-		if (sdkp->device->no_start_on_add) {
++		if (sdkp->device->no_start_on_add)
+ 			break;
+-		}
+-
+-		/*
+-		 * If manual intervention is required, or this is an
+-		 * absent USB storage device, a spinup is meaningless.
+-		 */
+-		if (sense_valid &&
+-		    sshdr.sense_key == NOT_READY &&
+-		    sshdr.asc == 4 && sshdr.ascq == 3) {
+-			break;		/* manual intervention required */
+ 
+-		/*
+-		 * Issue command to spin up drive when not ready
+-		 */
+-		} else if (sense_valid && sshdr.sense_key == NOT_READY) {
++		if (sense_valid && sshdr.sense_key == NOT_READY) {
++			if (sshdr.asc == 4 && sshdr.ascq == 3)
++				break;	/* manual intervention required */
++			if (sshdr.asc == 4 && sshdr.ascq == 0xb)
++				break;	/* standby */
++			if (sshdr.asc == 4 && sshdr.ascq == 0xc)
++				break;	/* unavailable */
++			/*
++			 * Issue command to spin up drive when not ready
++			 */
+ 			if (!spintime) {
+ 				printk(KERN_NOTICE "%s: Spinning up disk...",
+ 				       diskname);

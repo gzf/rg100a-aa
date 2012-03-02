@@ -16,3 +16,4 @@ m29-backport-mtd-chips
 m29-cfiflash-workaround
 usb-3g-modem
 autofs4-v5-update
+update-scsi-spinup-disk

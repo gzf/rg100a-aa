@@ -2,7 +2,7 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/Makefile
-@@ -0,0 +1,45 @@
+@@ -0,0 +1,48 @@
 +# 
 +# Copyright (C) 2006-2010 OpenWrt.org
 +#
@@ -31,20 +31,23 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +  TITLE:=Autofs Userspace Daemon
 +  MAINTAINER:=Zhifeng Gu <guzhifeng1979@hotmail.com>
 +  URL:=http://www.kernel.org/pub/linux/daemons/autofs/
-+  DEPENDS+= +kmod-fs-autofs4
++  DEPENDS+= +kmod-fs-autofs4 +libpthread
 +endef
 +
-+# uses GNU configure
++define Package/autofs5/conffiles
++/etc/config/autofs
++endef
 +
 +define Package/autofs5/install
 +	$(INSTALL_DIR) $(1)/usr/sbin
 +	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/automount $(1)/usr/sbin/
 +	$(INSTALL_DIR) $(1)/usr/lib/autofs
 +	$(CP) $(PKG_INSTALL_DIR)/usr/lib/autofs/*.so $(1)/usr/lib/autofs
-+#	$(INSTALL_DIR) $(1)/etc/config/
-+#	$(INSTALL_CONF) ./files/ez-ipupdate.config $(1)/etc/config/ddns
-+#	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
-+#	$(INSTALL_BIN) ./files/ez-ipupdate.hotplug $(1)/etc/hotplug.d/iface/30-ez-ipupdate
++	$(INSTALL_DIR) $(1)/etc/config
++	$(INSTALL_CONF) ./files/autofs.conf $(1)/etc/config/autofs
++	$(INSTALL_DIR) $(1)/etc/init.d
++	$(INSTALL_BIN) ./files/autofs.init $(1)/etc/init.d/autofs
++	ln -sf /tmp/auto.master /tmp/auto.direct $(1)/etc/
 +endef
 +
 +$(eval $(call BuildPackage,autofs5))
@@ -7098,22 +7101,6 @@ Index: backfire/feeds/packages/utils/autofs/patches/200-fix-configure-not-run-wh
 + 	      [gcc_supports_pie=yes], [gcc_supports_pie=no])
 + AC_MSG_RESULT([$gcc_supports_pie])
 + if test $gcc_supports_pie = yes ; then
-Index: backfire/feeds/packages/utils/autofs/patches/201-nfs-header-workaround-for-uclibc
-===================================================================
---- /dev/null
-+++ backfire/feeds/packages/utils/autofs/patches/201-nfs-header-workaround-for-uclibc
-@@ -0,0 +1,11 @@
-+--- a/include/rpc_subs.h	2011-06-28 15:34:35.000000000 +0800
-++++ b/include/rpc_subs.h	2012-02-28 15:42:51.000000000 +0800
-+@@ -18,7 +18,7 @@
-+ 
-+ #include <rpc/rpc.h>
-+ #include <rpc/pmap_prot.h>
-+-#include <nfs/nfs.h>
-++#include <linux/nfs.h>
-+ #include <linux/nfs2.h>
-+ #include <linux/nfs3.h>
-+ 
 Index: backfire/feeds/packages/utils/autofs/patches/202-disable-yp-lookup
 ===================================================================
 --- /dev/null
@@ -7204,11 +7191,40 @@ Index: backfire/feeds/packages/utils/autofs/patches/203-disable-ldap-code-in-def
 + 
 + unsigned int defaults_get_mount_nfs_default_proto(void)
 + {
-Index: backfire/feeds/packages/utils/autofs/patches/204-backward-compatibility
+Index: backfire/feeds/packages/utils/autofs/patches/205-fix-install-symlinks
 ===================================================================
 --- /dev/null
-+++ backfire/feeds/packages/utils/autofs/patches/204-backward-compatibility
-@@ -0,0 +1,27 @@
++++ backfire/feeds/packages/utils/autofs/patches/205-fix-install-symlinks
+@@ -0,0 +1,13 @@
++--- a/modules/Makefile	2012-02-28 21:54:53.000000000 +0800
+++++ b/modules/Makefile	2012-02-28 22:04:49.000000000 +0800
++@@ -68,8 +68,9 @@
++ 	install -c $(MODS) -m 755 $(INSTALLROOT)$(autofslibdir)
++ 	-rm -f $(INSTALLROOT)$(autofslibdir)/mount_smbfs.so
++ 	ln -fs lookup_file.so $(INSTALLROOT)$(autofslibdir)/lookup_files.so
++-	ln -fs lookup_yp.so $(INSTALLROOT)$(autofslibdir)/lookup_nis.so
+++ifeq ($(LDAP), 1)
++ 	ln -fs lookup_ldap.so $(INSTALLROOT)$(autofslibdir)/lookup_ldaps.so
+++endif
++ 	ln -fs mount_nfs.so $(INSTALLROOT)$(autofslibdir)/mount_nfs4.so
++ ifeq ($(EXT2FS), 1)
++  ifeq ($(EXT3FS), 1)
+Index: backfire/feeds/packages/utils/autofs/patches/201-uclibc-compat
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/patches/201-uclibc-compat
+@@ -0,0 +1,38 @@
++--- a/include/rpc_subs.h	2011-06-28 15:34:35.000000000 +0800
+++++ b/include/rpc_subs.h	2012-02-28 15:42:51.000000000 +0800
++@@ -18,7 +18,7 @@
++ 
++ #include <rpc/rpc.h>
++ #include <rpc/pmap_prot.h>
++-#include <nfs/nfs.h>
+++#include <linux/nfs.h>
++ #include <linux/nfs2.h>
++ #include <linux/nfs3.h>
++ 
 +--- a/modules/lookup_dir.c	2012-02-28 17:08:29.000000000 +0800
 ++++ b/modules/lookup_dir.c	2012-02-28 16:56:54.000000000 +0800
 +@@ -39,6 +39,13 @@
@@ -7236,21 +7252,17 @@ Index: backfire/feeds/packages/utils/autofs/patches/204-backward-compatibility
 + 				rr6++;
 + 		}
 + 		this = this->ai_next;
-Index: backfire/feeds/packages/utils/autofs/patches/205-fix-install-symlinks
+Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 ===================================================================
 --- /dev/null
-+++ backfire/feeds/packages/utils/autofs/patches/205-fix-install-symlinks
-@@ -0,0 +1,13 @@
-+--- a/modules/Makefile	2012-02-28 21:54:53.000000000 +0800
-++++ b/modules/Makefile	2012-02-28 22:04:49.000000000 +0800
-+@@ -68,8 +68,9 @@
-+ 	install -c $(MODS) -m 755 $(INSTALLROOT)$(autofslibdir)
-+ 	-rm -f $(INSTALLROOT)$(autofslibdir)/mount_smbfs.so
-+ 	ln -fs lookup_file.so $(INSTALLROOT)$(autofslibdir)/lookup_files.so
-+-	ln -fs lookup_yp.so $(INSTALLROOT)$(autofslibdir)/lookup_nis.so
-++ifeq ($(LDAP), 1)
-+ 	ln -fs lookup_ldap.so $(INSTALLROOT)$(autofslibdir)/lookup_ldaps.so
-++endif
-+ 	ln -fs mount_nfs.so $(INSTALLROOT)$(autofslibdir)/mount_nfs4.so
-+ ifeq ($(EXT2FS), 1)
-+  ifeq ($(EXT3FS), 1)
++++ backfire/feeds/packages/utils/autofs/files/autofs.init
+@@ -0,0 +1,9 @@
++#!/bin/sh /etc/rc.common
++#
++# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
++# Date: 2012/03
++# License: GPL
++
++START=21
++
++

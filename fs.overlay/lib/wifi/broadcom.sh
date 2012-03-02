@@ -83,26 +83,32 @@ enable_broadcom() {
 
 setup_iface() {
     local vif="$1"
-    local ifname mode ssid
+    local ifname mode ssid bssid isolate
 
-	config_get ifname "$vif" device
-    config_get mode "$vif" mode
+    config_get ifname "$vif" device
+    config_get mode "$vif" mode "ap"
     case $mode in
         ap)
-            local isolate
-            config_get isolate "$vif" isolate
+            config_get isolate "$vif" isolate "0"
+            config_get ssid "$vif" ssid
             $WLCTL -i $ifname ap 1
-            $WLCTL -i $ifname ap_isolate ${isolate:-0}
+            $WLCTL -i $ifname ap_isolate $isolate
+            $WLCTL -i $ifname ssid $ssid
+            ;;
+        wds)
+            config_get bssid "$vif" bssid
+            $WLCTL -i $ifname wds $bssid
+            return
             ;;
         *)
             echo "wireless mode \`$mode\' not supported yet."
             return 1
             ;;
     esac
-
-    config_get ssid "$vif" ssid
-    $WLCTL -i $ifname ssid $ssid
-
+    
+    #
+    # Next: deal with security
+    #
     local wsec=0 auth=0 wpa=0 ciphers=0 eap=0 enc key nasopts
 	config_get enc "$vif" encryption
 	config_get key "$vif" key

@@ -1,8 +1,8 @@
 Index: backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ backfire/feeds/packages/net/ez-ipupdate-3322/Makefile	2012-02-20 10:50:35.000000000 +0800
-@@ -0,0 +1,48 @@
+--- /dev/null
++++ backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
+@@ -0,0 +1,46 @@
 +# 
 +# Copyright (C) 2006-2010 OpenWrt.org
 +#
@@ -14,7 +14,7 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
 +
 +PKG_NAME:=ez-ipupdate-3322
 +PKG_VERSION:=3.0.10
-+PKG_RELEASE:=1
++PKG_RELEASE:=2
 +
 +PKG_SOURCE:=ez-ipupdate-$(PKG_VERSION).tgz
 +PKG_SOURCE_URL:=http://www.3322.net/download
@@ -31,14 +31,12 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
 +  MAINTAINER:=Zhifeng Gu <guzhifeng1979@hotmail.com>
 +endef
 +
-+# uses GNU configure
-+
 +define Build/Prepare
 +	gzip -dc $(DL_DIR)/$(PKG_SOURCE) | tar -C $(PKG_BUILD_DIR) -x --strip-components=1
 +endef
 +
-+define Build/Compile
-+	$(MAKE) -C $(PKG_BUILD_DIR)
++define Package/ez-ipupdate-3322/conffiles
++/etc/config/ddns
 +endef
 +
 +define Package/ez-ipupdate-3322/install
@@ -53,8 +51,8 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
 +$(eval $(call BuildPackage,ez-ipupdate-3322))
 Index: backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.config
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.config	2011-08-09 15:23:12.000000000 +0800
+--- /dev/null
++++ backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.config
 @@ -0,0 +1,14 @@
 +
 +config ddns
@@ -72,8 +70,8 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.config
 +#       option config /etc/ez-ipupdate.conf
 Index: backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.hotplug
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.hotplug	2011-08-09 15:23:12.000000000 +0800
+--- /dev/null
++++ backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.hotplug
 @@ -0,0 +1,83 @@
 +NAME=ez-ipupdate
 +COMMAND=/usr/sbin/$NAME
@@ -160,8 +158,8 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.hotplug
 +esac
 Index: backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.init
 ===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.init	2011-08-09 15:23:12.000000000 +0800
+--- /dev/null
++++ backfire/feeds/packages/net/ez-ipupdate-3322/files/ez-ipupdate.init
 @@ -0,0 +1,18 @@
 +#!/bin/sh /etc/rc.common
 +# Copyright (C) 2006 OpenWrt.org

@@ -1,7 +1,7 @@
-Index: package/base-files/files/sbin/wifi
+Index: backfire/package/base-files/files/sbin/wifi
 ===================================================================
---- package/base-files/files/sbin/wifi.orig	2012-02-03 12:37:59.000000000 +0800
-+++ package/base-files/files/sbin/wifi	2012-02-03 15:59:56.000000000 +0800
+--- backfire.orig/package/base-files/files/sbin/wifi
++++ backfire/package/base-files/files/sbin/wifi
 @@ -89,11 +89,16 @@
  		scan_wifi
  	}

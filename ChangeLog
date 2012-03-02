@@ -1,3 +1,8 @@
+2012-03-02:
+	* backport sd_spinup_disk
+	* fix package config and verions
+	* enable eds
+
 2012-02-20:
 	* remove ez-ipupdate in base system
 	* make ez-ipupdate of 3322 a package
