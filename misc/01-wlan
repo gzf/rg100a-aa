@@ -1,0 +1,12 @@
+#!/bin/sh
+
+WLAN=BTN_33
+
+if [ $BUTTON = $WLAN ] && [ $ACTION = released ]; then
+    if [ `wl isup` = 0 ]; then
+        wifi -f up
+    else
+        wifi down
+    fi
+fi
+

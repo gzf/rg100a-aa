@@ -1,6 +1,7 @@
 merge-block-mount-on-trunk
 block-mount-local-update
 wifi-force-option
+fix-warning-when-including-empty-directory
 vim-utf8-more-features
 pkg-ez-ipupdate-3322
 pkg-autofs5

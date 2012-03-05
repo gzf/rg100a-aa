@@ -1,7 +1,10 @@
+2012-03-04:
+	* add delay_use option of usb-storage
+
 2012-03-02:
 	* backport sd_spinup_disk
 	* fix package config and verions
-	* enable eds
+	* enable wds
 
 2012-02-20:
 	* remove ez-ipupdate in base system

@@ -4,3 +4,7 @@ firewall
 luci
 ntfs-3g
 samba3
+comgt
+usb-modeswitch
+usb-modeswitch-data
+e2fsprogs

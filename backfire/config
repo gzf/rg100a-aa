@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # OpenWrt version: Backfire (r29638)
-# Tue Feb 28 13:36:22 2012
+# Sat Mar  3 16:50:34 2012
 #
 CONFIG_HAVE_DOT_CONFIG=y
 # CONFIG_TARGET_ppc40x is not set
@@ -2245,7 +2245,7 @@ CONFIG_PACKAGE_uhttpd=m
 # CONFIG_PACKAGE_bwm is not set
 # CONFIG_PACKAGE_bwping is not set
 # CONFIG_PACKAGE_cdp-tools is not set
-# CONFIG_PACKAGE_chat is not set
+CONFIG_PACKAGE_chat=m
 # CONFIG_PACKAGE_crda is not set
 # CONFIG_PACKAGE_cups is not set
 # CONFIG_PACKAGE_cutter is not set
@@ -2436,7 +2436,7 @@ CONFIG_PACKAGE_wol=m
 # Filesystem
 #
 CONFIG_PACKAGE_libblkid=m
-# CONFIG_PACKAGE_libext2fs is not set
+CONFIG_PACKAGE_libext2fs=m
 CONFIG_PACKAGE_libfuse=m
 # CONFIG_PACKAGE_libnfsidmap is not set
 # CONFIG_PACKAGE_libow is not set
@@ -2563,11 +2563,11 @@ CONFIG_PACKAGE_libopenssl=m
 # CONFIG_PACKAGE_libfreetype is not set
 # CONFIG_PACKAGE_libftdi is not set
 # CONFIG_PACKAGE_libgconf2 is not set
-# CONFIG_PACKAGE_libgcrypt is not set
+CONFIG_PACKAGE_libgcrypt=m
 # CONFIG_PACKAGE_libgd is not set
 # CONFIG_PACKAGE_libgdbm is not set
 # CONFIG_PACKAGE_libgmp is not set
-# CONFIG_PACKAGE_libgpg-error is not set
+CONFIG_PACKAGE_libgpg-error=m
 # CONFIG_PACKAGE_libgphoto2 is not set
 # CONFIG_PACKAGE_libgsl is not set
 # CONFIG_PACKAGE_libgsm is not set
@@ -2677,7 +2677,7 @@ CONFIG_PACKAGE_libuci=m
 CONFIG_PACKAGE_libuci-lua=m
 # CONFIG_PACKAGE_libucl is not set
 # CONFIG_PACKAGE_libupnp is not set
-# CONFIG_PACKAGE_libusb is not set
+CONFIG_PACKAGE_libusb=m
 # CONFIG_PACKAGE_libusb-1.0 is not set
 # CONFIG_PACKAGE_libv4l is not set
 # CONFIG_PACKAGE_libvncserver is not set
@@ -2896,9 +2896,9 @@ CONFIG_PACKAGE_autofs5=m
 # CONFIG_PACKAGE_btrfs-progs is not set
 # CONFIG_PACKAGE_cifsmount is not set
 # CONFIG_PACKAGE_disktype is not set
-# CONFIG_PACKAGE_dosfsck is not set
+CONFIG_PACKAGE_dosfsck=m
 # CONFIG_PACKAGE_dosfslabel is not set
-# CONFIG_PACKAGE_e2fsprogs is not set
+CONFIG_PACKAGE_e2fsprogs=m
 # CONFIG_PACKAGE_fuse-utils is not set
 # CONFIG_PACKAGE_gadgetfs-test-bulk is not set
 # CONFIG_PACKAGE_gadgetfs-test-isoc is not set
@@ -2907,9 +2907,9 @@ CONFIG_PACKAGE_autofs5=m
 CONFIG_PACKAGE_ntfs-3g=m
 CONFIG_PACKAGE_NTFS-3G_USE_LIBFUSE=y
 # CONFIG_PACKAGE_ntfs-3g-low is not set
-# CONFIG_PACKAGE_ntfs-3g-utils is not set
+CONFIG_PACKAGE_ntfs-3g-utils=m
 # CONFIG_PACKAGE_ntfsprogs is not set
-# CONFIG_PACKAGE_ntfsprogs_ntfs-3g is not set
+CONFIG_PACKAGE_ntfsprogs_ntfs-3g=m
 # CONFIG_PACKAGE_owfs is not set
 # CONFIG_PACKAGE_owshell is not set
 # CONFIG_PACKAGE_reiserfsprogs is not set
@@ -2999,7 +2999,7 @@ CONFIG_PACKAGE_setterm=m
 # CONFIG_PACKAGE_cksfv is not set
 # CONFIG_PACKAGE_cmdpad is not set
 # CONFIG_PACKAGE_collectd is not set
-# CONFIG_PACKAGE_comgt is not set
+CONFIG_PACKAGE_comgt=m
 # CONFIG_PACKAGE_coreutils is not set
 # CONFIG_PACKAGE_cpusage is not set
 # CONFIG_PACKAGE_crypto-tools is not set
@@ -3129,7 +3129,8 @@ CONFIG_PACKAGE_gpioctl=m
 # CONFIG_PACKAGE_uboot-envtools is not set
 # CONFIG_PACKAGE_ucmb-tools is not set
 # CONFIG_PACKAGE_upx is not set
-# CONFIG_PACKAGE_usb-modeswitch is not set
+CONFIG_PACKAGE_usb-modeswitch=m
+CONFIG_PACKAGE_usb-modeswitch-data=m
 # CONFIG_PACKAGE_usbutils is not set
 # CONFIG_PACKAGE_watchcat is not set
 # CONFIG_PACKAGE_wattsup is not set

@@ -2,7 +2,7 @@
 #sd_mod
 #ohci-hcd
 #ehci-hcd
-#usb-storage
+#usb-storage delay_use=5
 
 # EXT2
 #mbcache

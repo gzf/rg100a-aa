@@ -2,7 +2,7 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/Makefile
-@@ -0,0 +1,52 @@
+@@ -0,0 +1,61 @@
 +# 
 +# Copyright (C) 2006-2010 OpenWrt.org
 +#
@@ -20,7 +20,14 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +PKG_SOURCE_URL:=http://www.kernel.org/pub/linux/daemons/autofs/v5
 +PKG_MD5SUM:=44cea7f711e2290a0b50fddeda079705
 +PKG_INSTALL:=1
-+#PKG_FIXUP:=autoreconf
++PKG_FIXUP:=autoreconf
++PKG_REMOVE_FILES:=
++
++AUTOFS_MODS := parse_sun.so \
++	mount_nfs4.so mount_nfs.so mount_generic.so mount_changer.so mount_bind.so mount_autofs.so mount_afs.so \
++	lookup_userhome.so lookup_program.so lookup_multi.so lookup_hosts.so lookup_files.so lookup_file.so lookup_dir.so
++
++AUTOFS_EXT2_MODS := mount_ext2.so mount_ext3.so mount_ext4.so
 +
 +include $(INCLUDE_DIR)/package.mk
 +
@@ -42,7 +49,9 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +	$(INSTALL_DIR) $(1)/usr/sbin
 +	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/automount $(1)/usr/sbin/
 +	$(INSTALL_DIR) $(1)/usr/lib/autofs
-+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/autofs/*.so $(1)/usr/lib/autofs
++	for MOD in $(AUTOFS_MODS); do \
++		$(CP) $(PKG_INSTALL_DIR)/usr/lib/autofs/$$$$MOD $(1)/usr/lib/autofs/; \
++	done
 +	$(INSTALL_DIR) $(1)/etc/config
 +	$(INSTALL_DATA) ./files/autofs.conf $(1)/etc/config/autofs
 +	$(INSTALL_DIR) $(1)/etc/init.d
@@ -7058,42 +7067,7 @@ Index: backfire/feeds/packages/utils/autofs/patches/200-fix-configure-not-run-wh
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/patches/200-fix-configure-not-run-when-cross-compiling
-@@ -0,0 +1,46 @@
-+--- a/configure	2012-02-28 14:49:36.000000000 +0800
-++++ b/configure	2012-02-28 14:52:43.000000000 +0800
-+@@ -5379,13 +5379,7 @@
-+ DAEMON_LDFLAGS=
-+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether gcc -fPIE works" >&5
-+ $as_echo_n "checking whether gcc -fPIE works... " >&6; }
-+-if test "$cross_compiling" = yes; then :
-+-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-+-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-+-as_fn_error $? "cannot run test program while cross compiling
-+-See \`config.log' for more details" "$LINENO" 5; }
-+-else
-+-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-++cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-+ /* end confdefs.h.  */
-+ 
-+ int
-+@@ -5396,15 +5390,12 @@
-+   return 0;
-+ }
-+ _ACEOF
-+-if ac_fn_c_try_run "$LINENO"; then :
-++if ac_fn_c_try_compile "$LINENO"; then :
-+   gcc_supports_pie=yes
-+ else
-+   gcc_supports_pie=no
-+ fi
-+-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-+-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-+-fi
-+-
-++rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $gcc_supports_pie" >&5
-+ $as_echo "$gcc_supports_pie" >&6; }
-+ if test $gcc_supports_pie = yes ; then
+@@ -0,0 +1,11 @@
 +--- a/configure.in	2012-02-28 14:49:36.000000000 +0800
 ++++ b/configure.in	2012-02-28 14:52:03.000000000 +0800
 +@@ -306,7 +306,7 @@
@@ -7347,7 +7321,7 @@ Index: backfire/feeds/packages/utils/autofs/files/50-autofs
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/files/50-autofs
-@@ -0,0 +1,9 @@
+@@ -0,0 +1,14 @@
 +#!/bin/sh
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
 +# Date: 2012/03
@@ -7355,6 +7329,11 @@ Index: backfire/feeds/packages/utils/autofs/files/50-autofs
 +
 +blkdev=`dirname $DEVPATH`
 +if [ `basename $blkdev` != "block" ]; then
++    mkdir -p /var/lock
++    lock /var/lock/autofs-hotplug.lck
++    /lib/functions/autofs/direct.fstab > /tmp/auto.fstab
++    lock -u /var/lock/autofs-hotplug.lck
++
 +    killall -HUP automount
 +fi
 Index: backfire/feeds/packages/utils/autofs/files/autofs.conf
@@ -7367,8 +7346,8 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.conf
 +
 +config mapentry
 +       option type      direct
-+       option maptype   program
-+       option map       /lib/functions/autofs/direct.fstab
++       option maptype   file
++       option map       /tmp/auto.fstab
 +
 +#config mapentry
 +#       option type         indirect
@@ -7429,3 +7408,41 @@ Index: backfire/feeds/packages/utils/autofs/files/direct.fstab
 +
 +config_load fstab
 +config_foreach direct_mount mount
+Index: backfire/feeds/packages/utils/autofs/patches/206-disable-parsing-nsswitch
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/patches/206-disable-parsing-nsswitch
+@@ -0,0 +1,33 @@
++--- a/lib/nsswitch.c	2011-06-28 15:34:35.000000000 +0800
+++++ b/lib/nsswitch.c	2012-03-04 00:03:06.000000000 +0800
++@@ -105,6 +105,12 @@
++ 	return 1;
++ }
++ 
+++int nsswitch_parse(struct list_head *list)
+++{
+++    return add_source(list, "files") ? 0 : 1;
+++}
+++
+++
++ /*
++ int main(void)
++ {
++--- a/lib/Makefile	2012-03-02 23:47:09.000000000 +0800
+++++ b/lib/Makefile	2012-03-04 00:02:11.000000000 +0800
++@@ -6,13 +6,13 @@
++ include ../Makefile.rules
++ 
++ SRCS = cache.c cat_path.c rpc_subs.c mounts.c log.c nsswitch.c \
++-	master_tok.l master_parse.y nss_tok.c nss_parse.tab.c \
+++	master_tok.l master_parse.y \
++ 	args.c alarm.c macros.c master.c defaults.c parse_subs.c \
++ 	dev-ioctl-lib.c
++ RPCS = mount.h mount_clnt.c mount_xdr.c
++ OBJS = cache.o mount_clnt.o mount_xdr.o cat_path.o \
++ 	mounts.o log.o nsswitch.o master_tok.o master_parse.tab.o \
++-	nss_tok.o nss_parse.tab.o args.o alarm.o macros.o master.o \
+++	args.o alarm.o macros.o master.o \
++ 	defaults.o parse_subs.o dev-ioctl-lib.o
++ 
++ YACCSRC = nss_tok.c nss_parse.tab.c nss_parse.tab.h \

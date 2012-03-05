@@ -1,0 +1,18 @@
+Index: backfire/package/base-files/files/etc/functions.sh
+===================================================================
+--- backfire.orig/package/base-files/files/etc/functions.sh
++++ backfire/package/base-files/files/etc/functions.sh
+@@ -299,11 +299,11 @@
+ 	elif [ -f "$1" ]; then
+ 		. "$1"
+ 	elif [ -d "/tmp/overlay/$1" ]; then
+-		for src_script in /tmp/overlay/$1/*.sh; do
++		for src_script in `find "/tmp/overlay/$1" -name "*.sh" -maxdepth 1`; do
+ 			. "$src_script"
+ 		done
+ 	elif [ -d "$1" ]; then
+-		for src_script in $1/*.sh; do
++		for src_script in `find "$1" -name "*.sh" -maxdepth 1`; do
+ 			. "$src_script"
+ 		done
+ 	else
