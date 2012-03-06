@@ -2,8 +2,8 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/Makefile
-@@ -0,0 +1,61 @@
-+# 
+@@ -0,0 +1,84 @@
++#
 +# Copyright (C) 2006-2010 OpenWrt.org
 +#
 +# This is free software, licensed under the GNU General Public License v2.
@@ -31,7 +31,7 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +
 +include $(INCLUDE_DIR)/package.mk
 +
-+define Package/autofs5
++define Package/autofs5/common
 +  SECTION:=utils
 +  CATEGORY:=Utilities
 +  SUBMENU:=Filesystem
@@ -41,9 +41,23 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +  DEPENDS+= +kmod-fs-autofs4 +libpthread
 +endef
 +
++define Package/autofs5
++  $(call Package/autofs5/common)
++  DEPENDS+= +kmod-fs-autofs4 +libpthread
++endef
++
++define Package/autofs5-mount-ext2
++  $(call Package/autofs5/common)
++  DEPENDS+= +autofs5 +e2fsprogs
++endef
++
 +define Package/autofs5/conffiles
 +/etc/config/autofs
 +endef
++
++CONFIGURE_ARGS += --with-E2FSCK=/usr/sbin/e2fsck \
++				--with-E3FSCK=/usr/sbin/e2fsck \
++				--with-E4FSCK=/usr/sbin/e2fsck
 +
 +define Package/autofs5/install
 +	$(INSTALL_DIR) $(1)/usr/sbin
@@ -59,11 +73,20 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +	$(INSTALL_DIR) $(1)/etc/hotplug.d/block
 +	$(INSTALL_DATA) ./files/50-autofs $(1)/etc/hotplug.d/block
 +	$(INSTALL_DIR) $(1)/lib/functions/autofs
++	$(INSTALL_DATA) ./files/autofs.sh $(1)/lib/functions
 +	$(INSTALL_BIN) ./files/direct.fstab $(1)/lib/functions/autofs
 +	ln -sf /tmp/auto.master $(1)/etc/
 +endef
 +
++define Package/autofs5-mount-ext2/install
++	$(INSTALL_DIR) $(1)/usr/lib/autofs
++	for MOD in $(AUTOFS_EXT2_MODS); do \
++		$(CP) $(PKG_INSTALL_DIR)/usr/lib/autofs/$$$$MOD $(1)/usr/lib/autofs/; \
++	done
++endef
++
 +$(eval $(call BuildPackage,autofs5))
++$(eval $(call BuildPackage,autofs5-mount-ext2))
 Index: backfire/feeds/packages/utils/autofs/patches/100-autofs-5.0.6-fix-ipv6-name-for-lookup-fix.patch
 ===================================================================
 --- /dev/null
@@ -7234,7 +7257,7 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/files/autofs.init
-@@ -0,0 +1,82 @@
+@@ -0,0 +1,88 @@
 +#!/bin/sh /etc/rc.common
 +#
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
@@ -7245,13 +7268,9 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 +STOP=98
 +
 +MASTER_FILE=/tmp/auto.master
-+AUTOMOUNT_PIDFILE=/tmp/automount.pid
 +AUTOMOUNT_OPTS=
 +
-+is_running() {
-+    ps -A | grep -q automount
-+    return $?
-+}
++. /lib/functions/autofs.sh
 +
 +create_map_entry() {
 +    local cfg="$1"
@@ -7293,12 +7312,7 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 +    fi
 +}
 +
-+start() {
-+    if is_running; then
-+        logger -t "autofs" "automount is already running"
-+        return
-+    fi
-+
++start_daemon() {
 +    . /etc/functions.sh
 +
 +    config_load autofs
@@ -7308,33 +7322,47 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 +    automount -p $AUTOMOUNT_PIDFILE $AUTOMOUNT_OPTS
 +}
 +
++start() {
++    if is_running; then
++        logger -t "autofs" "automount is already running"
++        return
++    fi
++    start_daemon
++}
++
 +stop() {
-+    killall -TERM automount
++    if ! is_running; then
++        return
++    fi
++    kill -TERM `cat $AUTOMOUNT_PIDFILE`
 +    rm -f $AUTOMOUNT_PIDFILE
 +    echo "# Autofs is stopped" > $MASTER_FILE
 +}
 +
 +restart() {
-+    killall -HUP automount
++    if is_running; then
++        reload_config
++    else
++        start_daemon
++    fi
 +}
 Index: backfire/feeds/packages/utils/autofs/files/50-autofs
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/files/50-autofs
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,13 @@
 +#!/bin/sh
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
 +# Date: 2012/03
 +# License: GPL
 +
 +blkdev=`dirname $DEVPATH`
-+if [ `basename $blkdev` != "block" ]; then
-+    mkdir -p /var/lock
-+    lock /var/lock/autofs-hotplug.lck
-+    /lib/functions/autofs/direct.fstab > /tmp/auto.fstab
-+    lock -u /var/lock/autofs-hotplug.lck
 +
-+    killall -HUP automount
++if [ `basename $blkdev` != "block" ]; then
++    . /lib/functions/autofs.sh
++    if is_running; then
++        reload_config
++    fi
 +fi
 Index: backfire/feeds/packages/utils/autofs/files/autofs.conf
 ===================================================================
@@ -7347,7 +7375,7 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.conf
 +config mapentry
 +       option type      direct
 +       option maptype   file
-+       option map       /tmp/auto.fstab
++       option map       /lib/functions/autofs/direct.fstab
 +
 +#config mapentry
 +#       option type         indirect
@@ -7446,3 +7474,192 @@ Index: backfire/feeds/packages/utils/autofs/patches/206-disable-parsing-nsswitch
 + 	defaults.o parse_subs.o dev-ioctl-lib.o
 + 
 + YACCSRC = nss_tok.c nss_parse.tab.c nss_parse.tab.h \
+Index: backfire/feeds/packages/utils/autofs/patches/207-make-runtime-dep-commands-configurable
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/patches/207-make-runtime-dep-commands-configurable
+@@ -0,0 +1,60 @@
++--- a/aclocal.m4	2012-03-06 10:07:08.000000000 +0800
+++++ b/aclocal.m4	2012-03-06 10:21:34.000000000 +0800
++@@ -5,15 +5,22 @@
++ dnl Like AC_PATH_PROGS, but add to the .h file as well
++ dnl --------------------------------------------------------------------------
++ AC_DEFUN(AF_PATH_INCLUDE,
++-[AC_PATH_PROGS($1,$2,$3,$4)
++-if test -n "$$1"; then
++-  AC_DEFINE(HAVE_$1,1,[define if you have $1])
++-  AC_DEFINE_UNQUOTED(PATH_$1, "$$1", [define if you have $1])
+++[ 
+++  $1="$2"
+++  AC_ARG_WITH($1,
+++  [  --with-$1=PATH	  override the default value with PATH ],
+++	 if test -n "$withval"
+++     then
+++       $1="${withval}"
+++     fi
+++  )
+++  AC_MSG_CHECKING([for $1 executable])
+++  AC_MSG_RESULT([$$1])
+++
+++  AC_DEFINE(HAVE_$1,1,[define $1])
+++  AC_DEFINE_UNQUOTED(PATH_$1, "$$1", [define $1])
++   HAVE_$1=1
++-else
++-  HAVE_$1=0
++-fi
++-AC_SUBST(HAVE_$1)])
+++  AC_SUBST(HAVE_$1)])
++ 
++ dnl --------------------------------------------------------------------------
++ dnl AF_CHECK_PROG:
++--- a/configure.in	2012-03-06 10:07:08.000000000 +0800
+++++ b/configure.in	2012-03-06 10:24:39.000000000 +0800
++@@ -136,13 +136,17 @@
++ #
++ # Programs needed for various system functions or modules
++ #
++-AF_PATH_INCLUDE(MOUNT, mount, /bin/mount, $searchpath)
++-AF_PATH_INCLUDE(MOUNT_NFS, mount.nfs, /sbin/mount.nfs , $searchpath)
++-AF_PATH_INCLUDE(UMOUNT, umount, /bin/umount, $searchpath)
++-AF_PATH_INCLUDE(E2FSCK, fsck.ext2 e2fsck, , $searchpath)
++-AF_PATH_INCLUDE(E3FSCK, fsck.ext3 e3fsck, , $searchpath)
++-AF_PATH_INCLUDE(E4FSCK, fsck.ext4 e4fsck, , $searchpath)
++-AF_PATH_INCLUDE(MODPROBE, modprobe, , $searchpath)
+++
+++#
+++# Location of system config script directory?
+++#
+++AF_PATH_INCLUDE(MOUNT, /bin/mount)
+++AF_PATH_INCLUDE(MOUNT_NFS, /sbin/mount.nfs)
+++AF_PATH_INCLUDE(UMOUNT, /bin/umount)
+++AF_PATH_INCLUDE(E2FSCK, /sbin/fsck.ext2)
+++AF_PATH_INCLUDE(E3FSCK, /sbin/fsck.ext3)
+++AF_PATH_INCLUDE(E4FSCK, /sbin/fsck.ext4)
+++AF_PATH_INCLUDE(MODPROBE, /sbin/modprobe)
++ 
++ AF_CHECK_PROG(LEX, flex lex, , $searchpath)
++ AF_CHECK_PROG(YACC, bison, , $searchpath)
+Index: backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
+@@ -0,0 +1,95 @@
++Index: b/modules/lookup_file.c
++===================================================================
++--- a/modules/lookup_file.c
+++++ b/modules/lookup_file.c
++@@ -49,6 +49,54 @@
++ 
++ int lookup_version = AUTOFS_LOOKUP_VERSION;	/* Required by protocol */
++ 
+++static FILE *open_fopen_r_dyn(const char *path)
+++{
+++    FILE  *f;
+++    pid_t pid;
+++    int   pipefd[2];
+++    
+++    if (!access(path, X_OK)) {
+++        debug(LOGOPT_NONE, "%s is executable, load it as dynamic file", path);
+++
+++        // execute the file and pipe the stdout
+++        if (pipe(pipefd)) {
+++            logerr(MODPREFIX "fail to create pipe");
+++            return NULL;
+++        }
+++
+++        pid = fork();
+++        if (pid < 0) {
+++            logerr(MODPREFIX "fork error");
+++            return NULL;
+++        }
+++
+++        if (pid == 0) { // execute the file
+++            close(pipefd[0]);
+++            dup2(pipefd[1], STDOUT_FILENO);
+++            close(pipefd[1]);
+++            execl(path, path, NULL);
+++            logerr(MODPREFIX "fail to execute %s", path);
+++            exit(255);	/* execl() failed */
+++        }
+++
+++        // wrap the pipe read endpoint, and return
+++        close(pipefd[1]);
+++        f = fdopen(pipefd[0], "r");
+++    }
+++    else
+++        f = fopen(path, "r");
+++
+++    if (f == NULL) {
+++        logerr(MODPREFIX "open file error: %s", strerror(errno));
+++        return NULL;
+++    }
+++#if defined(O_CLOEXEC) && defined(SOCK_CLOEXEC)
+++    check_cloexec(fileno(f));
+++#endif
+++    return f;
+++}
+++
+++
++ int lookup_init(const char *mapfmt, int argc, const char *const *argv, void **context)
++ {
++ 	struct lookup_context *ctxt;
++@@ -393,7 +441,7 @@
++ 		return NSS_STATUS_UNAVAIL;
++ 	}
++ 
++-	f = open_fopen_r(ctxt->mapname);
+++	f = open_fopen_r_dyn(ctxt->mapname);
++ 	if (!f) {
++ 		error(logopt,
++ 		      MODPREFIX "could not open master map file %s",
++@@ -609,7 +657,7 @@
++ 		return NSS_STATUS_UNAVAIL;
++ 	}
++ 
++-	f = open_fopen_r(ctxt->mapname);
+++	f = open_fopen_r_dyn(ctxt->mapname);
++ 	if (!f) {
++ 		error(ap->logopt,
++ 		      MODPREFIX "could not open map file %s", ctxt->mapname);
++@@ -702,7 +750,7 @@
++ 
++ 	mc = source->mc;
++ 
++-	f = open_fopen_r(ctxt->mapname);
+++	f = open_fopen_r_dyn(ctxt->mapname);
++ 	if (!f) {
++ 		error(ap->logopt,
++ 		      MODPREFIX "could not open map file %s", ctxt->mapname);
++@@ -807,7 +855,7 @@
++ 
++ 	mc = source->mc;
++ 
++-	f = open_fopen_r(ctxt->mapname);
+++	f = open_fopen_r_dyn(ctxt->mapname);
++ 	if (!f) {
++ 		error(ap->logopt,
++ 		      MODPREFIX "could not open map file %s", ctxt->mapname);
+Index: backfire/feeds/packages/utils/autofs/files/autofs.sh
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/files/autofs.sh
+@@ -0,0 +1,19 @@
++#!/bin/sh
++#
++# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
++# Date: 2012/03
++# License: GPL
++
++AUTOMOUNT_PIDFILE=/var/run/automount.pid
++
++is_running() {
++    if [ ! -e $AUTOMOUNT_PIDFILE ]; then
++        return 1
++    fi
++    ps -p `cat $AUTOMOUNT_PIDFILE` &> /dev/null
++    return $?
++}
++
++reload_config() {
++    kill -HUP `cat $AUTOMOUNT_PIDFILE`
++}
