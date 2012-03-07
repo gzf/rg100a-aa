@@ -7370,7 +7370,7 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.conf
 +++ backfire/feeds/packages/utils/autofs/files/autofs.conf
 @@ -0,0 +1,13 @@
 +config automount
-+       option timeout   60
++       option timeout   300
 +
 +config mapentry
 +       option type      direct

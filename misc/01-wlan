@@ -1,12 +1,16 @@
 #!/bin/sh
 
-WLAN=BTN_33
+TARGET_BTN=BTN_33
+LOCKFILE=/var/lock/button-wlan.lck
 
-if [ $BUTTON = $WLAN ] && [ $ACTION = released ]; then
+if [ $BUTTON = $TARGET_BTN ] && [ $ACTION = released ]; then
+    mkdir -p `dirname $LOCKFILE`
+    lock $LOCKFILE
     if [ `wl isup` = 0 ]; then
         wifi -f up
     else
         wifi down
     fi
+    lock -u $LOCKFILE
 fi
 

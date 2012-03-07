@@ -1,7 +1,6 @@
 TODO:
  1.0:
     backport bcm63xx_enet
-	fix usb-storage/scsi
 	gpioctl/userspace led
     imq/connlimit testing
 	xt_ipp2p/ipt_ipp2p

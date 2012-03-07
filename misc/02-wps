@@ -1,0 +1,24 @@
+#!/bin/sh
+
+TARGET_BTN=BTN_36
+LOCKFILE=/var/lock/button-wps.lck
+
+umount_home() {
+    mkdir -p `dirname $LOCKFILE`
+    lock $LOCKFILE
+    if grep -q "^/dev/sd.*/home" /proc/mounts; then
+        umount /home
+    fi
+    lock -u $LOCKFILE
+}
+
+if [ $BUTTON = $TARGET_BTN ]; then
+    # hold less than 2 seconds to umount the home mount
+    if [ $ACTION = released ] && [ $SEEN -le 1 ]; then
+        umount_home
+    fi
+    # hold more than 3 seconds to halt the router
+    if [ $ACTION = pressed ] && [ $SEEN -eq 3 ]; then
+        halt
+    fi
+fi

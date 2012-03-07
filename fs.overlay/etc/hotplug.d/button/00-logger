@@ -1,2 +1,2 @@
 #!/bin/sh
-logger $BUTTON $ACTION $SEEN
+logger -t button "event: BUTTON=$BUTTON ACTION=$ACTION SEEN=$SEEN"
