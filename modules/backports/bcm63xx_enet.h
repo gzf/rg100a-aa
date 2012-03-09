@@ -185,7 +185,7 @@ struct bcm_enet_priv {
 	unsigned int tx_desc_alloc_size;
 
 
-	struct napi_struct napi;
+	//struct napi_struct napi;
 
 	/* dma channel id for rx */
 	int rx_chan;

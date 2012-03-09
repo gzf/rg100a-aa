@@ -2,12 +2,14 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/Makefile
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,86 @@
 +#
-+# Copyright (C) 2006-2010 OpenWrt.org
++# Author: Zhifeng Gu <guzhifeng1979@hotmail.com> 
 +#
 +# This is free software, licensed under the GNU General Public License v2.
 +# See /LICENSE for more information.
++#
++# The patches come from autofs-5.0.5-39.el6_2.1.src.rpm
 +#
 +
 +include $(TOPDIR)/rules.mk
@@ -25,7 +27,7 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +
 +AUTOFS_MODS := parse_sun.so \
 +	mount_nfs4.so mount_nfs.so mount_generic.so mount_changer.so mount_bind.so mount_autofs.so mount_afs.so \
-+	lookup_userhome.so lookup_program.so lookup_multi.so lookup_hosts.so lookup_files.so lookup_file.so lookup_dir.so
++	lookup_userhome.so lookup_program.so lookup_multi.so lookup_hosts.so lookup_files.so lookup_file.so
 +
 +AUTOFS_EXT2_MODS := mount_ext2.so mount_ext3.so mount_ext4.so
 +

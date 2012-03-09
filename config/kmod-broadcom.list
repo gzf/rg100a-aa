@@ -1,7 +1,6 @@
 extra/adsldd.ko
 extra/bcm_enet.ko
 extra/bcmprocfs.ko
-extra/bcm_usb.ko
 extra/bcmxtmcfg.ko
 extra/bcmxtmrt.ko
 extra/pktflow.ko

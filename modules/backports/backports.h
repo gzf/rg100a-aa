@@ -31,5 +31,15 @@ static inline int skb_network_offset(const struct sk_buff *skb)
     return skb_network_header(skb) - skb->data;
 }
 
+#define ETH_FCS_LEN     4               /* Octets in the FCS             */
+/*
+ * Need to be a little smaller than phydev->dev.bus_id to leave room
+ * for the ":%02x"
+ */
+#define MII_BUS_ID_SIZE (20 - 3)
+
+#define pr_cont(fmt, ...) \
+         printk(KERN_CONT fmt, ##__VA_ARGS__)
+#define KERN_CONT       "<c>"
 
 #endif

@@ -1,11 +1,9 @@
-EXTRA_CFLAGS += -I$(M)/linux/include -I$(M)/linux/arch/mips/include/asm/mach-bcm63xx \
-                -DCONFIG_BCM63XX_CPU_6358
+EXTRA_CFLAGS += -I$(M)/linux/include
 
-ifneq (,$(bcm63xx_enet))
-	DEVMODS += bcm63xx_enet.o
-endif
 ifneq (,$(macvlan))
 	DEVMODS += macvlan.o
 endif
 
-obj-m := xt_connlimit.o $(DEVMODS)
+obj-m := xt_connlimit.o bcm6358_enet.o $(DEVMODS)
+
+bcm6358_enet-y := bcm63xx_enet.o clk.o dev-enet.o #board_bcm963xx.o

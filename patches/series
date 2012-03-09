@@ -17,3 +17,6 @@ m29-cfiflash-workaround
 usb-3g-modem
 autofs4-v5-update
 update-scsi-spinup-disk
+backport-mach-bcm63xx-headers
+backport-clk-headers
+backport-bcm63xx-phy
