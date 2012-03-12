@@ -29,6 +29,7 @@
 #include <linux/platform_device.h>
 #include <linux/if_vlan.h>
 
+#include <bcm63xx_board.h>
 #include <bcm63xx_dev_enet.h>
 #include "bcm63xx_enet.h"
 #include "backports.h"
@@ -1954,6 +1955,10 @@ struct platform_driver bcm63xx_enet_shared_driver = {
 static int __init bcm_enet_init(void)
 {
 	int ret;
+
+    board_prom_init();
+    board_setup();
+    board_register_devices();
 
 	ret = platform_driver_register(&bcm63xx_enet_shared_driver);
 	if (ret)

@@ -6,4 +6,4 @@ endif
 
 obj-m := xt_connlimit.o bcm6358_enet.o $(DEVMODS)
 
-bcm6358_enet-y := bcm63xx_enet.o clk.o dev-enet.o #board_bcm963xx.o
+bcm6358_enet-y := bcm63xx_enet.o clk.o dev-enet.o board_bcm963xx.o
