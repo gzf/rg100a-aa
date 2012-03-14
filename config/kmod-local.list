@@ -1,4 +1,5 @@
 backports/xt_connlimit.ko
+backports/bcm63xx_enet.ko
 openwrt/switch-core.ko
 openwrt/switch-robo.ko
 misc/ipt_IPID.ko

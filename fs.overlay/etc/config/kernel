@@ -1,2 +1,3 @@
 config kernel
-	option vlan		off
+#   option enet     bcm63xx_enet
+#   option vlan	    on

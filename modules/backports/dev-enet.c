@@ -13,6 +13,9 @@
 #include <bcm63xx_io.h>
 #include <bcm63xx_regs.h>
 
+static void default_release(struct device * dev) {
+}
+
 static struct resource shared_res[] = {
 	{
 		.start		= -1, /* filled at runtime */
@@ -26,9 +29,10 @@ static struct platform_device bcm63xx_enet_shared_device = {
 	.id		= 0,
 	.num_resources	= ARRAY_SIZE(shared_res),
 	.resource	= shared_res,
+	.dev		= {
+        .release = default_release
+	},
 };
-
-static int shared_device_registered;
 
 static struct resource enet0_res[] = {
 	{
@@ -59,6 +63,7 @@ static struct platform_device bcm63xx_enet0_device = {
 	.resource	= enet0_res,
 	.dev		= {
 		.platform_data = &enet0_pd,
+        .release = default_release
 	},
 };
 
@@ -91,8 +96,20 @@ static struct platform_device bcm63xx_enet1_device = {
 	.resource	= enet1_res,
 	.dev		= {
 		.platform_data = &enet1_pd,
+        .release = default_release
 	},
 };
+
+int __init bcm63xx_enet_shared_register(void) {
+    shared_res[0].start = bcm63xx_regset_address(RSET_ENETDMA);
+    shared_res[0].end = shared_res[0].start;
+    if (BCMCPU_IS_6338())
+        shared_res[0].end += (RSET_ENETDMA_SIZE / 2)  - 1;
+    else
+        shared_res[0].end += (RSET_ENETDMA_SIZE)  - 1;
+
+    return platform_device_register(&bcm63xx_enet_shared_device);
+}
 
 int __init bcm63xx_enet_register(int unit,
 				 const struct bcm63xx_enet_platform_data *pd)
@@ -103,20 +120,6 @@ int __init bcm63xx_enet_register(int unit,
 
 	if (unit > 1)
 		return -ENODEV;
-
-	if (!shared_device_registered) {
-		shared_res[0].start = bcm63xx_regset_address(RSET_ENETDMA);
-		shared_res[0].end = shared_res[0].start;
-		if (BCMCPU_IS_6338())
-			shared_res[0].end += (RSET_ENETDMA_SIZE / 2)  - 1;
-		else
-			shared_res[0].end += (RSET_ENETDMA_SIZE)  - 1;
-
-		ret = platform_device_register(&bcm63xx_enet_shared_device);
-		if (ret)
-			return ret;
-		shared_device_registered = 1;
-	}
 
 	if (unit == 0) {
 		enet0_res[0].start = bcm63xx_regset_address(RSET_ENET0);
@@ -156,4 +159,17 @@ int __init bcm63xx_enet_register(int unit,
 	if (ret)
 		return ret;
 	return 0;
+}
+
+void __exit bcm63xx_enet_shared_unregister(void) {
+    platform_device_unregister(&bcm63xx_enet_shared_device);
+}
+
+void __exit bcm63xx_enet_unregister(int unit) {
+	if (unit > 1)
+		return;
+    if (unit == 0)
+        platform_device_unregister(&bcm63xx_enet0_device);
+    else
+        platform_device_unregister(&bcm63xx_enet1_device);
 }

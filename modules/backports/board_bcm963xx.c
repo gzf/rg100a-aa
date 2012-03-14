@@ -37,6 +37,10 @@ static struct bcm963xx_nvram nvram;
 static unsigned int mac_addr_used;
 static struct board_info board;
 
+int bcm63xx_enet_shared_register(void);
+void bcm63xx_enet_shared_unregister(void);
+void bcm63xx_enet_unregister(int unit);
+
 /*
  * known 6358 boards
  */
@@ -254,14 +258,29 @@ static int board_get_mac_address(u8 *mac)
  */
 int __init board_register_devices(void)
 {
-	if (board.has_enet0 &&
-	    !board_get_mac_address(board.enet0.mac_addr))
-		bcm63xx_enet_register(0, &board.enet0);
+    bcm63xx_enet_shared_register();
 
+    // register eth1 first to make it appear as eth0
 	if (board.has_enet1 &&
 	    !board_get_mac_address(board.enet1.mac_addr))
 		bcm63xx_enet_register(1, &board.enet1);
 
+	if (board.has_enet0 &&
+	    !board_get_mac_address(board.enet0.mac_addr))
+		bcm63xx_enet_register(0, &board.enet0);
+
 	return 0;
 }
 
+int __exit board_unregister_devices(void) {
+	if (board.has_enet0 &&
+	    !board_get_mac_address(board.enet0.mac_addr))
+		bcm63xx_enet_unregister(0);
+
+	if (board.has_enet1 &&
+	    !board_get_mac_address(board.enet1.mac_addr))
+		bcm63xx_enet_unregister(1);
+
+    bcm63xx_enet_shared_unregister();
+	return 0;    
+}

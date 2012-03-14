@@ -8,9 +8,12 @@ START=00
 
 config_kernel() {
     local cfg="$1"
-    local vlan
+    local enet vlan
     
+    config_get enet "$cfg" enet bcm_enet
     config_get_bool vlan "$cfg" vlan 0
+
+    insmod $enet
 
     if [ $vlan = 1 ]; then
         insmod 8021q
@@ -20,8 +23,6 @@ config_kernel() {
 }
 
 boot() {
-    insmod bcm_enet
-
     config_load kernel
     config_foreach config_kernel kernel
 }

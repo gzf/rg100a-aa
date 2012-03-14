@@ -34,6 +34,8 @@
 #include "bcm63xx_enet.h"
 #include "backports.h"
 
+int board_unregister_devices(void);
+
 static char bcm_enet_driver_name[] = "bcm63xx_enet";
 static char bcm_enet_driver_version[] = "1.0";
 
@@ -1956,6 +1958,7 @@ static int __init bcm_enet_init(void)
 {
 	int ret;
 
+    bcm63xx_cpu_init();
     board_prom_init();
     board_setup();
     board_register_devices();
@@ -1975,6 +1978,7 @@ static void __exit bcm_enet_exit(void)
 {
 	platform_driver_unregister(&bcm63xx_enet_driver);
 	platform_driver_unregister(&bcm63xx_enet_shared_driver);
+    board_unregister_devices();
 }
 
 
