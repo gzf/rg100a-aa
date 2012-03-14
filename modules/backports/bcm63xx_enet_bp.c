@@ -1951,6 +1951,11 @@ static int __init bcm_enet_init(void)
 {
 	int ret;
 
+    bcm63xx_cpu_init();
+    board_prom_init();
+    board_setup();
+    board_register_devices();
+
 	ret = platform_driver_register(&bcm63xx_enet_shared_driver);
 	if (ret)
 		return ret;
@@ -1966,6 +1971,7 @@ static void __exit bcm_enet_exit(void)
 {
 	platform_driver_unregister(&bcm63xx_enet_driver);
 	platform_driver_unregister(&bcm63xx_enet_shared_driver);
+    board_unregister_devices();
 }
 
 
