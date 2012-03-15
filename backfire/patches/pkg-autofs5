@@ -2,7 +2,7 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/Makefile
-@@ -0,0 +1,86 @@
+@@ -0,0 +1,101 @@
 +#
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com> 
 +#
@@ -16,7 +16,7 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +
 +PKG_NAME:=autofs
 +PKG_VERSION:=5.0.5
-+PKG_RELEASE:=1
++PKG_RELEASE:=2
 +
 +PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 +PKG_SOURCE_URL:=http://www.kernel.org/pub/linux/daemons/autofs/v5
@@ -40,7 +40,6 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +  TITLE:=Autofs Userspace Daemon
 +  MAINTAINER:=Zhifeng Gu <guzhifeng1979@hotmail.com>
 +  URL:=http://www.kernel.org/pub/linux/daemons/autofs/
-+  DEPENDS+= +kmod-fs-autofs4 +libpthread
 +endef
 +
 +define Package/autofs5
@@ -48,9 +47,25 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +  DEPENDS+= +kmod-fs-autofs4 +libpthread
 +endef
 +
++define Package/autofs5/description
++  Autofs controls the operation of the automount daemons. The
++  automount daemons automatically mount filesystems when they
++  are used and unmount them after a period of inactivity. This
++  is done based on a set of pre-configured maps.
++
++  The kernel automounter implements an almost complete SunOS
++  style automounter under Linux. A recent version of the kernel
++  autofs4 module (builtin or separate) is required.
++endef
++
++
 +define Package/autofs5-mount-ext2
 +  $(call Package/autofs5/common)
 +  DEPENDS+= +autofs5 +e2fsprogs
++endef
++
++define Package/autofs5-mount-ext2/description
++  This module enables fsck when mounting ext2/3/4 filesystems.
 +endef
 +
 +define Package/autofs5/conffiles

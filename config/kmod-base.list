@@ -37,10 +37,6 @@ kernel/net/atm/atm.ko
 kernel/net/ipv4/tunnel4.ko
 kernel/net/ipv4/ipip.ko
 kernel/net/ipv4/ip_gre.ko
-kernel/net/ipv4/multipath_drr.ko
-kernel/net/ipv4/multipath_rr.ko
-kernel/net/ipv4/multipath_random.ko
-kernel/net/ipv4/multipath_wrandom.ko
 kernel/net/ipv4/netfilter/ip_tables.ko
 kernel/net/ipv4/netfilter/iptable_filter.ko
 kernel/net/ipv4/netfilter/iptable_mangle.ko

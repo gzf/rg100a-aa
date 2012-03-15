@@ -1,3 +1,10 @@
+2012-03-15:
+	* disable CONFIG_IP_ROUTE_MULTIPATH_CACHED
+
+2012-03-12:
+	* backport bcm63xx_enet
+	* remove ethctl, bcm_usb
+
 2012-03-06:
 	* remove brctl
 	* port autofs5

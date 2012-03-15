@@ -495,7 +495,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # Power management options
-@@ -470,46 +336,49 @@
+@@ -470,46 +336,45 @@
  CONFIG_PACKET=y
  # CONFIG_PACKET_MMAP is not set
  CONFIG_UNIX=y
@@ -523,12 +523,8 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  CONFIG_IP_FIB_HASH=y
 +CONFIG_IP_MULTIPLE_TABLES=y
 +CONFIG_IP_ROUTE_MULTIPATH=y
-+CONFIG_IP_ROUTE_MULTIPATH_CACHED=y
-+CONFIG_IP_ROUTE_MULTIPATH_RR=m
-+CONFIG_IP_ROUTE_MULTIPATH_RANDOM=m
-+CONFIG_IP_ROUTE_MULTIPATH_WRANDOM=m
-+CONFIG_IP_ROUTE_MULTIPATH_DRR=m
-+# CONFIG_IP_ROUTE_VERBOSE is not set
++# CONFIG_IP_ROUTE_MULTIPATH_CACHED is not set
++CONFIG_IP_ROUTE_VERBOSE=y
  # CONFIG_IP_PNP is not set
 -# CONFIG_IP_PNP_DHCP is not set
 -# CONFIG_IP_PNP_BOOTP is not set
@@ -571,7 +567,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_TCP_MD5SIG is not set
  
  #
-@@ -517,208 +386,194 @@
+@@ -517,208 +382,194 @@
  #
  # CONFIG_IP_VS is not set
  
@@ -931,7 +927,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # DCCP Configuration (EXPERIMENTAL)
-@@ -731,19 +586,60 @@
+@@ -731,19 +582,60 @@
  # CONFIG_IP_SCTP is not set
  
  #
@@ -995,7 +991,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_LLC2 is not set
  # CONFIG_IPX is not set
  # CONFIG_ATALK is not set
-@@ -751,54 +647,66 @@
+@@ -751,54 +643,66 @@
  # CONFIG_LAPB is not set
  # CONFIG_ECONET is not set
  # CONFIG_WAN_ROUTER is not set
@@ -1102,7 +1098,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # Network testing
-@@ -808,7 +716,15 @@
+@@ -808,7 +712,15 @@
  # CONFIG_IRDA is not set
  # CONFIG_BT is not set
  # CONFIG_IEEE80211 is not set
@@ -1118,7 +1114,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # Device Drivers
-@@ -833,15 +749,16 @@
+@@ -833,15 +745,16 @@
  CONFIG_MTD=y
  # CONFIG_MTD_DEBUG is not set
  # CONFIG_MTD_CONCAT is not set
@@ -1139,7 +1135,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_FTL is not set
  # CONFIG_NFTL is not set
  # CONFIG_INFTL is not set
-@@ -851,8 +768,14 @@
+@@ -851,8 +764,14 @@
  #
  # RAM/ROM/Flash chip drivers
  #
@@ -1156,7 +1152,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  CONFIG_MTD_MAP_BANK_WIDTH_1=y
  CONFIG_MTD_MAP_BANK_WIDTH_2=y
  CONFIG_MTD_MAP_BANK_WIDTH_4=y
-@@ -863,8 +786,13 @@
+@@ -863,8 +782,13 @@
  CONFIG_MTD_CFI_I2=y
  # CONFIG_MTD_CFI_I4 is not set
  # CONFIG_MTD_CFI_I8 is not set
@@ -1171,7 +1167,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_MTD_ABSENT is not set
  # CONFIG_MTD_OBSOLETE_CHIPS is not set
  
-@@ -873,6 +801,10 @@
+@@ -873,6 +797,10 @@
  #
  CONFIG_MTD_COMPLEX_MAPPINGS=y
  # CONFIG_MTD_PHYSMAP is not set
@@ -1182,7 +1178,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  CONFIG_MTD_BCM963XX=y
  # CONFIG_MTD_PCI is not set
  # CONFIG_MTD_PLATRAM is not set
-@@ -921,7 +853,8 @@
+@@ -921,7 +849,8 @@
  # CONFIG_BLK_DEV_DAC960 is not set
  # CONFIG_BLK_DEV_UMEM is not set
  # CONFIG_BLK_DEV_COW_COMMON is not set
@@ -1192,7 +1188,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_BLK_DEV_NBD is not set
  # CONFIG_BLK_DEV_SX8 is not set
  # CONFIG_BLK_DEV_UB is not set
-@@ -944,19 +877,20 @@
+@@ -944,19 +873,20 @@
  # SCSI device support
  #
  # CONFIG_RAID_ATTRS is not set
@@ -1219,7 +1215,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_CHR_DEV_SCH is not set
  
  #
-@@ -1042,19 +976,18 @@
+@@ -1042,19 +972,18 @@
  #
  # Network device support
  #
@@ -1245,7 +1241,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # ARCnet devices
-@@ -1064,13 +997,27 @@
+@@ -1064,13 +993,27 @@
  #
  # PHY device support
  #
@@ -1275,7 +1271,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_HAPPYMEAL is not set
  # CONFIG_SUNGEM is not set
  # CONFIG_CASSINI is not set
-@@ -1122,28 +1069,6 @@
+@@ -1122,28 +1065,6 @@
  # Wireless LAN (non-hamradio)
  #
  # CONFIG_NET_RADIO is not set
@@ -1304,7 +1300,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # Wan interfaces
-@@ -1168,19 +1093,19 @@
+@@ -1168,19 +1089,19 @@
  # CONFIG_ATM_HE is not set
  # CONFIG_FDDI is not set
  # CONFIG_HIPPI is not set
@@ -1334,7 +1330,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_NET_FC is not set
  # CONFIG_SHAPER is not set
  # CONFIG_NETCONSOLE is not set
-@@ -1193,52 +1118,42 @@
+@@ -1193,52 +1114,42 @@
  # CONFIG_ISDN is not set
  
  #
@@ -1372,21 +1368,21 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
 -# Profiling Support
--#
--# CONFIG_BCMPROF is not set
--
--#
--# DSP Application module
 +# Input device support
  #
--# CONFIG_BCMDSP is not set
+-# CONFIG_BCMPROF is not set
 +# CONFIG_INPUT is not set
 +# CONFIG_INPUT_FF_MEMLESS is not set
  
  #
--# Input device support
+-# DSP Application module
 +# Userland interfaces
  #
+-# CONFIG_BCMDSP is not set
+-
+-#
+-# Input device support
+-#
 -# CONFIG_INPUT is not set
 +# CONFIG_INPUT_MOUSEDEV is not set
 +# CONFIG_INPUT_JOYDEV is not set
@@ -1414,7 +1410,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # Hardware I/O ports
-@@ -1255,17 +1170,18 @@
+@@ -1255,17 +1166,18 @@
  #
  # Serial drivers
  #
@@ -1437,7 +1433,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # IPMI
-@@ -1342,46 +1258,49 @@
+@@ -1342,46 +1254,49 @@
  #
  # USB support
  #
@@ -1498,7 +1494,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_USB_STORAGE_DEBUG is not set
  # CONFIG_USB_STORAGE_DATAFAB is not set
  # CONFIG_USB_STORAGE_FREECOM is not set
-@@ -1397,6 +1316,10 @@
+@@ -1397,6 +1312,10 @@
  #
  # USB Input Devices
  #
@@ -1509,7 +1505,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # USB HID Boot Protocol drivers
-@@ -1442,10 +1365,9 @@
+@@ -1442,10 +1361,9 @@
  #
  # USB Serial Converter support
  #
@@ -1523,7 +1519,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_USB_SERIAL_AIRCABLE is not set
  # CONFIG_USB_SERIAL_AIRPRIME is not set
  # CONFIG_USB_SERIAL_ARK3116 is not set
-@@ -1482,6 +1404,7 @@
+@@ -1482,6 +1400,7 @@
  # CONFIG_USB_SERIAL_OMNINET is not set
  # CONFIG_USB_SERIAL_DEBUG is not set
  
@@ -1531,7 +1527,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  #
  # USB Miscellaneous drivers
  #
-@@ -1509,7 +1432,11 @@
+@@ -1509,7 +1428,11 @@
  #
  # USB DSL modem support
  #
@@ -1544,7 +1540,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # USB Gadget Support
-@@ -1572,48 +1499,67 @@
+@@ -1572,48 +1495,67 @@
  #
  # File systems
  #
@@ -1637,7 +1633,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # Pseudo filesystems
-@@ -1621,12 +1567,11 @@
+@@ -1621,12 +1563,11 @@
  CONFIG_PROC_FS=y
  CONFIG_PROC_KCORE=y
  CONFIG_PROC_SYSCTL=y
@@ -1653,7 +1649,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_CONFIGFS_FS is not set
  
  #
-@@ -1634,20 +1579,28 @@
+@@ -1634,20 +1575,28 @@
  #
  # CONFIG_ADFS_FS is not set
  # CONFIG_AFFS_FS is not set
@@ -1689,7 +1685,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_ZLIB_FS_INFLATE is not set
  # CONFIG_VXFS_FS is not set
  # CONFIG_HPFS_FS is not set
-@@ -1658,53 +1611,67 @@
+@@ -1658,53 +1607,67 @@
  #
  # Network File Systems
  #
@@ -1777,7 +1773,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_NLS_CODEPAGE_737 is not set
  # CONFIG_NLS_CODEPAGE_775 is not set
  # CONFIG_NLS_CODEPAGE_850 is not set
-@@ -1719,16 +1686,16 @@
+@@ -1719,16 +1682,16 @@
  # CONFIG_NLS_CODEPAGE_865 is not set
  # CONFIG_NLS_CODEPAGE_866 is not set
  # CONFIG_NLS_CODEPAGE_869 is not set
@@ -1800,7 +1796,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_NLS_ISO8859_2 is not set
  # CONFIG_NLS_ISO8859_3 is not set
  # CONFIG_NLS_ISO8859_4 is not set
-@@ -1741,8 +1708,7 @@
+@@ -1741,8 +1704,7 @@
  # CONFIG_NLS_ISO8859_15 is not set
  # CONFIG_NLS_KOI8_R is not set
  # CONFIG_NLS_KOI8_U is not set
@@ -1810,7 +1806,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # Distributed Lock Manager
-@@ -1753,13 +1719,11 @@
+@@ -1753,13 +1715,11 @@
  # Profiling support
  #
  # CONFIG_PROFILING is not set
@@ -1824,7 +1820,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_PRINTK_TIME is not set
  CONFIG_ENABLE_MUST_CHECK=y
  # CONFIG_MAGIC_SYSRQ is not set
-@@ -1770,11 +1734,6 @@
+@@ -1770,11 +1730,6 @@
  CONFIG_LOG_BUF_SHIFT=14
  CONFIG_CROSSCOMPILE=y
  CONFIG_CMDLINE="console=ttyS0,115200"
@@ -1836,7 +1832,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  
  #
  # Security options
-@@ -1785,40 +1744,39 @@
+@@ -1785,40 +1740,39 @@
  #
  # Cryptographic options
  #
@@ -1890,7 +1886,7 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_CRYPTO_MICHAEL_MIC is not set
  # CONFIG_CRYPTO_CRC32C is not set
  # CONFIG_CRYPTO_CAMELLIA is not set
-@@ -1831,9 +1789,8 @@
+@@ -1831,9 +1785,8 @@
  #
  # Library routines
  #

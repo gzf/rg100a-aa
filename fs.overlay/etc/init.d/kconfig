@@ -10,7 +10,7 @@ config_kernel() {
     local cfg="$1"
     local enet vlan
     
-    config_get enet "$cfg" enet bcm_enet
+    config_get enet "$cfg" enet bcm63xx_enet
     config_get_bool vlan "$cfg" vlan 0
 
     insmod $enet

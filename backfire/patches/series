@@ -5,3 +5,4 @@ fix-warning-when-including-empty-directory
 vim-utf8-more-features
 pkg-ez-ipupdate-3322
 pkg-autofs5
+pkg-multimac

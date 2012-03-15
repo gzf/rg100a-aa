@@ -2,7 +2,7 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,52 @@
 +# 
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
 +#
@@ -14,7 +14,7 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
 +
 +PKG_NAME:=ez-ipupdate-3322
 +PKG_VERSION:=3.0.10
-+PKG_RELEASE:=2
++PKG_RELEASE:=3
 +
 +PKG_SOURCE:=ez-ipupdate-$(PKG_VERSION).tgz
 +PKG_SOURCE_URL:=http://www.3322.net/download
@@ -31,6 +31,12 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
 +  MAINTAINER:=Zhifeng Gu <guzhifeng1979@hotmail.com>
 +endef
 +
++define Package/ez-ipupdate-3322/description
++  ez-ipupdate is a quite complete client for the dynamic DNS service
++  offered by http://www.ez-ip.net/ and many more. This is a customized 
++  version from http://www.3322.org.
++endef
++
 +define Build/Prepare
 +	gzip -dc $(DL_DIR)/$(PKG_SOURCE) | tar -C $(PKG_BUILD_DIR) -x --strip-components=1
 +endef
@@ -43,9 +49,9 @@ Index: backfire/feeds/packages/net/ez-ipupdate-3322/Makefile
 +	$(INSTALL_DIR) $(1)/usr/sbin
 +	$(INSTALL_BIN) $(PKG_BUILD_DIR)/ez-ipupdate $(1)/usr/sbin/
 +	$(INSTALL_DIR) $(1)/etc/config/
-+	$(INSTALL_CONF) ./files/ez-ipupdate.config $(1)/etc/config/ddns
++	$(INSTALL_DATA) ./files/ez-ipupdate.config $(1)/etc/config/ddns
 +	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
-+	$(INSTALL_BIN) ./files/ez-ipupdate.hotplug $(1)/etc/hotplug.d/iface/30-ez-ipupdate
++	$(INSTALL_DATA) ./files/ez-ipupdate.hotplug $(1)/etc/hotplug.d/iface/30-ez-ipupdate
 +endef
 +
 +$(eval $(call BuildPackage,ez-ipupdate-3322))

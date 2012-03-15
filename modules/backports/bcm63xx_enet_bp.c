@@ -34,6 +34,7 @@
 #include <bcm63xx_board.h>
 #include "backports.h"
 
+int board_unregister_devices(void);
 static inline struct mii_bus* mdiobus_alloc(void) {
     return kzalloc(sizeof(struct mii_bus), GFP_KERNEL);
 }
