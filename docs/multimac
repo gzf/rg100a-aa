@@ -1,0 +1,41 @@
+==========================
+ 使用multimac配置ADSL多拨
+==========================
+
+假设：你已经成功配置pppoe进行ADSL进行拨号，所使用的接口为X
+      如果使用外部modem的话，X通常为eth0/1，
+      如果使用支持ADSL驱动的固件的话，X通常为inet_vpi_vci
+
+1. 安装kmod-tun，支持ADSL的固件已安装，但是需要修改/etc/modules.d/99-misc
+2. 安装multimac
+3. 修改/etc/config/mmac，将count修改为你要多拨的路数N
+4. 修改/etc/config/network，添加如下配置项：
+
+config interface modem
+       option type bridge
+       option ifname 'X tap0' 
+       option proto none
+
+config interface wan1
+       option proto     pppoe
+       option ifname    tap1
+       option username  <xxx>
+       option password  <xxx>
+
+config interface wan2
+       option proto     pppoe
+       option ifname    tap2
+       option username  <xxx>
+       option password  <xxx>
+
+......
+
+config interface wanN
+       option proto     pppoe
+       option ifname    tapN
+       option username  <xxx>
+       option password  <xxx>
+
+5. 执行/etc/init.d/mmac start，logread查看是否多拨成功
+6. 如果多拨成功，可以把multimac设为开机启动：/etc/init.d/mmac enable
+7. 安装multiwan，nwan等多拨支持脚本，具体配置方法参考相关的文档

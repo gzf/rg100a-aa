@@ -127,19 +127,6 @@ Index: backfire/feeds/packages/utils/autofs/patches/202-disable-yp-lookup
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/patches/202-disable-yp-lookup
 @@ -0,0 +1,40 @@
-+Index: autofs-5.0.5/lib/Makefile
-+===================================================================
-+--- autofs-5.0.5.orig/lib/Makefile
-++++ autofs-5.0.5/lib/Makefile
-+@@ -10,7 +10,7 @@
-+ 	args.c alarm.c macros.c master.c defaults.c parse_subs.c \
-+ 	dev-ioctl-lib.c
-+ RPCS = mount.h mount_clnt.c mount_xdr.c
-+-OBJS = cache.o mount_clnt.o mount_xdr.o cat_path.o rpc_subs.o \
-++OBJS = cache.o mount_clnt.o mount_xdr.o cat_path.o \
-+ 	mounts.o log.o nsswitch.o master_tok.o master_parse.tab.o \
-+ 	nss_tok.o nss_parse.tab.o args.o alarm.o macros.o master.o \
-+ 	defaults.o parse_subs.o dev-ioctl-lib.o
 +Index: autofs-5.0.5/modules/Makefile
 +===================================================================
 +--- autofs-5.0.5.orig/modules/Makefile
@@ -167,6 +154,19 @@ Index: backfire/feeds/packages/utils/autofs/patches/202-disable-yp-lookup
 + 			    !strncmp(name, "ldap:", 5) ||
 + 			    !strncmp(name, "ldaps:", 6)) {
 + 				strncpy(source, name, tmp - name);
++Index: autofs-5.0.5/lib/rpc_subs.c
++===================================================================
++--- autofs-5.0.5.orig/lib/rpc_subs.c
+++++ autofs-5.0.5/lib/rpc_subs.c
++@@ -27,7 +27,7 @@
++ #include <net/if.h>
++ #include <netinet/in.h>
++ #include <arpa/inet.h>
++-#include <rpcsvc/ypclnt.h>
+++//#include <rpcsvc/ypclnt.h>
++ #include <errno.h>
++ #include <sys/ioctl.h>
++ #include <ctype.h>
 Index: backfire/feeds/packages/utils/autofs/patches/203-disable-ldap-code-in-defaults
 ===================================================================
 --- /dev/null
@@ -258,7 +258,7 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/files/autofs.init
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,80 @@
 +#!/bin/sh /etc/rc.common
 +#
 +# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
@@ -269,7 +269,6 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 +STOP=98
 +
 +MASTER_FILE=/tmp/auto.master
-+AUTOMOUNT_OPTS=
 +
 +. /lib/functions/autofs.sh
 +
@@ -303,24 +302,17 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.init
 +    echo -e $entry >> $MASTER_FILE
 +}
 +
-+automount_options() {
-+    local cfg="$1"
++start_daemon() {
 +    local timeout
 +
-+    config_get timeout "$cfg" timeout
-+    if [ -n "$timeout" ]; then
-+        AUTOMOUNT_OPTS="$AUTOMOUNT_OPTS -t $timeout"
-+    fi
-+}
-+
-+start_daemon() {
 +    . /etc/functions.sh
 +
 +    config_load autofs
++    config_get timeout global timeout 600
 +    echo "# Auto generated map entries, please modify /etc/config/autofs." > $MASTER_FILE
 +    config_foreach create_map_entry mapentry
-+    config_foreach automount_options automount
-+    automount -p $AUTOMOUNT_PIDFILE $AUTOMOUNT_OPTS
++
++    automount -p $AUTOMOUNT_PIDFILE -t $timeout
 +}
 +
 +start() {
@@ -370,7 +362,7 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.conf
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/files/autofs.conf
 @@ -0,0 +1,13 @@
-+config automount
++config automount global
 +       option timeout   300
 +
 +config mapentry
@@ -468,7 +460,7 @@ Index: backfire/feeds/packages/utils/autofs/patches/206-disable-parsing-nsswitch
 + 	args.c alarm.c macros.c master.c defaults.c parse_subs.c \
 + 	dev-ioctl-lib.c
 + RPCS = mount.h mount_clnt.c mount_xdr.c
-+ OBJS = cache.o mount_clnt.o mount_xdr.o cat_path.o \
++ OBJS = cache.o mount_clnt.o mount_xdr.o cat_path.o rpc_subs.o \
 + 	mounts.o log.o nsswitch.o master_tok.o master_parse.tab.o \
 +-	nss_tok.o nss_parse.tab.o args.o alarm.o macros.o master.o \
 ++	args.o alarm.o macros.o master.o \

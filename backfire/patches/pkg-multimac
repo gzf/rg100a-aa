@@ -17,7 +17,7 @@ Index: backfire/feeds/packages/net/multimac/Makefile
 +PKG_RELEASE:=1
 +
 +PKG_SOURCE:=$(PKG_NAME).tar.gz
-+PKG_SOURCE_URL:=http://downloads.sourceforge.net/multimac
++PKG_SOURCE_URL:=http://sourceforge.net/projects/multimac/files/multimac/$(PKG_VERSION)
 +PKG_MD5SUM:=a861b16f7f96da6e846c9c0cf5d108a0
 +
 +include $(INCLUDE_DIR)/package.mk
@@ -26,7 +26,7 @@ Index: backfire/feeds/packages/net/multimac/Makefile
 +  SECTION:=net
 +  CATEGORY:=Network
 +  SUBMENU:=Network Devices
-+  TITLE:=Emulate Multi-MAC Environment with TAP Device
++  TITLE:=Multiple MACs on an adapter
 +  URL:=http://sourceforge.net/projects/multimac/
 +  MAINTAINER:=Zhifeng Gu <guzhifeng1979@hotmail.com>
 +  DEPENDS+= +kmod-tun +libpthread
@@ -65,9 +65,8 @@ Index: backfire/feeds/packages/net/multimac/files/multimac.conf
 --- /dev/null
 +++ backfire/feeds/packages/net/multimac/files/multimac.conf
 @@ -0,0 +1,2 @@
-+config mmac
++config multimac
 +       option count     2
-\ No newline at end of file
 Index: backfire/feeds/packages/net/multimac/files/multimac.init
 ===================================================================
 --- /dev/null
@@ -96,7 +95,7 @@ Index: backfire/feeds/packages/net/multimac/files/multimac.init
 +    . /etc/functions.sh
 +
 +    config_load mmac
-+    config_foreach run_multimac mmac
++    config_foreach run_multimac multimac
 +}
 +
 +stop() {
