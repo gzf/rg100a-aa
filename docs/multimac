@@ -39,3 +39,16 @@ config interface wanN
 5. 执行/etc/init.d/mmac start，logread查看是否多拨成功
 6. 如果多拨成功，可以把multimac设为开机启动：/etc/init.d/mmac enable
 7. 安装multiwan，nwan等多拨支持脚本，具体配置方法参考相关的文档
+
+======
+ 备注
+======
+
+multiwan依赖几个netfilter模块，如果使用集成ADSL的固件，这些模块已安装，只需insmod即可
+insmod xt_CONNMARK
+insmod xt_connmark
+insmod xt_statistic
+insmod xt_mark
+insmod xt_MARK
+如果要开机自动载入，则可以在/etc/modules.d/下新建一个文件，然后把这些模块名都拷进去。
+

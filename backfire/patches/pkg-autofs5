@@ -535,21 +535,65 @@ Index: backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
-@@ -0,0 +1,95 @@
+@@ -0,0 +1,136 @@
 +Index: autofs-5.0.5/modules/lookup_file.c
 +===================================================================
 +--- autofs-5.0.5.orig/modules/lookup_file.c
 ++++ autofs-5.0.5/modules/lookup_file.c
-+@@ -49,6 +49,54 @@
++@@ -49,6 +49,95 @@
 + 
 + int lookup_version = AUTOFS_LOOKUP_VERSION;	/* Required by protocol */
 + 
+++struct dyn_file_context {
+++    const char* path;
+++    int pread;
+++    int pwrite;
+++};
+++
+++static void* run_dyn_file(void *arg) {
+++    pid_t pid;
+++    int pipefd[2];
+++    const char* path = NULL;
+++    struct dyn_file_context* ctx = (struct dyn_file_context*) arg;
+++
+++    path = ctx->path;
+++    pipefd[0] = ctx->pread;
+++    pipefd[1] = ctx->pwrite;
+++    free(ctx);
+++
+++    pid = fork();
+++    if (pid < 0) {
+++        logerr(MODPREFIX "fork error");
+++        // pipefd[0] will be closed by fclose
+++        close(pipefd[1]);
+++        return;
+++    }
+++
+++    if (pid == 0) { // execute the file
+++        close(pipefd[0]);
+++        dup2(pipefd[1], STDOUT_FILENO);
+++        close(pipefd[1]);
+++        execl(path, path, NULL);
+++        logerr(MODPREFIX "fail to execute %s", path);
+++        exit(255);	/* execl() failed */
+++    }
+++
+++    // close the write end
+++    close(pipefd[1]);
+++    // wait for the forked child
+++    pid = waitpid(pid, NULL, 0);
+++    if (pid == -1)
+++        logerr("waitpid error: %s", strerror(errno));
+++}
+++
 ++static FILE *open_fopen_r_dyn(const char *path)
 ++{
 ++    FILE  *f;
 ++    pid_t pid;
 ++    int   pipefd[2];
-++    
+++    pthread_t thread;
+++    struct dyn_file_context* context = NULL;
+++
 ++    if (!access(path, X_OK)) {
 ++        debug(LOGOPT_NONE, "%s is executable, load it as dynamic file", path);
 ++
@@ -559,23 +603,21 @@ Index: backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
 ++            return NULL;
 ++        }
 ++
-++        pid = fork();
-++        if (pid < 0) {
-++            logerr(MODPREFIX "fork error");
+++        context = malloc(sizeof(*context));
+++        context->path = path;
+++        context->pread = pipefd[0];
+++        context->pwrite = pipefd[1];
+++
+++        if (pthread_create(&thread, NULL, run_dyn_file, (void *) context)) {
+++            logerr(MODPREFIX "pthread_create error: %s", strerror(errno));
+++            close(pipefd[0]);
+++            close(pipefd[1]);
+++            free(context);
 ++            return NULL;
 ++        }
-++
-++        if (pid == 0) { // execute the file
-++            close(pipefd[0]);
-++            dup2(pipefd[1], STDOUT_FILENO);
-++            close(pipefd[1]);
-++            execl(path, path, NULL);
-++            logerr(MODPREFIX "fail to execute %s", path);
-++            exit(255);	/* execl() failed */
-++        }
-++
-++        // wrap the pipe read endpoint, and return
-++        close(pipefd[1]);
+++        // from this point, context is managed by the run_dyn_file thread
+++        pthread_detach(thread);
+++        
 ++        f = fdopen(pipefd[0], "r");
 ++    }
 ++    else
@@ -591,11 +633,10 @@ Index: backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
 ++    return f;
 ++}
 ++
-++
 + int lookup_init(const char *mapfmt, int argc, const char *const *argv, void **context)
 + {
 + 	struct lookup_context *ctxt;
-+@@ -393,7 +441,7 @@
++@@ -393,7 +482,7 @@
 + 		return NSS_STATUS_UNAVAIL;
 + 	}
 + 
@@ -604,7 +645,7 @@ Index: backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
 + 	if (!f) {
 + 		error(logopt,
 + 		      MODPREFIX "could not open master map file %s",
-+@@ -609,7 +657,7 @@
++@@ -609,7 +698,7 @@
 + 		return NSS_STATUS_UNAVAIL;
 + 	}
 + 
@@ -613,7 +654,7 @@ Index: backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
 + 	if (!f) {
 + 		error(ap->logopt,
 + 		      MODPREFIX "could not open map file %s", ctxt->mapname);
-+@@ -704,7 +752,7 @@
++@@ -704,7 +793,7 @@
 + 
 + 	mc = source->mc;
 + 
@@ -622,7 +663,7 @@ Index: backfire/feeds/packages/utils/autofs/patches/208-dynamic-lookup-file
 + 	if (!f) {
 + 		error(ap->logopt,
 + 		      MODPREFIX "could not open map file %s", ctxt->mapname);
-+@@ -809,7 +857,7 @@
++@@ -809,7 +898,7 @@
 + 
 + 	mc = source->mc;
 + 
@@ -9723,7 +9764,7 @@ Index: backfire/feeds/packages/utils/autofs/patches/series
 ===================================================================
 --- /dev/null
 +++ backfire/feeds/packages/utils/autofs/patches/series
-@@ -0,0 +1,82 @@
+@@ -0,0 +1,83 @@
 +autofs-5.0.5-fix-included-map-read-fail-handling.patch
 +autofs-5.0.5-refactor-ldap-sasl-bind.patch
 +autofs-5.0.4-add-mount-wait-parameter.patch
@@ -9806,3 +9847,22 @@ Index: backfire/feeds/packages/utils/autofs/patches/series
 +206-disable-parsing-nsswitch
 +207-make-runtime-dep-commands-configurable
 +208-dynamic-lookup-file
++209-use-pthread-setmask-instead-of-sigprocmask
+Index: backfire/feeds/packages/utils/autofs/patches/209-use-pthread-setmask-instead-of-sigprocmask
+===================================================================
+--- /dev/null
++++ backfire/feeds/packages/utils/autofs/patches/209-use-pthread-setmask-instead-of-sigprocmask
+@@ -0,0 +1,13 @@
++Index: autofs-5.0.5/daemon/automount.c
++===================================================================
++--- autofs-5.0.5.orig/daemon/automount.c
+++++ autofs-5.0.5/daemon/automount.c
++@@ -1844,7 +1844,7 @@
++ 	sigdelset(&block_sigs, SIGILL);
++ 	sigdelset(&block_sigs, SIGFPE);
++ 	sigdelset(&block_sigs, SIGTRAP);
++-	sigprocmask(SIG_BLOCK, &block_sigs, NULL);
+++	pthread_sigmask(SIG_BLOCK, &block_sigs, NULL);
++ 
++ 	program = argv[0];
++ 

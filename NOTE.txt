@@ -7,6 +7,7 @@ TODO:
 	cls_basic vs. cls_flow ?
 
  2.0:
+	uClibc 0.9.32 (NPTL support)
 	macvlan
 	gpio/ssb/
 	swconfig
