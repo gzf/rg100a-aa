@@ -2,7 +2,10 @@ Q. 为什么制作这个固件
 A. 制作这个固件的目的是为了鱼和熊掌兼得，实现在RG100A-AA（BCM96358 VW2）
    上运行OpenWRT的同时能够使用该路由器自带的ADSL模块进行拨号。
    基本方法是将OpenWRT的根文件系统与DSL-2760的内核集成在一起。
-   
+  
+Q. 有教程吗？
+A. http://www.openwrt.org.cn/bbs/forum.php?mod=viewthread&tid=4423
+ 
 Q. 固件支持ADSL驱动吗？
 A. 支持。
 
@@ -83,8 +86,6 @@ A. 编辑/etc/config/wireless，将
     option disabled 1
    删除或者注释掉，并设置密码（option key），频道（option channel）
    以及SSID（option ssid），最后执行wifi up启动无线。
-   注意：目前固件只支持psk2（即WPA2-PSK）加密方式，如果需要其它的加密方法，请自行研究
-   /lib/wifi/broadcom.sh。
 
 Q. 无线配置项xxx怎么不起作用？
 A. 目前固件的无线配置脚本仅支持以下配置项：

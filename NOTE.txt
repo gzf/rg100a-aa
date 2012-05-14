@@ -1,5 +1,6 @@
 TODO:
  1.0:
+	multi ssid
 	gpioctl/userspace led
     imq/connlimit testing
 	xt_ipp2p/ipt_ipp2p
@@ -8,8 +9,8 @@ TODO:
 
  2.0:
 	uClibc 0.9.32 (NPTL support)
-	macvlan
-	gpio/ssb/
+	macvlan / backport-macvlan-prerequisite
+	gpio
 	swconfig
 	try upgrade to kernel 2.6.27 in neufbox
 	b43 driver

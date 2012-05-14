@@ -2,4 +2,5 @@
 #tun
 #ifb
 #autofs4
-#btn_hotplug
+#bcm96358vw2_btn
+#bcm96358vw2_led

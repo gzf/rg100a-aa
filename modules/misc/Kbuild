@@ -1,8 +1,11 @@
-obj-m := ipt_IPID.o btn_hotplug.o
+obj-m := ipt_IPID.o bcm96358vw2_btn.o bcm96358vw2_led.o
 
-btn_hotplug-y := button.o hotplug.o
+bcm96358vw2_btn-y := button.o hotplug.o
+bcm96358vw2_led-y := gpio_led.o
 
-CFLAGS_button.o = -I$(BCMROOT)/bcmdrivers/broadcom/include/$(BRCM_BOARD) \
-                  -I$(BCMROOT)/bcmdrivers/opensource/include/$(BRCM_BOARD) \
-                  -I$(BCMROOT)/shared/opensource/include/$(BRCM_BOARD)
+BCM_CFLAGS = -I$(BCMROOT)/bcmdrivers/broadcom/include/$(BRCM_BOARD) \
+             -I$(BCMROOT)/bcmdrivers/opensource/include/$(BRCM_BOARD) \
+             -I$(BCMROOT)/shared/opensource/include/$(BRCM_BOARD)
 
+CFLAGS_button.o = $(BCM_CFLAGS)
+CFLAGS_gpio_led.o = $(BCM_CFLAGS)
