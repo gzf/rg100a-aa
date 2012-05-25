@@ -96,7 +96,7 @@ static void __exit ext_intr_cleanup(void) {
 module_init(ext_intr_init);
 module_exit(ext_intr_cleanup);
 
-MODULE_DESCRIPTION("Button hotplug driver for BCM96358");
+MODULE_DESCRIPTION("Button hotplug driver for BCM96358VW2");
 MODULE_VERSION("0.1.0");
 MODULE_AUTHOR("Zhifeng Gu <guzhifeng1979@hotmail.com>");
 MODULE_LICENSE("GPL v2");

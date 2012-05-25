@@ -8,4 +8,4 @@ BCM_CFLAGS = -I$(BCMROOT)/bcmdrivers/broadcom/include/$(BRCM_BOARD) \
              -I$(BCMROOT)/shared/opensource/include/$(BRCM_BOARD)
 
 CFLAGS_button.o = $(BCM_CFLAGS)
-CFLAGS_gpio_led.o = $(BCM_CFLAGS)
+CFLAGS_gpio_led.o = $(BCM_CFLAGS) -I$(M)/linux/include
