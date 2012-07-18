@@ -69,31 +69,47 @@ enable_broadcom() {
         $WLCTL -i $device txpwr1 -o -d $txpower
     fi
 
+    local vifs ifname count
     config_get vifs $device vifs
     for vif in $vifs; do
-        setup_iface $vif
+        config_get ifname "$vif" device
+        count=`eval echo \\${${ifname}_COUNT}`
+        if [ -z "$count" ]; then
+            eval local ${ifname}_COUNT=0
+            count=0
+        else
+            eval ${ifname}_COUNT=\$\(\(${ifname}_COUNT + 1\)\)
+            count=$(($count + 1))
+        fi
+        echo $count
+        if [ $count -gt 0 ]; then
+            if [ `$WLCTL -i $ifname mbss` = 0 ]; then
+                $WLCTL -i $ifname mbss 1
+            fi
+            ifname=$ifname.$count
+        fi
+
+        setup_iface $vif $ifname
+        if [ $? -eq 0 ]; then
+            ifup_iface $vif $ifname
+        fi
     done
 
     $WLCTL -i $device up
-
-    for vif in $vifs; do
-        ifup_iface $vif
-    done
 }
 
 setup_iface() {
-    local vif="$1"
-    local ifname mode ssid bssid isolate
+    local vif="$1" ifname="$2"
+    local mode ssid bssid isolate
 
-    config_get ifname "$vif" device
     config_get mode "$vif" mode "ap"
     case $mode in
         ap)
             config_get isolate "$vif" isolate "0"
             config_get ssid "$vif" ssid
+            $WLCTL -i $ifname ssid $ssid
             $WLCTL -i $ifname ap 1
             $WLCTL -i $ifname ap_isolate $isolate
-            $WLCTL -i $ifname ssid $ssid
             ;;
         wds)
             config_get bssid "$vif" bssid
@@ -105,7 +121,7 @@ setup_iface() {
             return 1
             ;;
     esac
-    
+
     #
     # Next: deal with security
     #
@@ -194,8 +210,7 @@ setup_iface() {
 }
 
 ifup_iface() {
-    local vif="$1"
-	config_get ifname "$vif" device
+    local vif="$1" ifname="$2"
 
 	local net_cfg
 	net_cfg="$(find_net_config "$vif")"

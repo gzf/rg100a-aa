@@ -3,4 +3,5 @@ backports/bcm63xx_enet.ko
 openwrt/switch-core.ko
 openwrt/switch-robo.ko
 misc/ipt_IPID.ko
-misc/btn_hotplug.ko
+misc/bcm96358vw2_btn.ko
+misc/bcm96358vw2_gpio.ko
