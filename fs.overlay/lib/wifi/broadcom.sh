@@ -18,40 +18,45 @@ kill_nas() {
 }
 
 disable_broadcom() {
-	local device="$1"
-	set_wifi_down "$device"
+    local device="$1"
+    set_wifi_down "$device"
     kill_nas
-	$WLCTL -i "$device" down
-	(
-		include /lib/network
+    $WLCTL -i "$device" down
+    (
+        include /lib/network
 
-		# make sure the interfaces are down and removed from all bridges
-		for dev in $device ${device}.1 ${device}.2 ${device}.3; do
-			ifconfig "$dev" down 2>/dev/null >/dev/null && {
-				unbridge "$dev"
-			}
-		done
-	)
-	true
+        # make sure the interfaces are down and removed from all bridges
+        for dev in $device ${device}.1 ${device}.2 ${device}.3; do
+            ifconfig "$dev" down 2>/dev/null >/dev/null && {
+                unbridge "$dev"
+            }
+        done
+    )
+    true
 }
 
 enable_broadcom() {
     local device="$1"
-    local channel country macfilter maclist txpower
+    local channel country macfilter maclist txpower macaddr
 
+    kill_nas
+
+    $WLCTL -i $device phy_watchdog 0
+    $WLCTL -i $device mbss 1
+    
     config_get channel $device channel
     config_get country $device country
     config_get macfilter $device macfilter
     config_get txpower $device txpower
+    config_get macaddr $device macaddr
 
-    kill_nas
-
+    $WLCTL -i $device channel ${channel:-11}
     if [ -n "$country" ]; then
         $WLCTL -i $device country $country
     fi
-
-    $WLCTL -i $device channel ${channel:-11}
-
+    if [ -n "$macaddr" ]; then
+        $WLCTL -i $device bssid $macaddr
+    fi
     case $macfilter in
         deny)
             $WLCTL -i $device macmode 1 ;;
@@ -69,33 +74,31 @@ enable_broadcom() {
         $WLCTL -i $device txpwr1 -o -d $txpower
     fi
 
-    local vifs ifname count
+    local vifs ifdev ifname count
     config_get vifs $device vifs
     for vif in $vifs; do
-        config_get ifname "$vif" device
-        count=`eval echo \\${${ifname}_COUNT}`
+        config_get ifdev "$vif" device
+        count=`eval echo \\${${ifdev}_COUNT}`
         if [ -z "$count" ]; then
-            eval local ${ifname}_COUNT=0
+            eval local ${ifdev}_COUNT=0
             count=0
-        else
-            eval ${ifname}_COUNT=\$\(\(${ifname}_COUNT + 1\)\)
-            count=$(($count + 1))
         fi
-        echo $count
         if [ $count -gt 0 ]; then
-            if [ `$WLCTL -i $ifname mbss` = 0 ]; then
-                $WLCTL -i $ifname mbss 1
-            fi
-            ifname=$ifname.$count
+            ifname=$ifdev.$count
+        else
+            ifname=$ifdev
         fi
 
         setup_iface $vif $ifname
         if [ $? -eq 0 ]; then
+            $WLCTL -i $device bss -C $count up
             ifup_iface $vif $ifname
         fi
+
+        eval ${ifdev}_COUNT=\$\(\(${ifdev}_COUNT + 1\)\)
     done
 
-    $WLCTL -i $device up
+    $WLCTL -i $device phy_watchdog 1
 }
 
 setup_iface() {

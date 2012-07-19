@@ -86,6 +86,7 @@ A. 编辑/etc/config/wireless，将
     option disabled 1
    删除或者注释掉，并设置密码（option key），频道（option channel）
    以及SSID（option ssid），最后执行wifi up启动无线。
+   如果要配置MultiSSID，只需配置多个wifi-iface即可。
 
 Q. 无线配置项xxx怎么不起作用？
 A. 目前固件的无线配置脚本仅支持以下配置项：
@@ -93,11 +94,13 @@ A. 目前固件的无线配置脚本仅支持以下配置项：
 	channel
 	macfilter
 	maclist
+    macaddr (如果启动wifi后wl0的mac变成00:00:00:00:00:00，可以尝试该选项)
 	ssid
+    bssid (仅在wds模式下有效)
 	key
 	isolate
     txpower
-	mode (仅支持ap)
+	mode (支持ap，wds)
 	encryption （支持psk2,psk,wep,none）
    如果需要其它配置项，请根据wl命令的帮助信息自行修改/lib/wifi/broadcom.sh。
 
