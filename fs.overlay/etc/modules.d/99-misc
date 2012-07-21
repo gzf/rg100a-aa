@@ -1,6 +1,6 @@
+bcm96358vw2_btn
+bcm96358vw2_gpio
 #loop
 #tun
 #ifb
 #autofs4
-#bcm96358vw2_btn
-#bcm96358vw2_gpio

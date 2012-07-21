@@ -1,3 +1,7 @@
+2012-07-21:
+	* multiple ssid
+	* cleanup /dev
+
 2012-03-15:
 	* disable CONFIG_IP_ROUTE_MULTIPATH_CACHED
 

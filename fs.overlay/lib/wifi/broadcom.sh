@@ -21,6 +21,9 @@ disable_broadcom() {
     local device="$1"
     set_wifi_down "$device"
     kill_nas
+    for index in  0 1 2 3; do
+        $WLCTL -i "$device" bss -C $index down
+    done
     $WLCTL -i "$device" down
     (
         include /lib/network
@@ -35,6 +38,15 @@ disable_broadcom() {
     true
 }
 
+gen_ifname() {
+    local device=$1 index=$2
+    if [ $index -gt 0 ]; then
+        echo $device.$index
+    else
+        echo $device
+    fi
+}
+
 enable_broadcom() {
     local device="$1"
     local channel country macfilter maclist txpower macaddr
@@ -43,6 +55,7 @@ enable_broadcom() {
 
     $WLCTL -i $device phy_watchdog 0
     $WLCTL -i $device mbss 1
+    $WLCTL -i $device ap 1
     
     config_get channel $device channel
     config_get country $device country
@@ -56,6 +69,8 @@ enable_broadcom() {
     fi
     if [ -n "$macaddr" ]; then
         $WLCTL -i $device bssid $macaddr
+    else
+        $WLCTL -i $device bssid `$WLCTL -i $device cur_etheraddr`
     fi
     case $macfilter in
         deny)
@@ -74,31 +89,33 @@ enable_broadcom() {
         $WLCTL -i $device txpwr1 -o -d $txpower
     fi
 
-    local vifs ifdev ifname count
+    local vifs ifname count ssid ifupcmd
     config_get vifs $device vifs
     for vif in $vifs; do
-        config_get ifdev "$vif" device
-        count=`eval echo \\${${ifdev}_COUNT}`
+        count=`eval echo \\${${device}_COUNT}`
         if [ -z "$count" ]; then
-            eval local ${ifdev}_COUNT=0
+            eval local ${device}_COUNT=0
             count=0
         fi
-        if [ $count -gt 0 ]; then
-            ifname=$ifdev.$count
-        else
-            ifname=$ifdev
-        fi
 
+        config_get ssid "$vif" ssid
+        $WLCTL -i $device ssid -C $count $ssid
+
+        ifname=$(gen_ifname $device $count)
         setup_iface $vif $ifname
         if [ $? -eq 0 ]; then
             $WLCTL -i $device bss -C $count up
-            ifup_iface $vif $ifname
+            ifupcmd="$ifupcmd ifup_iface $vif $ifname;"
         fi
 
-        eval ${ifdev}_COUNT=\$\(\(${ifdev}_COUNT + 1\)\)
+        eval ${device}_COUNT=\$\(\(${device}_COUNT + 1\)\)
     done
 
     $WLCTL -i $device phy_watchdog 1
+    
+    if [ -n "$ifupcmd" ]; then
+        eval $ifupcmd
+    fi
 }
 
 setup_iface() {
@@ -109,9 +126,6 @@ setup_iface() {
     case $mode in
         ap)
             config_get isolate "$vif" isolate "0"
-            config_get ssid "$vif" ssid
-            $WLCTL -i $ifname ssid $ssid
-            $WLCTL -i $ifname ap 1
             $WLCTL -i $ifname ap_isolate $isolate
             ;;
         wds)
@@ -213,10 +227,9 @@ setup_iface() {
 }
 
 ifup_iface() {
-    local vif="$1" ifname="$2"
+    local vif=$1 ifname=$2
+	local net_cfg="$(find_net_config $vif)"
 
-	local net_cfg
-	net_cfg="$(find_net_config "$vif")"
 	[ -z "$net_cfg" ] || {
 	    set_wifi_up $vif $ifname
 		start_net $ifname $net_cfg `$WLCTL -i $ifname bssid`
@@ -224,16 +237,18 @@ ifup_iface() {
 }
 
 detect_broadcom() {
-	local i=-1
+    local i=-1
 
-	while [ -f /proc/net/wl$((++i)) ]; do
-		config_get type wl${i} type
-		[ "$type" = broadcom ] && continue
-		cat <<EOF
+    while [ -f /proc/net/wl$((++i)) ]; do
+        cat <<EOF
 config wifi-device  wl${i}
     option type     broadcom
     option channel  11
-
+    #option country CN
+    #option txpower 20
+    #option macaddr   12:34:56:78:9A:BC
+    #option macfilter allow
+    #option maclist   '12:34:56:78:90:ED 35:46:80:E5:06:33'
     # REMOVE THIS LINE TO ENABLE WIFI:
     option disabled 1
 
@@ -244,6 +259,15 @@ config wifi-iface
     option ssid        OpenWrt${i}
     option encryption  psk2
     option key         secret-key
+    #option isolate    1
+
+#config wifi-iface
+#    option device      wl${i}
+#    option network     lan
+#    option mode        ap
+#    option ssid        WEPdemo${i}
+#    option encryption  wep+shared
+#    option key         short
 EOF
-	done
+    done
 }

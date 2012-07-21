@@ -6,6 +6,9 @@
 
 mk_bcm_devs() {
 	mknod /dev/brcmboard c 206 0
+    mknod /dev/bcmadsl0 c 208 0
+    mknod /dev/bcm c 212 0
+    mknod /dev/bcmxtmcfg0 c 228 0
 }
 
 boot_hook_add preinit_essential mk_bcm_devs
