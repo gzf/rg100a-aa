@@ -111,6 +111,7 @@ enable_broadcom() {
         eval ${device}_COUNT=\$\(\(${device}_COUNT + 1\)\)
     done
 
+    $WLCTL -i $device up
     $WLCTL -i $device phy_watchdog 1
     
     if [ -n "$ifupcmd" ]; then
