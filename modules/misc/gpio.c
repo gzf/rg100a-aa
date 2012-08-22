@@ -7,7 +7,7 @@
 #include <boardparms.h>
 #include <linux/gpio_dev.h>
 
-static const int MAX_GPIO_PIN = 36;
+static const int MAX_GPIO_PIN = 39;
 
 static int gpio_open(struct inode *inode, struct file *filp) {
     return 0;
@@ -21,12 +21,11 @@ static int gpio_ioctl(struct inode *inode, struct file * filep, unsigned int cmd
     volatile unsigned long *gpio_dir_reg = &GPIO->GPIODir;
     volatile unsigned long *gpio_io_reg  = &GPIO->GPIOio;
     unsigned long mask;
-    unsigned long gpio_pin = gpio & GPIO_NUM_TOTAL_BITS_MASK;
 
-    if (gpio_pin > MAX_GPIO_PIN)
+    if (gpio > MAX_GPIO_PIN)
         return -ENODEV;
     
-    if (gpio_pin < 32) {
+    if (gpio < 32) {
         mask = GPIO_NUM_TO_MASK(gpio);
     }
     else {
@@ -43,7 +42,7 @@ static int gpio_ioctl(struct inode *inode, struct file * filep, unsigned int cmd
         *gpio_io_reg |= mask;
         break;
     case GPIO_GET:
-        return (*gpio_io_reg  &= mask) ? 1 : 0;
+        return (*gpio_io_reg &= mask) ? 1 : 0;
     case GPIO_DIR_IN:
         *gpio_dir_reg &= ~mask;
         break;

@@ -1,0 +1,52 @@
+Index: DSL-2760U/kernel/linux/arch/mips/brcm-boards/bcm963xx/setup.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/arch/mips/brcm-boards/bcm963xx/setup.c
++++ DSL-2760U/kernel/linux/arch/mips/brcm-boards/bcm963xx/setup.c
+@@ -644,37 +644,37 @@
+     GPIO->GPIOMode = 0;
+ 
+     /* Enable Serial LED Interface */
+-    GPIO->GPIOMode |= GPIO_MODE_SERIAL_LED_OVERLAY;
+-    GPIO->GPIODir |= 0x00c0;
++    //GPIO->GPIOMode |= GPIO_MODE_SERIAL_LED_OVERLAY;
++    //GPIO->GPIODir |= 0x00c0;
+ 
+     if( BpGetGPIOverlays(&GPIOOverlays) == BP_SUCCESS ) {
+-
++        /*
+         if (GPIOOverlays & BP_OVERLAY_LED) {
+-            /* Enable LED Outputs */
++            // Enable LED Outputs
+             GPIO->GPIOMode |= GPIO_MODE_LED_OVERLAY;
+             GPIO->GPIODir |= 0x000f;
+         }
+ 
+         if (GPIOOverlays & BP_OVERLAY_UTOPIA) {
+-            /* Enable UTOPIA interface */
++            // Enable UTOPIA interface
+             GPIO->GPIOMode |= GPIO_MODE_UTOPIA_OVERLAY ;
+             PERF->blkEnables |= SAR_CLK_EN;
+         }
+ 
+         if (GPIOOverlays & BP_OVERLAY_UART1) {
+-            /* Enable secondary UART interface */
++            // Enable secondary UART interface
+             GPIO->GPIOMode |= GPIO_MODE_UART1_OVERLAY;
+             GPIO->GPIODir |= 0x20000000;
+         }
+ 
+         if (GPIOOverlays & BP_OVERLAY_SPI_EXT_CS) {
+-            /* Enable Overlay for SPI SS Pins */
++            // Enable Overlay for SPI SS Pins
+             GPIO->GPIOMode |= GPIO_MODE_SPI_SS_OVERLAY;
+-            /* Enable SPI Slave Select as Output Pins */
+-            /* GPIO 32 is SS2, GPIO 33 is SS3 */
++            // Enable SPI Slave Select as Output Pins
++            // GPIO 32 is SS2, GPIO 33 is SS3
+             GPIO->GPIODir_high |= 0x0003;
+         }
+-
++        */
+ #if defined(CONFIG_PCI)
+         if (GPIOOverlays & BP_OVERLAY_PCI) {
+             mpi_init();
