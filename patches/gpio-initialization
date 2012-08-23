@@ -50,3 +50,227 @@ Index: DSL-2760U/kernel/linux/arch/mips/brcm-boards/bcm963xx/setup.c
  #if defined(CONFIG_PCI)
          if (GPIOOverlays & BP_OVERLAY_PCI) {
              mpi_init();
+Index: DSL-2760U/bcmdrivers/opensource/char/board/bcm963xx/impl1/board.c
+===================================================================
+--- DSL-2760U.orig/bcmdrivers/opensource/char/board/bcm963xx/impl1/board.c
++++ DSL-2760U/bcmdrivers/opensource/char/board/bcm963xx/impl1/board.c
+@@ -287,12 +287,14 @@
+      return (map_irq) ;
+ }
+ 
++/*
+ #ifdef ENABLE_USB_LED1
+ extern int usbledflag;
+ extern int usbled1flag;
+ extern int usbled2flag;
+ int usbLedHost[] = {kLedUsbHost, kLedUsbHost2}; 
+ #endif
++*/
+ static int __init brcm_board_init( void )
+ {
+     typedef int (*BP_LED_FUNC) (unsigned short *);
+@@ -428,6 +430,7 @@
+         boardLedInit(LedMapping);
+         g_ledInitialized = 1;
+ 
++/*
+ #ifdef ENABLE_USB_LED1		
+ 	 if ((1 != usbledflag))
+ 	 {
+@@ -440,6 +443,7 @@
+ 		usbledflag = 1;
+ 	 }
+ #endif
++*/
+ 
+ //        if( BpGetResetToDefaultExtIntr(&rstToDflt_irq) == BP_SUCCESS )
+ //        {
+Index: DSL-2760U/kernel/linux/drivers/usb/core/hcd.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/drivers/usb/core/hcd.c
++++ DSL-2760U/kernel/linux/drivers/usb/core/hcd.c
+@@ -82,10 +82,12 @@
+ 
+ 
+ #if defined(CONFIG_MIPS_BRCM) 
++/*
+ #ifdef ENABLE_USB_LED1
+ #include "board.h" 
+ extern int usbLed[]; 
+ #endif
++*/
+ #endif 
+ 
+ /* host controllers we manage */
+@@ -934,11 +936,11 @@
+ 		return -ENODEV;
+ 
+ #if defined(CONFIG_MIPS_BRCM) 
+-#ifdef ENABLE_USB_LED1
+-       int port = 0; 
+-	if (sscanf((&urb->dev->dev)->bus_id, "1-%d", &port) == 1) 
+-	kerSysLedCtrl(usbLed[port-1], kLedStateBlinkOnce); 
+-#endif	
++//#ifdef ENABLE_USB_LED1
++//       int port = 0; 
++//	if (sscanf((&urb->dev->dev)->bus_id, "1-%d", &port) == 1) 
++//	kerSysLedCtrl(usbLed[port-1], kLedStateBlinkOnce); 
++//#endif	
+ #endif 
+ 
+ 	usbmon_urb_submit(&hcd->self, urb);
+Index: DSL-2760U/kernel/linux/drivers/usb/core/hub.c
+===================================================================
+--- DSL-2760U.orig/kernel/linux/drivers/usb/core/hub.c
++++ DSL-2760U/kernel/linux/drivers/usb/core/hub.c
+@@ -94,6 +94,7 @@
+ MODULE_PARM_DESC (blinkenlights, "true to cycle leds on hubs");
+ 
+ #if defined(CONFIG_MIPS_BRCM) 
++/*
+ 	#include "board.h" 
+ #ifdef ENABLE_USB_LED1
+ #ifndef ENABLE_USB_LED2
+@@ -102,6 +103,7 @@
+ 	int usbLed[] = {kLedUsbHost, kLedUsbHost2}; 
+ #endif
+ #endif
++*/
+ #endif 
+ 
+ /*
+@@ -1208,12 +1210,14 @@
+ 	usb_lock_device(udev);
+ 
+ #if defined(CONFIG_MIPS_BRCM) 
++/*
+ #ifdef ENABLE_USB_LED1
+ 	int port = 0; 
+ //	if (sscanf((&udev->dev)->bus_id, "1-%d", &port) == 1) 
+-       if (sscanf( &(&udev->dev)->bus_id[2], "%d", &port) == 1) 		
++      if (sscanf( &(&udev->dev)->bus_id[2], "%d", &port) == 1) 		
+ 	kerSysLedCtrl(usbLed[port-1], kLedStateOff); 
+ #endif	
++*/
+ #endif 
+ 
+ 	/* Free up all the children before we remove this device */
+@@ -2114,11 +2118,12 @@
+  * newly detected device that is not accessible through any global
+  * pointers, it's not necessary to lock the device.
+  */
+-#ifdef ENABLE_USB_LED1 
+-int usbledflag=0;
+-int usbled1flag=0;
+-int usbled2flag=0;
+-#endif
++//#ifdef ENABLE_USB_LED1 
++//int usbledflag=0;
++//int usbled1flag=0;
++//int usbled2flag=0;
++//#endif
++
+ static int
+ hub_port_init (struct usb_hub *hub, struct usb_device *udev, int port1,
+ 		int retry_counter)
+@@ -2203,6 +2208,7 @@
+ 		  udev->bus->controller->driver->name, udev->devnum);
+ 
+ #if defined(CONFIG_MIPS_BRCM) 
++/*
+ #ifdef ENABLE_USB_LED1
+ 	if (1 != usbledflag)
+ 	{
+@@ -2215,6 +2221,7 @@
+ 	kerSysLedCtrl(usbLed[port1-1], kLedStateOn); 
+ 
+ #endif
++*/
+ #endif 
+ 
+ 	/* Set up TT records, if needed  */
+Index: DSL-2760U/targets/DSL-2760U/DSL-2760U
+===================================================================
+--- DSL-2760U.orig/targets/DSL-2760U/DSL-2760U
++++ DSL-2760U/targets/DSL-2760U/DSL-2760U
+@@ -283,7 +283,7 @@
+ #ENABLE_SERIAL_LED=y
+ BUILD_USB_LED=y
+ ENABLE_USB_LED1=y
+-ENABLE_USB_LED2=y
++#ENABLE_USB_LED2=y
+ CUSTOM_UPNP_MANUFACTURER="DLink"
+ PPPD_VERSION=2.4.3
+ CUSTOM_FIRMWARE_NAME="DSL-2760U-RU_1.04_$(shell date '+%m%d%Y')"
+Index: DSL-2760U/shared/opensource/boardparms/bcm963xx/boardparms.c
+===================================================================
+--- DSL-2760U.orig/shared/opensource/boardparms/bcm963xx/boardparms.c
++++ DSL-2760U/shared/opensource/boardparms/bcm963xx/boardparms.c
+@@ -1129,16 +1129,16 @@
+ 		BP_NOT_DEFINED,                         /* usGpioUartCts */
+ 
+ 		BP_GPIO_22_AL,                          /* usGpioLedAdsl */
+-		BP_GPIO_22_AH,                         	/* usGpioLedAdslFail */
++		BP_NOT_DEFINED,                        	/* usGpioLedAdslFail */
+ 		BP_NOT_DEFINED,                         /* usGpioSecLedAdsl */
+ 		BP_NOT_DEFINED,                         /* usGpioSecLedAdslFail */
+-		BP_SERIAL_GPIO_7_AL,                    /* usGpioLedSesWireless */
++		BP_GPIO_24_AL,                          /* usGpioLedSesWireless */
+ 		BP_NOT_DEFINED,                         /* usGpioLedHpna */
+-		BP_GPIO_29_AH,                         	/* usGpioLedWanData */
+-		BP_GPIO_29_AH,                         	/* usGpioLedPpp */
+-		BP_GPIO_30_AH,                          /* usGpioLedPppFail */
+-		BP_GPIO_5_AL,                           /* usGpioLedBlPowerOn */
+-    BP_GPIO_4_AL,                           /* usGpioLedBlStop */
++		BP_GPIO_8_AL,                         	/* usGpioLedWanData */
++		BP_GPIO_8_AL,                         	/* usGpioLedPpp */
++		BP_NOT_DEFINED,                         /* usGpioLedPppFail */
++		BP_GPIO_4_AH,                           /* usGpioLedBlPowerOn */
++        BP_NOT_DEFINED,                           /* usGpioLedBlStop */
+ 		BP_NOT_DEFINED,                         /* usGpioBondingSecondaryReset */
+ 
+ 		BP_HW_DEFINED,                          /* usExtIntrAdslDyingGasp */
+@@ -1167,15 +1167,15 @@
+ 		BP_NOT_DEFINED,                       	/* usGpioVoipIntr */
+ 		BP_NOT_DEFINED,                       	/* usGpioLedVoip */
+ 		BP_NOT_DEFINED,                       	/* usCsVoip */
+-		BP_SERIAL_GPIO_0_AL,                  	/* usGpioVoip1Led */
++		BP_NOT_DEFINED,                     	/* usGpioVoip1Led */
+ 		BP_NOT_DEFINED,                       	/* usGpioVoip1LedFail */
+ 		BP_GPIO_10_AH,                        	/* usGpioSlic0Relay */
+ 		BP_GPIO_12_AH,                        	/* usGpioSlic0Reset */
+-		BP_SERIAL_GPIO_2_AL,                  	/* usGpioVoip2Led */
++		BP_NOT_DEFINED,                     	/* usGpioVoip2Led */
+ 		BP_NOT_DEFINED,                       	/* usGpioVoip2LedFail */
+ 		BP_GPIO_11_AH,                        	/* usGpioSlic1Relay */
+ 		BP_GPIO_12_AH,                        	/* usGpioSlic1Reset */
+-		BP_SERIAL_GPIO_4_AL,                  	/* usGpioPotsLed */
++		BP_NOT_DEFINED,                     	/* usGpioPotsLed */
+ 		BP_GPIO_13_AH,                        	/* usGpioPotsReset */
+ 		BP_NOT_DEFINED},                      	/* usGpioDectLed */
+ 		{BP_VOIP_NO_DSP}},                     	/* ucDspType */
+@@ -1184,7 +1184,7 @@
+ 		BP_NOT_DEFINED,                         /* usGpioWirelessPowerDown */
+ 		{BP_AFE_DEFAULT, BP_AFE_DEFAULT},       /* ulAfeIds */
+ #ifdef ENABLE_USB_LED1    //lege add for usb led 090609
+-		BP_GPIO_31_AL,        /* usGpioLedUsbHost */ 
++		BP_GPIO_0_AL,         /* usGpioLedUsbHost */ 
+ #endif
+ #ifdef ENABLE_USB_LED2		
+ 		BP_GPIO_12_AL,        /* usGpioLedUsbHost2 */ 
+@@ -3956,6 +3956,7 @@
+     return( nRet );
+ } /* BpGetUsbHostLedGpio */
+ 
++#ifdef ENABLE_USB_LED2
+ int BpGetUsbHostLedGpio2( unsigned short *pusValue )
+ {
+     int nRet;
+@@ -3982,6 +3983,7 @@
+     return( nRet );
+ } /* BpGetUsbHostLedGpio2 */
+ #endif
++#endif
+ 
+ /*added by Lisa, 20090628, for power led*/
+ /**************************************************************************
