@@ -1,9 +1,5 @@
 EXTRA_CFLAGS += -I$(M)/linux/include
 
-ifneq (,$(macvlan))
-	DEVMODS += macvlan.o
-endif
-
-obj-m := xt_connlimit.o bcm63xx_enet.o $(DEVMODS)
+obj-m := xt_connlimit.o bcm63xx_enet.o
 
 bcm63xx_enet-y := bcm63xx_enet_bp.o clk.o cpu.o dev-enet.o board_bcm963xx.o
