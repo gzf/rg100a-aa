@@ -4,3 +4,4 @@ extra/bcmxtmcfg.ko
 extra/bcmxtmrt.ko
 extra/pktflow.ko
 extra/wl.ko
+extra/bcm_enet.ko
