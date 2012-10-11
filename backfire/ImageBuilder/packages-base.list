@@ -46,7 +46,6 @@ kmod-usb-serial-option
 kmod-loop
 kmod-ifb
 kmod-tun
-kmod-ebtables
 kmod-ipt-nat-extra
 kmod-ipt-conntrack-extra
 kmod-ipt-imq

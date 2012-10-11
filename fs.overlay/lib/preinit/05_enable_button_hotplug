@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
+# Date: 2012/09
+# License: GPL
+
+preinit_enable_button() {
+	insmod bcm96358vw2_btn
+}
+
+boot_hook_add preinit_main preinit_enable_button
+

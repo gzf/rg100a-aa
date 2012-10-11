@@ -51,11 +51,9 @@ enable_broadcom() {
     local device="$1"
     local channel country macfilter maclist txpower macaddr
 
-    kill_nas
-
     $WLCTL -i $device phy_watchdog 0
-    $WLCTL -i $device mbss 1
-    $WLCTL -i $device ap 1
+    $WLCTL -i $device down
+    kill_nas
     
     config_get channel $device channel
     config_get country $device country
@@ -63,15 +61,15 @@ enable_broadcom() {
     config_get txpower $device txpower
     config_get macaddr $device macaddr
 
+    $WLCTL -i $device mbss 1
     $WLCTL -i $device channel ${channel:-11}
+    if [ -n "$macaddr" ]; then
+        $WLCTL -i $device cur_etheraddr $macaddr
+    fi
     if [ -n "$country" ]; then
         $WLCTL -i $device country $country
     fi
-    if [ -n "$macaddr" ]; then
-        $WLCTL -i $device bssid $macaddr
-    else
-        $WLCTL -i $device bssid `$WLCTL -i $device cur_etheraddr`
-    fi
+
     case $macfilter in
         deny)
             $WLCTL -i $device macmode 1 ;;
@@ -89,34 +87,25 @@ enable_broadcom() {
         $WLCTL -i $device txpwr1 -o -d $txpower
     fi
 
-    local vifs ifname count ssid ifupcmd
-    config_get vifs $device vifs
-    for vif in $vifs; do
-        count=`eval echo \\${${device}_COUNT}`
-        if [ -z "$count" ]; then
-            eval local ${device}_COUNT=0
-            count=0
-        fi
-
-        config_get ssid "$vif" ssid
-        $WLCTL -i $device ssid -C $count $ssid
-
-        ifname=$(gen_ifname $device $count)
-        setup_iface $vif $ifname
-        if [ $? -eq 0 ]; then
-            $WLCTL -i $device bss -C $count up
-            ifupcmd="$ifupcmd ifup_iface $vif $ifname;"
-        fi
-
-        eval ${device}_COUNT=\$\(\(${device}_COUNT + 1\)\)
-    done
-
     $WLCTL -i $device up
     $WLCTL -i $device phy_watchdog 1
-    
-    if [ -n "$ifupcmd" ]; then
-        eval $ifupcmd
-    fi
+
+    local vifs ifname ssid count=0
+    config_get vifs $device vifs
+    for vif in $vifs; do
+        config_get ssid "$vif" ssid
+        $WLCTL -i $device ssid -C $count $ssid
+        $WLCTL -i $device bss -C $count up
+        
+        ifname=$(gen_ifname $device $count)
+        nascmd=""
+        setup_iface $vif $ifname
+        ifup_iface $vif $ifname
+        # nas should be started after the interface has been brought up
+        [ -n "$nascmd" ] && eval $nascmd
+
+        count=$((count + 1))
+    done
 }
 
 setup_iface() {
@@ -126,6 +115,7 @@ setup_iface() {
     config_get mode "$vif" mode "ap"
     case $mode in
         ap)
+            $WLCTL -i $ifname ap 1
             config_get isolate "$vif" isolate "0"
             $WLCTL -i $ifname ap_isolate $isolate
             ;;
@@ -222,8 +212,8 @@ setup_iface() {
         netcfg="$(find_net_config "$vif")"
 	    bridge="$(bridge_interface "$netcfg")"
 
-		nas -P /var/run/nas.$ssid.pid ${bridge:+ -l $bridge} -i $ifname \
-            -A -m $wpa -w $wsec -s $ssid -g 3600 $nasopts &
+		nascmd="nas -P /var/run/nas.$ssid.pid ${bridge:+ -l $bridge} -i $ifname \
+            -A -m $wpa -w $wsec -s $ssid -g 3600 $nasopts &"
 	}
 }
 

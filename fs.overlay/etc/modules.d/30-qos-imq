@@ -3,3 +3,6 @@
 #ip_tables
 #iptable_mangle
 #ipt_IMQ
+#ip6_tables
+#ip6table_mangle
+#ip6t_IMQ

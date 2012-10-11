@@ -16,7 +16,7 @@ Index: backfire/feeds/packages/utils/autofs/Makefile
 +
 +PKG_NAME:=autofs
 +PKG_VERSION:=5.0.5
-+PKG_RELEASE:=2
++PKG_RELEASE:=3~bf
 +
 +PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 +PKG_SOURCE_URL:=http://www.kernel.org/pub/linux/daemons/autofs/v5
@@ -410,9 +410,9 @@ Index: backfire/feeds/packages/utils/autofs/files/direct.fstab
 +    config_get label "$cfg" label
 +    config_get uuid "$cfg" uuid
 +    if [ -n "$uuid" ] && blkid | grep -q UUID=\"$uuid\"; then
-+        device="UUID=$uuid"
++        device=`blkid | grep UUID=\"$uuid\" | awk -F: '{print $1}'`
 +    elif [ -n "$label" ] && blkid | grep -q LABEL=\"$label\"; then
-+        device="LABEL=$label"
++        device=`blkid | grep LABEL=\"$label\" | awk -F: '{print $1}'`
 +    elif [ -z "$device" ] || ! blkid | grep -q ^$device; then
 +        return
 +    fi
@@ -689,7 +689,7 @@ Index: backfire/feeds/packages/utils/autofs/files/autofs.sh
 +    if [ ! -e $AUTOMOUNT_PIDFILE ]; then
 +        return 1
 +    fi
-+    ps -p `cat $AUTOMOUNT_PIDFILE` &> /dev/null
++    ps | grep -q -e "^[ ]*`cat $AUTOMOUNT_PIDFILE`"
 +    return $?
 +}
 +

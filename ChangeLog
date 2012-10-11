@@ -1,3 +1,9 @@
+2012-09-26:
+	* add 11-ip6tables
+
+2012-09-21:
+	* insmod button driver in preinit script to enable failsafe mode
+
 2012-08-22:
 	* gpio driver
 
