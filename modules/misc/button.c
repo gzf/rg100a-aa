@@ -47,6 +47,11 @@ static int general_isr(int irq, void* dev_id) {
             break;
     if (i == NUM_OF_EXTIRQ)
         return IRQ_NONE;
+    // if the button is pushed when the driver is loading, 
+    // the function maybe called again and again without re-enabling IRQs
+    // just ignore the unexpected calls
+    if (timer_pending(&irq_timers[i]))
+        return IRQ_HANDLED;
 
     if (begin[i] == 0) {
         button_hotplug_create_event(btn_names[i], 0, 1);
@@ -77,6 +82,7 @@ static int __init ext_intr_init(void) {
         init_timer(&rel_timers[i]);
         begin[i] = 0;
         sprintf(btn_names[i], "BTN_%02d", ext_irqs[i]);
+        BcmHalInterruptDisable(ext_irqs[i]);
         BcmHalMapInterrupt(general_isr, 0, ext_irqs[i]);
         BcmHalInterruptEnable(ext_irqs[i]);
     }
@@ -97,6 +103,6 @@ module_init(ext_intr_init);
 module_exit(ext_intr_cleanup);
 
 MODULE_DESCRIPTION("Button hotplug driver for BCM96358VW2");
-MODULE_VERSION("0.1.0");
+MODULE_VERSION("0.2.0");
 MODULE_AUTHOR("Zhifeng Gu <guzhifeng1979@hotmail.com>");
 MODULE_LICENSE("GPL v2");
