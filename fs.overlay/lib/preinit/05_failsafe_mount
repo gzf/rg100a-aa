@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Author: Zhifeng Gu <guzhifeng1979@hotmail.com>
+# Date: 2012/10
+# License: GPL
+
+check_failsafe_mount() {
+    check_skip || [ "$FAILSAFE" = true ] && {
+	    echo "switching to failsafe tmpfs"
+	    mount -t tmpfs failsafe /overlay
+	    fopivot /overlay /rom && pi_mount_skip_next=true
+    }
+}
+
+boot_hook_add preinit_mount_root check_failsafe_mount

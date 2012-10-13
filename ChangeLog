@@ -1,3 +1,9 @@
+2012-10-13:
+	* make a new failsafe mode that run init with a tmpfs as /overlay
+
+2012-10-12:
+	* fix bug in button driver
+
 2012-09-26:
 	* add 11-ip6tables
 
