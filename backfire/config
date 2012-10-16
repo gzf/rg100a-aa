@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # OpenWrt version: Backfire (r29638)
-# Wed May  9 16:35:00 2012
+# Tue Oct 16 23:15:58 2012
 #
 CONFIG_HAVE_DOT_CONFIG=y
 # CONFIG_TARGET_ppc40x is not set
@@ -1186,6 +1186,7 @@ CONFIG_PACKAGE_luci-app-firewall=m
 # CONFIG_PACKAGE_luci-app-meshwizard is not set
 # CONFIG_PACKAGE_luci-app-mmc-over-gpio is not set
 # CONFIG_PACKAGE_luci-app-multiwan is not set
+# CONFIG_PACKAGE_luci-app-mwan3 is not set
 # CONFIG_PACKAGE_luci-app-ntpc is not set
 # CONFIG_PACKAGE_luci-app-openvpn is not set
 # CONFIG_PACKAGE_luci-app-p2pblock is not set
@@ -1654,48 +1655,6 @@ CONFIG_PACKAGE_kmod-usb2=m
 # CONFIG_PACKAGE_uacctd is not set
 # CONFIG_PACKAGE_uacctd-mysql is not set
 # CONFIG_PACKAGE_uacctd-sqlite is not set
-
-#
-# webif
-#
-# CONFIG_PACKAGE_webif is not set
-# CONFIG_PACKAGE_webif-applications is not set
-# CONFIG_PACKAGE_webif-batman is not set
-# CONFIG_PACKAGE_webif-fonheartbeat is not set
-# CONFIG_PACKAGE_webif-freeloader is not set
-# CONFIG_PACKAGE_webif-freeloader-lang-cs is not set
-# CONFIG_PACKAGE_webif-hotspot is not set
-# CONFIG_PACKAGE_webif-iw-lua is not set
-# CONFIG_PACKAGE_webif-iw-lua-chillispot is not set
-# CONFIG_PACKAGE_webif-iw-lua-openssl is not set
-# CONFIG_PACKAGE_webif-iw-lua-openvpn is not set
-# CONFIG_PACKAGE_webif-lang-ca is not set
-# CONFIG_PACKAGE_webif-lang-cs is not set
-# CONFIG_PACKAGE_webif-lang-da is not set
-# CONFIG_PACKAGE_webif-lang-de is not set
-# CONFIG_PACKAGE_webif-lang-ee is not set
-# CONFIG_PACKAGE_webif-lang-es is not set
-# CONFIG_PACKAGE_webif-lang-fr is not set
-# CONFIG_PACKAGE_webif-lang-hr is not set
-# CONFIG_PACKAGE_webif-lang-hu is not set
-# CONFIG_PACKAGE_webif-lang-it is not set
-# CONFIG_PACKAGE_webif-lang-nl is not set
-# CONFIG_PACKAGE_webif-lang-no is not set
-# CONFIG_PACKAGE_webif-lang-pl is not set
-# CONFIG_PACKAGE_webif-lang-pt is not set
-# CONFIG_PACKAGE_webif-lang-ru is not set
-# CONFIG_PACKAGE_webif-lang-sq is not set
-# CONFIG_PACKAGE_webif-lang-sv is not set
-# CONFIG_PACKAGE_webif-lang-uk is not set
-# CONFIG_PACKAGE_webif-lang-zh is not set
-# CONFIG_PACKAGE_webif-mesh is not set
-# CONFIG_PACKAGE_webif-netsukuku is not set
-# CONFIG_PACKAGE_webif-theme-clubman is not set
-# CONFIG_PACKAGE_webif-theme-sedky1 is not set
-# CONFIG_PACKAGE_webif-theme-xwrt is not set
-# CONFIG_PACKAGE_webif-theme-xwrt-mini is not set
-# CONFIG_PACKAGE_webif-theme-zephyr is not set
-# CONFIG_PACKAGE_webif-vpn is not set
 
 #
 # zabbix
@@ -2320,7 +2279,6 @@ CONFIG_PACKAGE_iptables-utils=m
 # CONFIG_PACKAGE_krb5-server is not set
 # CONFIG_PACKAGE_lft is not set
 # CONFIG_PACKAGE_lsm is not set
-# CONFIG_PACKAGE_m-route is not set
 # CONFIG_PACKAGE_mac-to-devinfo is not set
 # CONFIG_PACKAGE_madwimax is not set
 # CONFIG_PACKAGE_memcached is not set
@@ -2330,6 +2288,8 @@ CONFIG_PACKAGE_iptables-utils=m
 # CONFIG_PACKAGE_mtr is not set
 # CONFIG_PACKAGE_multiwan is not set
 # CONFIG_PACKAGE_mvprelay is not set
+# CONFIG_PACKAGE_mwan2 is not set
+# CONFIG_PACKAGE_mwan3 is not set
 # CONFIG_PACKAGE_nbd is not set
 # CONFIG_PACKAGE_nbtscan is not set
 # CONFIG_PACKAGE_net-tools-arp is not set
@@ -2890,6 +2850,7 @@ CONFIG_PACKAGE_vim=m
 # CONFIG_PACKAGE_vim-full is not set
 # CONFIG_PACKAGE_vim-help is not set
 # CONFIG_PACKAGE_vim-runtime is not set
+CONFIG_PACKAGE_vim-small=m
 # CONFIG_PACKAGE_zile is not set
 
 #

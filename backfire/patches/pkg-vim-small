@@ -1,0 +1,107 @@
+Index: b/feeds/packages/utils/vim/Makefile
+===================================================================
+--- a/feeds/packages/utils/vim/Makefile
++++ b/feeds/packages/utils/vim/Makefile
+@@ -35,6 +35,11 @@
+   TITLE+= (Tiny)
+ endef
+ 
++define Package/vim-small
++  $(call Package/vim/Default)
++  TITLE+= (Small)
++endef
++
+ define Package/vim-full
+   $(call Package/vim/Default)
+   TITLE+= (Normal)
+@@ -54,6 +59,10 @@
+ /usr/share/vim/vimrc
+ endef
+ 
++define Package/vim-small/conffiles
++/usr/share/vim/vimrc
++endef
++
+ define Package/vim/conffiles
+ /usr/share/vim/vimrc
+ endef
+@@ -63,6 +72,11 @@
+ 	(Tiny build)
+ endef
+ 
++define Package/vim-small/description
++ Vim is an almost compatible version of the UNIX editor Vi.
++ (Small build)
++endef
++
+ define Package/vim-full/description
+ 	Vim is an almost compatible version of the UNIX editor Vi.
+ 	(Normal build)
+@@ -113,6 +127,19 @@
+ endef
+ endif
+ 
++ifneq ($(CONFIG_PACKAGE_vim-small),)
++define Build/Compile/vim-small
++	$(call Build/Configure/Default, \
++		--with-features=small \
++		--enable-multibyte \
++	)
++	$(MAKE) -C $(PKG_BUILD_DIR) clean
++	+$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
++		DESTDIR="$(PKG_INSTALL_DIR)" all
++	$(CP) $(PKG_BUILD_DIR)/src/$(PKG_NAME) $(PKG_BUILD_DIR)/vim_small
++endef
++endif
++
+ ifneq ($(CONFIG_PACKAGE_vim-full),)
+ define Build/Compile/vim-full
+ 	$(call Build/Configure/Default, \
+@@ -139,6 +166,7 @@
+ 
+ define Build/Compile
+ $(call Build/Compile/vim)
++$(call Build/Compile/vim-small)
+ $(call Build/Compile/vim-full)
+ $(call Build/Compile/vim-runtime)
+ endef
+@@ -151,6 +179,13 @@
+ endef
+ 
+ 
++define Package/vim-small/install
++	$(INSTALL_DIR) $(1)/usr/bin
++	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vim_small $(1)/usr/bin/vim
++	$(INSTALL_DIR) $(1)/usr/share/vim
++	$(INSTALL_CONF) ./files/vimrc.small $(1)/usr/share/vim/vimrc
++endef
++
+ define Package/vim-full/install
+ 	$(INSTALL_DIR) $(1)/usr/bin
+ 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/vim_normal $(1)/usr/bin/vim
+@@ -168,6 +203,7 @@
+ endef
+ 
+ $(eval $(call BuildPackage,vim))
++$(eval $(call BuildPackage,vim-small))
+ $(eval $(call BuildPackage,vim-full))
+ $(eval $(call BuildPackage,vim-runtime))
+ $(eval $(call BuildPackage,vim-help))
+Index: b/feeds/packages/utils/vim/files/vimrc.small
+===================================================================
+--- /dev/null
++++ b/feeds/packages/utils/vim/files/vimrc.small
+@@ -0,0 +1,13 @@
++set showcmd            " Show (partial) command in status line.
++set showmatch          " Show matching brackets.
++set ignorecase         " Do case insensitive matching
++set incsearch          " Incremental search
++set autowrite          " Automatically save before commands like :next and :make
++set nocompatible        " Use Vim defaults instead of 100% vi compatibility
++set backspace=indent,eol,start  " more powerful backspacing
++set autoindent          " always set autoindenting on
++set linebreak         " Don't wrap words by default
++set textwidth=0         " Don't wrap lines by default
++set ruler               " show the cursor position all the time
++set encoding=utf-8      " enable utf-8 encoding
++
