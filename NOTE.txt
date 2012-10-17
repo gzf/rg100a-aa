@@ -16,6 +16,7 @@ TODO:
 	b43 driver
 
 maximum firmware size: 4063232 / 0x3E0000
+                       6160384 / 0x5E0000  
 openwrt compile single package:
         make package/pkg/compile
         make package/pkg/install

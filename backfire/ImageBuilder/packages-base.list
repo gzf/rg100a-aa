@@ -4,7 +4,6 @@ hotplug2
 libc
 libpthread
 libgcc
-uclibcxx
 block-mount
 busybox
 dropbear
@@ -24,6 +23,9 @@ ip6tables
 ip6tables-utils
 ip
 tc
+comgt
+usb-modeswitch
+usb-modeswitch-data
 vim-small
 gpioctl
 kmod-switch
