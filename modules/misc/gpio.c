@@ -42,7 +42,7 @@ static int gpio_ioctl(struct inode *inode, struct file * filep, unsigned int cmd
         *gpio_io_reg |= mask;
         break;
     case GPIO_GET:
-        return (*gpio_io_reg &= mask) ? 1 : 0;
+        return (*gpio_io_reg & mask) ? 1 : 0;
     case GPIO_DIR_IN:
         *gpio_dir_reg &= ~mask;
         break;
@@ -89,6 +89,6 @@ module_init(gpio_init);
 module_exit(gpio_cleanup);
 
 MODULE_DESCRIPTION("GPIO driver for BCM96358VW2");
-MODULE_VERSION("0.1.0");
+MODULE_VERSION("0.2.0");
 MODULE_AUTHOR("Zhifeng Gu <guzhifeng1979@hotmail.com>");
 MODULE_LICENSE("GPL v2");
