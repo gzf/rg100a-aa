@@ -4,3 +4,4 @@ wifi-force-option
 fix-warning-when-including-empty-directory
 disable-failsafe-shell
 pkg-vim-small
+ddns-scripts-3322-support
