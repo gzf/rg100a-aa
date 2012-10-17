@@ -7,5 +7,5 @@ Index: b/feeds/packages/net/ddns-scripts/files/usr/lib/ddns/services
  # dnsExit.com free dynamic DNS update url
  "dnsexit.com"		"http://www.dnsexit.com/RemoteUpdate.sv?login=[USERNAME]&password=[PASSWORD]&host=[DOMAIN]&myip=[IP]"
 +
-+# www.3322.org
-+"3322.org"      "http://[USERNAME]:[PASSWORD]@members.3322.org/dyndns/update?system=dyndns&hostname=[DOMAIN]&myip=[IP]&wildcard=OFF"
++# 3322.org
++"3322.org"  "http://[USERNAME]:[PASSWORD]@members.3322.org/dyndns/update?system=dyndns&hostname=[DOMAIN]&myip=[IP]"
