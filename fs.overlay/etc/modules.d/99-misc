@@ -1,5 +1,5 @@
 bcm96358vw2_gpio
+tun
 #loop
-#tun
 #ifb
 #autofs4
