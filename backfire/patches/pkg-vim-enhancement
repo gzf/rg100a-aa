@@ -37,6 +37,15 @@ Index: b/feeds/packages/utils/vim/Makefile
  define Package/vim-full/description
  	Vim is an almost compatible version of the UNIX editor Vi.
  	(Normal build)
+@@ -103,7 +117,7 @@
+ define Build/Compile/vim
+ 	$(call Build/Configure/Default, \
+ 	  --with-features=tiny \
+-	  --disable-multibyte \
++	  --enable-multibyte \
+ 	 )
+ 	$(MAKE) -C $(PKG_BUILD_DIR) clean
+ 	$(MAKE) $(PKG_JOBS) -C $(PKG_BUILD_DIR) \
 @@ -113,6 +127,19 @@
  endef
  endif
@@ -105,3 +114,14 @@ Index: b/feeds/packages/utils/vim/files/vimrc.small
 +set ruler               " show the cursor position all the time
 +set encoding=utf-8      " enable utf-8 encoding
 +
+Index: b/feeds/packages/utils/vim/files/vimrc
+===================================================================
+--- a/feeds/packages/utils/vim/files/vimrc
++++ b/feeds/packages/utils/vim/files/vimrc
+@@ -9,5 +9,5 @@
+ set linebreak         " Don't wrap words by default
+ set textwidth=0         " Don't wrap lines by default
+ set ruler               " show the cursor position all the time
+-
++set encoding=utf-8      " enable utf-8 encoding
+ 

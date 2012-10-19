@@ -3,5 +3,6 @@ block-mount-local-update
 wifi-force-option
 fix-warning-when-including-empty-directory
 disable-failsafe-shell
-pkg-vim-small
+pkg-vim-enhancement
+set-EDITOR-if-vim-is-installed
 ddns-scripts-3322-support

@@ -1,0 +1,16 @@
+Index: b/package/base-files/files/etc/profile
+===================================================================
+--- a/package/base-files/files/etc/profile
++++ b/package/base-files/files/etc/profile
+@@ -7,7 +7,10 @@
+ export PS1='\u@\h:\w\$ '
+ 
+ [ -x /bin/more ] || alias more=less
+-[ -x /usr/bin/vim ] && alias vi=vim || alias vim=vi
++[ -x /usr/bin/vim ] && {
++    alias vi=vim
++    export EDITOR=/usr/bin/vim
++} || alias vim=vi
+ 
+ [ -z "$KSH_VERSION" -o \! -s /etc/mkshrc ] || . /etc/mkshrc
+ 
