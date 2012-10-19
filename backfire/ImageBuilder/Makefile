@@ -29,21 +29,11 @@ export REVISION
 
 define Helptext
 Available Commands:
-	help:	This help text
-	info:	Show a list of available target profiles
-	clean:	Remove images and temporary build files
-	image:	Build an image (see below for more information).
-
-Building images:
-	By default 'make image' will create an image with the default
-	target profile and package set. You can use the following parameters
-	to change that:
-	
-	make image PROFILE="<profilename>" # override the default target profile
-	make image PACKAGES="<pkg1> [<pkg2> [<pkg3> ...]]" # include extra packages
-	make image FILES="<path>" # include extra files from <path>
-	make image BIN_DIR="<path>" # alternative output directory for the images
-
+	help:		This help text
+	info:		Show a list of available target profiles
+	clean:		Remove images and temporary build files
+	4m-noweb:	Build an 4m-noweb image
+	4m-luci:	Build an 4m-luci image
 endef
 $(eval $(call shexport,Helptext))
 
@@ -78,7 +68,7 @@ define Profile
   $(1)_NAME:=$(NAME)
   $(1)_PACKAGES:=$(PACKAGES)
   PROFILE_LIST += \
-  	echo '$(1):'; [ -z '$(NAME)' ] || echo '	$(NAME)'; echo '	Packages: $(PACKAGES)';
+    echo '$(1):'; [ -z '$(NAME)' ] || echo '	$(NAME)'; echo '	Packages: $(PACKAGES)';
 endef
 
 include $(INCLUDE_DIR)/target.mk
@@ -107,7 +97,7 @@ ifneq ($(USER_FILES),)
 endif
 	$(MAKE) package_postinst
 	$(MAKE) build_image
-	
+
 package_index: FORCE
 	@echo
 	@echo Building package index...
@@ -145,23 +135,22 @@ build_image: FORCE
 	@echo
 	@echo Building images...
 	$(NO_TRACE_MAKE) -C target/linux/$(BOARD)/image install TARGET_BUILD=1 IB=1
-	
+
 clean:
 	rm -rf $(TOPDIR)/tmp $(TOPDIR)/dl $(TARGET_DIR) $(BIN_DIR)
 
 info:
-	$(MAKE) -s _call_info DEFAULT_PACKAGES="$(shell tr \\n ' ' < packages-base.list)"
+	$(MAKE) -s _call_info DEFAULT_PACKAGES="4m-noweb 4m-luci"
 
 image:
-	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell tr \\n ' ' < packages-base.list)" \
+	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell cat $(PKGLISTS) | tr \\n ' ')" \
 		USER_PROFILE="Empty"
 
-info-web:
-	$(MAKE) -s _call_info DEFAULT_PACKAGES="$(shell cat packages-base.list packages-enhanced.list | tr \\n ' ')"
+4m-noweb: PKGLISTS = packages-base.list packages-4m-noweb.list
+4m-noweb: image
 
-image-web:
-	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell cat packages-base.list packages-enhanced.list | tr \\n ' ')" \
-		USER_PROFILE="Empty"
+4m-luci: PKGLISTS = packages-base.list packages-4m-luci.list
+4m-luci: image
 
 .SILENT: help info image
 
