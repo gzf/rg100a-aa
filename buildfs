@@ -15,13 +15,18 @@ mkdir -p rootfs/lib/functions/fsck # eliminate "WARNING: /lib/functions/fsck not
 chmod +s rootfs/bin/busybox
 chmod 1777 rootfs/tmp
 cd "$BCMFW/targets/DSL-2760U/modules/lib/modules/$KERNEL_VERSION"
-cat $TOPDIR/config/kmod-broadcom.list \
-	$TOPDIR/config/kmod-base.list \
-	$TOPDIR/config/kmod-ebtables.list \
-	$TOPDIR/config/kmod-sched.list | \
+
+for LISTFILE in `ls -1 $TOPDIR/rootfs/usr/lib/opkg/info/kmod-*.list`
+do
+    LISTFILE=`basename $LISTFILE`
+    PKGNAME=${LISTFILE%.list}
+    cpio -p -d $TOPDIR/rootfs/lib/modules/$KERNEL_VERSION < $TOPDIR/config/mapping/$PKGNAME
+done
+cat $TOPDIR/config/kmod-broadcom \
+	$TOPDIR/config/kmod-misc | \
     cpio -p -d $TOPDIR/rootfs/lib/modules/$KERNEL_VERSION
 cd $TOPDIR/modules
-cat $TOPDIR/config/kmod-local.list | \
+cat $TOPDIR/config/kmod-local | \
 	cpio -p -d $TOPDIR/rootfs/lib/modules/$KERNEL_VERSION
 cd $TOPDIR/fs.overlay
 find | cpio -u -p -d ../rootfs

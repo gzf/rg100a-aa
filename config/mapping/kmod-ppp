@@ -1,0 +1,3 @@
+kernel/drivers/net/ppp_async.ko
+kernel/drivers/net/ppp_generic.ko
+kernel/drivers/net/slhc.ko

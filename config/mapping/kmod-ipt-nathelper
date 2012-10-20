@@ -1,0 +1,6 @@
+kernel/net/ipv4/netfilter/nf_nat_ftp.ko
+kernel/net/ipv4/netfilter/nf_nat_tftp.ko
+kernel/net/ipv4/netfilter/nf_nat_irc.ko
+kernel/net/netfilter/nf_conntrack_ftp.ko
+kernel/net/netfilter/nf_conntrack_tftp.ko
+kernel/net/netfilter/nf_conntrack_irc.ko

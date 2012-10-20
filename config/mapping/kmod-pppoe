@@ -1,0 +1,2 @@
+kernel/drivers/net/pppoe.ko
+kernel/drivers/net/pppox.ko

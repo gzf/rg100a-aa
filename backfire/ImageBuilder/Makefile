@@ -32,8 +32,9 @@ Available Commands:
 	help:		This help text
 	info:		Show a list of available target profiles
 	clean:		Remove images and temporary build files
-	4m-noweb:	Build an 4m-noweb image
-	4m-luci:	Build an 4m-luci image
+	image:		Build a minimal image
+	4m-noweb:	Build a 4m-noweb image
+	4m-luci:	Build a 4m-luci image
 endef
 $(eval $(call shexport,Helptext))
 
@@ -145,6 +146,8 @@ info:
 image:
 	$(MAKE) _call_image DEFAULT_PACKAGES="$(shell cat $(PKGLISTS) | tr \\n ' ')" \
 		USER_PROFILE="Empty"
+
+PKGLISTS = packages-base.list
 
 4m-noweb: PKGLISTS = packages-base.list packages-4m-noweb.list
 4m-noweb: image

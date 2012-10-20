@@ -21,8 +21,11 @@ usb-modeswitch
 usb-modeswitch-data
 gpioctl
 libpthread
+kmod-atm
+kmod-mppe
 kmod-switch
 kmod-nls-utf8
+kmod-nls-cp437
 kmod-fs-vfat
 kmod-fs-ext2
 kmod-fs-ext3
@@ -41,10 +44,13 @@ kmod-usb-serial-option
 kmod-loop
 kmod-ifb
 kmod-tun
+kmod-ipt-extra
 kmod-ipt-nat-extra
+kmod-ipt-conntrack
 kmod-ipt-conntrack-extra
 kmod-ipt-nathelper
 kmod-ipt-nathelper-extra
+kmod-ipt-filter
 kmod-ipt-imq
 kmod-ipt-iprange
 kmod-ipt-ipopt

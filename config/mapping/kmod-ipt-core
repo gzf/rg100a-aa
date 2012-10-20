@@ -1,0 +1,12 @@
+kernel/net/netfilter/x_tables.ko
+kernel/net/netfilter/xt_comment.ko
+kernel/net/netfilter/xt_limit.ko
+kernel/net/netfilter/xt_mac.ko
+kernel/net/netfilter/xt_multiport.ko
+kernel/net/netfilter/xt_tcpudp.ko
+kernel/net/netfilter/xt_TCPMSS.ko
+kernel/net/ipv4/netfilter/ip_tables.ko
+kernel/net/ipv4/netfilter/iptable_filter.ko
+kernel/net/ipv4/netfilter/iptable_mangle.ko
+kernel/net/ipv4/netfilter/ipt_REJECT.ko
+kernel/net/ipv4/netfilter/ipt_LOG.ko
