@@ -1,2 +1,4 @@
 kernel/fs/mbcache.ko
 kernel/net/8021q/8021q.ko
+kernel/net/ipv4/netfilter/ipt_ttl.ko
+kernel/net/ipv4/netfilter/ipt_TTL.ko

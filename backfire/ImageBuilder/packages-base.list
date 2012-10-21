@@ -35,7 +35,6 @@ kmod-gre
 kmod-ipv6
 kmod-sit
 kmod-ipip
-kmod-ip6-tunnel
 kmod-usb2
 kmod-usb-ohci
 kmod-usb-storage

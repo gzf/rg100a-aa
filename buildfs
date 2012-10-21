@@ -1,5 +1,9 @@
 #!/bin/sh
 
+rm_comments() {
+    sed -e 's/#.*//' -e 's/[ ^I]*$//' -e '/^$/d'
+}
+
 . ./Build.defs
 
 TOPDIR="$PWD"
@@ -20,13 +24,14 @@ for LISTFILE in `ls -1 $TOPDIR/rootfs/usr/lib/opkg/info/kmod-*.list`
 do
     LISTFILE=`basename $LISTFILE`
     PKGNAME=${LISTFILE%.list}
-    cpio -p -d $TOPDIR/rootfs/lib/modules/$KERNEL_VERSION < $TOPDIR/config/mapping/$PKGNAME
+    rm_comments < $TOPDIR/config/mapping/$PKGNAME | cpio -p -d $TOPDIR/rootfs/lib/modules/$KERNEL_VERSION
 done
 cat $TOPDIR/config/kmod-broadcom \
 	$TOPDIR/config/kmod-misc | \
+    rm_comments | \
     cpio -p -d $TOPDIR/rootfs/lib/modules/$KERNEL_VERSION
 cd $TOPDIR/modules
-cat $TOPDIR/config/kmod-local | \
+cat $TOPDIR/config/kmod-local | rm_comments | \
 	cpio -p -d $TOPDIR/rootfs/lib/modules/$KERNEL_VERSION
 cd $TOPDIR/fs.overlay
 find | cpio -u -p -d ../rootfs

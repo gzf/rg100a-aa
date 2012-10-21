@@ -5,7 +5,7 @@
 #include <net/sock.h>
 
 #define NUM_OF_EXTIRQ   4
-#define DRV_NAME	    "btn_hotplug"
+#define DRV_NAME	    "bcm96358vw2_btn"
 
 struct bh_event {
 	char			*name;

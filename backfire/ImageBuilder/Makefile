@@ -32,9 +32,9 @@ Available Commands:
 	help:		This help text
 	info:		Show a list of available target profiles
 	clean:		Remove images and temporary build files
-	image:		Build a minimal image
-	4m-noweb:	Build a 4m-noweb image
-	4m-luci:	Build a 4m-luci image
+	image:		Build the base image
+	4m-noweb:	Build the 4m-noweb image
+	4m-luci:	Build the 4m-luci image
 endef
 $(eval $(call shexport,Helptext))
 

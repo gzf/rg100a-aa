@@ -1,0 +1,3 @@
+kernel/crypto/ecb.ko
+kernel/crypto/deflat.ko
+kernel/crypto/cbc.ko
