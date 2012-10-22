@@ -3,8 +3,11 @@ kernel/net/ipv4/netfilter/ipt_ECN.ko
 kernel/net/netfilter/xt_CLASSIFY.ko
 kernel/net/netfilter/xt_dscp.ko
 kernel/net/netfilter/xt_DSCP.ko
+# xt_HL.ko is missing
+# xt_hl.ko is missing
 kernel/net/netfilter/xt_length.ko
 kernel/net/netfilter/xt_mark.ko
 kernel/net/netfilter/xt_MARK.ko
 kernel/net/netfilter/xt_statistic.ko
 kernel/net/netfilter/xt_tcpmss.ko
+# xt_time.ko is missing

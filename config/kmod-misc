@@ -1,4 +1,7 @@
+# the build-in modules in official backfire kernel
 kernel/fs/mbcache.ko
 kernel/net/8021q/8021q.ko
+kernel/net/sched/cls_basic.ko
+# anti-netsniper
 kernel/net/ipv4/netfilter/ipt_ttl.ko
 kernel/net/ipv4/netfilter/ipt_TTL.ko

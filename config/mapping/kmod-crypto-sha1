@@ -1,1 +1,1 @@
-kernel/crypto/sha1.ko
+kernel/crypto/sha1.ko           # compatible to sha1_generic.ko?

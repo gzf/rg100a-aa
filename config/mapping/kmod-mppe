@@ -1,1 +1,1 @@
-kernel/drivers/net/ppp_mppe_mppc.ko
+kernel/drivers/net/ppp_mppe_mppc.ko         # compatible to ppp_mppe.ko ?

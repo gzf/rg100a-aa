@@ -1,3 +1,4 @@
 kernel/net/ipv4/netfilter/ipt_owner.ko
+# xt_physdev.ko is missing
 kernel/net/netfilter/xt_pkttype.ko
 kernel/net/netfilter/xt_quota.ko

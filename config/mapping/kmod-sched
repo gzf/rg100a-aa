@@ -1,7 +1,7 @@
 kernel/net/sched/act_ipt.ko
 kernel/net/sched/act_mirred.ko
 kernel/net/sched/act_police.ko
-kernel/net/sched/cls_basic.ko
+# cls_flow.ko is missing
 kernel/net/sched/cls_fw.ko
 kernel/net/sched/cls_route.ko
 kernel/net/sched/cls_tcindex.ko

@@ -1,1 +1,1 @@
-kernel/net/ipv4/netfilter/ipt_iprange.ko
+kernel/net/ipv4/netfilter/ipt_iprange.ko        # xt_iprange.ko is missing
