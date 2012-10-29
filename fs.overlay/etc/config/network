@@ -25,11 +25,11 @@ config interface lan
 
 #config switch_vlan
 #        option device eth0
-#        option vlan  1
-#        option ports '0 1 2 5t'
+#        option vlan   1
+#        option ports  '0 1 2 5t'
 
 #config switch_vlan
 #        option device eth0
-#        option vlan 2
-#        option ports '3 5t'
+#        option vlan   2
+#        option ports  '3 5t'
 
