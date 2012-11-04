@@ -1,3 +1,0 @@
-kernel/net/ipv4/netfilter/broadcom/nf_conntrack_ipsec.ko
-kernel/net/ipv4/netfilter/broadcom/nf_nat_ipsec.ko
-kernel/net/ipv4/netfilter/broadcom/nf_nat_pt.ko
