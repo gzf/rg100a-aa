@@ -1,41 +1,8 @@
 TODO:
- 1.0:
-	multi ssid
-	gpioctl/userspace led
     imq/connlimit testing
 	xt_ipp2p/ipt_ipp2p
 	nf_defrag_ipv4
-	cls_basic vs. cls_flow ?
-
- 2.0:
-	uClibc 0.9.32 (NPTL support)
-	macvlan / backport-macvlan-prerequisite
-	gpio
-	swconfig
-	try upgrade to kernel 2.6.27 in neufbox
-	b43 driver
+	b43: compact-wireles
 
 maximum firmware size: 4063232 / 0x3E0000
                        6160384 / 0x5E0000  
-openwrt compile single package:
-        make package/pkg/compile
-        make package/pkg/install
-
-E261: 12d1:1446 -> 12d1:1436
-
-userspace packages:
-base:
-    gpioctl swconfig
-opkg:
-    wol rsync git sudo openvpn openvpn-easy-rsa
-3g:
-	usb-modeswitch comgt [ usb-modeswitch-data ]
-	usb-modeswitch -> libusb
-	comgt -> chat
-
-multi-lun:
-	http://www.groupsrv.com/linux/about163562.html
-	http://www.cs.sfu.ca/~ggbaker/personal/cf-linux
-
-gpio/led:
-	http://www.openwrt.org.cn/bbs/viewthread.php?tid=3306
