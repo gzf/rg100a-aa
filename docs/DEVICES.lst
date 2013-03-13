@@ -2,6 +2,7 @@ Supported:
 	* RG100A-AA
 	* DB120-B1 (WLAN button doesn't work)
 	* DB120-WG (LED of LAN4 doesn't work)
+	* HUAWEI EchoLife HG522-C (Hardware Version HG522BBA)
 
 Unsupported:
 
