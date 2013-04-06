@@ -1,7 +1,7 @@
-Index: DSL-2760U/Makefile
+Index: b/Makefile
 ===================================================================
---- DSL-2760U.orig/Makefile
-+++ DSL-2760U/Makefile
+--- a/Makefile
++++ b/Makefile
 @@ -23,12 +23,11 @@
  #
  ############################################
@@ -50,10 +50,10 @@ Index: DSL-2760U/Makefile
 -DSL_2760BN
 +DSL_2760BN		\
 +PROFILE
-Index: DSL-2760U/bcmdrivers/Makefile
+Index: b/bcmdrivers/Makefile
 ===================================================================
---- DSL-2760U.orig/bcmdrivers/Makefile
-+++ DSL-2760U/bcmdrivers/Makefile
+--- a/bcmdrivers/Makefile
++++ b/bcmdrivers/Makefile
 @@ -35,16 +35,16 @@
  endif
  
@@ -74,10 +74,10 @@ Index: DSL-2760U/bcmdrivers/Makefile
    obj-$(CONFIG_BCM_XTMCFG) += broadcom/char/xtmcfg/$(LN_NAME)/
  endif
  
-Index: DSL-2760U/bcmdrivers/opensource/net/xtmrt/impl2/Makefile
+Index: b/bcmdrivers/opensource/net/xtmrt/impl2/Makefile
 ===================================================================
---- DSL-2760U.orig/bcmdrivers/opensource/net/xtmrt/impl2/Makefile
-+++ DSL-2760U/bcmdrivers/opensource/net/xtmrt/impl2/Makefile
+--- a/bcmdrivers/opensource/net/xtmrt/impl2/Makefile
++++ b/bcmdrivers/opensource/net/xtmrt/impl2/Makefile
 @@ -3,7 +3,7 @@
  # Makefile for the BCM63xx bcmxtmrt driver.
  #
@@ -87,10 +87,10 @@ Index: DSL-2760U/bcmdrivers/opensource/net/xtmrt/impl2/Makefile
  
  EXTRA_CFLAGS += -I$(INC_BRCMDRIVER_PUB_PATH)/$(BRCM_BOARD) -I$(INC_BRCMSHARED_PUB_PATH)/$(BRCM_BOARD) -I$(INC_BRCMBOARDPARMS_PATH)/$(BRCM_BOARD)
  
-Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
+Index: b/hostTools/scripts/defconfig-bcm.template
 ===================================================================
---- DSL-2760U.orig/hostTools/scripts/defconfig-bcm.template
-+++ DSL-2760U/hostTools/scripts/defconfig-bcm.template
+--- a/hostTools/scripts/defconfig-bcm.template
++++ b/hostTools/scripts/defconfig-bcm.template
 @@ -1,219 +1,17 @@
  #
 -# A template defconfig file for BRCM xDSL build: don't edit
@@ -1898,10 +1898,10 @@ Index: DSL-2760U/hostTools/scripts/defconfig-bcm.template
  # CONFIG_LIBCRC32C is not set
 -CONFIG_HAS_IOMEM=y
 -CONFIG_HAS_IOPORT=y
-Index: DSL-2760U/hostTools/scripts/gendefconfig
+Index: b/hostTools/scripts/gendefconfig
 ===================================================================
---- DSL-2760U.orig/hostTools/scripts/gendefconfig
-+++ DSL-2760U/hostTools/scripts/gendefconfig
+--- a/hostTools/scripts/gendefconfig
++++ b/hostTools/scripts/gendefconfig
 @@ -1,685 +1,5 @@
 -#!/bin/bash
 -
@@ -2590,10 +2590,10 @@ Index: DSL-2760U/hostTools/scripts/gendefconfig
 -
  
 +cp $TEMPLATE $KERNEL_DIR/arch/mips/defconfig
-Index: DSL-2760U/make.common
+Index: b/make.common
 ===================================================================
---- DSL-2760U.orig/make.common
-+++ DSL-2760U/make.common
+--- a/make.common
++++ b/make.common
 @@ -121,7 +121,7 @@
  
  ifneq ($(strip $(LEGACY_TOOLCHAIN)),y)
@@ -2621,10 +2621,19 @@ Index: DSL-2760U/make.common
  CROSS_COMPILE = $(TOOLCHAIN)/bin/mips-uclibc-
  endif
  else
-Index: DSL-2760U/userspace/gpl/apps/Makefile
+@@ -825,7 +825,7 @@
+ # Actually, this check is only used by the top level Makefile.
+ # No need to do this on every command.
+ #
+-KERNEL_VERSION := $(shell uname -r | sed -e 's/\(2\.6\)[0-9\.a-zA-Z\-]\+/\1/')
++KERNEL_VERSION := $(shell uname -r | sed -e 's/\(2\.6\)[_0-9\.a-zA-Z\-]\+/\1/')
+ kernel_version_check:
+ 	@echo "kernel version is $(KERNEL_VERSION)"
+ 	@if [ $(KERNEL_VERSION) != "2.6" ]; then \
+Index: b/userspace/gpl/apps/Makefile
 ===================================================================
---- DSL-2760U.orig/userspace/gpl/apps/Makefile
-+++ DSL-2760U/userspace/gpl/apps/Makefile
+--- a/userspace/gpl/apps/Makefile
++++ b/userspace/gpl/apps/Makefile
 @@ -4,7 +4,7 @@
  #
  APP_DIRS = atm2684 bridge-utils busybox dproxy-nexgen ebtables ftpd \
@@ -2634,10 +2643,10 @@ Index: DSL-2760U/userspace/gpl/apps/Makefile
  
  #
  # We need to declare these directory names as phony targets,
-Index: DSL-2760U/version.make
+Index: b/version.make
 ===================================================================
---- DSL-2760U.orig/version.make
-+++ DSL-2760U/version.make
+--- a/version.make
++++ b/version.make
 @@ -1,3 +1,4 @@
  BRCM_VERSION=4
  BRCM_RELEASE=02
