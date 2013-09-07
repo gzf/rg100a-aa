@@ -1,0 +1,37 @@
+Index: b/scripts/metadata.pm
+===================================================================
+--- a/scripts/metadata.pm
++++ b/scripts/metadata.pm
+@@ -65,13 +65,16 @@
+ 			$pkg->{name} = $1;
+ 			$pkg->{title} = "";
+ 			$pkg->{default} = "m if ALL";
++            if ($pkg->{name} =~ /kmod-.*/) {
++                $pkg->{default} .= " || ALL_KMODS";
++            }
+ 			$pkg->{depends} = [];
+ 			$pkg->{mdepends} = [];
+ 			$pkg->{builddepends} = [];
+ 			$pkg->{buildtypes} = [];
+ 			$pkg->{subdir} = $subdir;
+ 			$pkg->{tristate} = 1;
+-			$package{$1} = $pkg;
++			$package{$pkg->{name}} = $pkg;
+ 			push @{$srcpackage{$src}}, $pkg;
+ 		};
+ 		/^Feature:\s*(.+?)\s*$/ and do {
+Index: b/Config.in
+===================================================================
+--- a/Config.in
++++ b/Config.in
+@@ -139,6 +139,10 @@
+ 		bool "Select all packages by default"
+ 		default n
+ 
++	config ALL_KMODS
++		bool "Select kmod-* packages by default"
++		default n
++
+ 	comment "General build options"
+ 
+ 	config DISPLAY_SUPPORT

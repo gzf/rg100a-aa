@@ -1,8 +1,7 @@
-merge-block-mount-on-trunk
-block-mount-local-update
+pkg-vim-small
+add-option-to-build-all-kmods
 wifi-force-option
-fix-warning-when-including-empty-directory
-disable-failsafe-shell
-pkg-vim-enhancement
 set-EDITOR-if-vim-is-installed
-ddns-scripts-3322-support
+ticket-11700-cyrus-sasl
+fix-wrong-time-to-source-script
+busybox-setuid

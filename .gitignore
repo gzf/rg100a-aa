@@ -1,7 +1,6 @@
 /DSL-2760U
 /ImageBuilder
 /rootfs*
-/openwrt*
 /*.img
 /.emacs*
 /tmp

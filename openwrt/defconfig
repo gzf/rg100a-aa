@@ -1,30 +1,12 @@
 CONFIG_TARGET_brcm63xx=y
 CONFIG_TARGET_brcm63xx_Broadcom=y
 
+# build all kmod packages
+CONFIG_ALL_KMODS=y
+
 CONFIG_TARGET_ROOTFS_CPIOGZ=y
 # CONFIG_TARGET_ROOTFS_JFFS2 is not set
 # CONFIG_TARGET_ROOTFS_SQUASHFS is not set
-
-CONFIG_BUSYBOX_CONFIG_FEATURE_ASSUME_UNICODE=y
-CONFIG_BUSYBOX_CONFIG_FEATURE_SUID_CONFIG=y
-CONFIG_BUSYBOX_CONFIG_FEATURE_SUID_CONFIG_QUIET=y
-CONFIG_BUSYBOX_CONFIG_REALPATH=y
-CONFIG_BUSYBOX_CONFIG_ADDGROUP=y
-CONFIG_BUSYBOX_CONFIG_FEATURE_ADDUSER_TO_GROUP=y
-CONFIG_BUSYBOX_CONFIG_DELGROUP=y
-CONFIG_BUSYBOX_CONFIG_FEATURE_DEL_USER_FROM_GROUP=y
-CONFIG_BUSYBOX_CONFIG_FEATURE_CHECK_NAMES=y
-CONFIG_BUSYBOX_CONFIG_ADDUSER=y
-CONFIG_BUSYBOX_CONFIG_FIRST_SYSTEM_ID=100
-CONFIG_BUSYBOX_CONFIG_LAST_SYSTEM_ID=9999
-CONFIG_BUSYBOX_CONFIG_DELUSER=y
-CONFIG_BUSYBOX_CONFIG_SU=y
-CONFIG_BUSYBOX_CONFIG_FEATURE_SU_SYSLOG=y
-CONFIG_BUSYBOX_CONFIG_LOSETUP=y
-# CONFIG_BUSYBOX_CONFIG_FEATURE_VOLUMEID_ISO9660 is not set
-# CONFIG_BUSYBOX_CONFIG_FEATURE_VOLUMEID_UDF is not set
-# CONFIG_BUSYBOX_CONFIG_FEATURE_VOLUMEID_LINUXRAID is not set
-CONFIG_BUSYBOX_CONFIG_FEATURE_MOUNT_LABEL=y
 
 # ccache
 CONFIG_DEVEL=y
@@ -33,86 +15,77 @@ CONFIG_CCACHE=y
 # ImageBuilder
 CONFIG_IB=y
 
-# base
-CONFIG_PACKAGE_block-mount=m
-CONFIG_PACKAGE_libpthread=m
-CONFIG_PACKAGE_ebtables=m
-CONFIG_PACKAGE_ebtables-utils=m
-CONFIG_PACKAGE_iptables=m
-CONFIG_PACKAGE_iptables-mod-conntrack=m
-CONFIG_PACKAGE_iptables-mod-nat=m
-CONFIG_PACKAGE_iptables-utils=m
-CONFIG_PACKAGE_ip6tables=m
-CONFIG_PACKAGE_ip6tables-utils=m
-CONFIG_PACKAGE_gpioctl=m
+# busybox
+CONFIG_BUSYBOX_CONFIG_UNICODE_SUPPORT=y
+CONFIG_BUSYBOX_CONFIG_LAST_SUPPORTED_WCHAR=0
+CONFIG_BUSYBOX_CONFIG_UNICODE_COMBINING_WCHARS=y
+CONFIG_BUSYBOX_CONFIG_UNICODE_WIDE_WCHARS=y
+CONFIG_BUSYBOX_CONFIG_FEATURE_MOUNT_LABEL=y
+# remove the leading '#' to exclude the vi applet of busybox
+## CONFIG_BUSYBOX_CONFIG_VI is not set
+
+# 3G modem support
+CONFIG_PACKAGE_kmod-usb-serial=m
+CONFIG_PACKAGE_kmod-usb-serial-option=m
 CONFIG_PACKAGE_comgt=m
 CONFIG_PACKAGE_usb-modeswitch=m
 CONFIG_PACKAGE_usb-modeswitch-data=m
-CONFIG_PACKAGE_kmod-atm=m
-CONFIG_PACKAGE_kmod-mppe=m
-CONFIG_PACKAGE_kmod-ppp-synctty=m
-CONFIG_PACKAGE_kmod-switch=m
-CONFIG_PACKAGE_kmod-nls-utf8=m
-CONFIG_PACKAGE_kmod-nls-cp437=m
-CONFIG_PACKAGE_kmod-fs-vfat=m
-CONFIG_PACKAGE_kmod-fs-ext2=m
-CONFIG_PACKAGE_kmod-fs-ext3=m
-CONFIG_PACKAGE_kmod-fs-autofs4=m
-CONFIG_PACKAGE_kmod-fuse=m
-CONFIG_PACKAGE_kmod-ipip=m
-CONFIG_PACKAGE_kmod-gre=m
-CONFIG_PACKAGE_kmod-ipv6=m
-CONFIG_PACKAGE_kmod-sit=m
-CONFIG_PACKAGE_kmod-ip6-tunnel=m
-CONFIG_PACKAGE_kmod-usb-core=m
-CONFIG_PACKAGE_kmod-usb2=m
-CONFIG_PACKAGE_kmod-usb-ohci=m
-CONFIG_PACKAGE_kmod-usb-storage=m
-CONFIG_PACKAGE_kmod-usb-printer=m
-CONFIG_PACKAGE_kmod-usb-serial=m
-CONFIG_PACKAGE_kmod-usb-serial-option=m
-CONFIG_PACKAGE_kmod-loop=m
-CONFIG_PACKAGE_kmod-ifb=m
-CONFIG_PACKAGE_kmod-tun=m
-CONFIG_PACKAGE_kmod-ipt-extra=m
-CONFIG_PACKAGE_kmod-ipt-nat-extra=m
-CONFIG_PACKAGE_kmod-ipt-conntrack-extra=m
-CONFIG_PACKAGE_kmod-ipt-filter=m
-CONFIG_PACKAGE_kmod-ipt-imq=m
-CONFIG_PACKAGE_kmod-ipt-iprange=m
-CONFIG_PACKAGE_kmod-ipt-ipopt=m
-CONFIG_PACKAGE_kmod-ipt-hashlimit=m
-CONFIG_PACKAGE_kmod-ipt-nathelper=m
-CONFIG_PACKAGE_kmod-ipt-nathelper-extra=m
-# CONFIG_PACKAGE_wpad-mini is not set
-# CONFIG_PACKAGE_iw is not set
-# CONFIG_PACKAGE_kmod-b43 is not set
+CONFIG_PACKAGE_vim-small=m
 
-# enhancned
+# disable the buildin firewall package
+# CONFIG_PACKAGE_firewall is not set
+
+# core utils
+CONFIG_PACKAGE_ip=m
+CONFIG_PACKAGE_tc=m
+CONFIG_PACKAGE_ip6tables=m
+CONFIG_PACKAGE_ebtables=m
+CONFIG_PACKAGE_ebtables-utils=m
+CONFIG_PACKAGE_arptables=m
+CONFIG_PACKAGE_iptables-mod-nat-extra=m
+
+# VPN
+CONFIG_PACKAGE_openvpn=m
+CONFIG_PACKAGE_n2n=m
+CONFIG_PACKAGE_ppp-mod-pptp=m
+CONFIG_PACKAGE_pptpd=m
+
+# storages
+CONFIG_PACKAGE_block-mount=m
+CONFIG_PACKAGE_autofs5=m
+CONFIG_PACKAGE_autofs5-mount-ext2=m
+
+# misc
+CONFIG_PACKAGE_ez-ipupdate-3322=m
+CONFIG_PACKAGE_openldap-server=m
+CONFIG_PACKAGE_openldap-utils=m
+CONFIG_PACKAGE_samba36-server=m
+CONFIG_PACKAGE_samba36-client=m
+CONFIG_PACKAGE_mwan3=m
+CONFIG_PACKAGE_qos-scripts=m
+CONFIG_PACKAGE_tcpdump=m
+CONFIG_PACKAGE_wpa-cli=m
+CONFIG_PACKAGE_iperf-mt=m
+CONFIG_PACKAGE_netcat=m
+CONFIG_PACKAGE_rsync=m
+CONFIG_PACKAGE_git=m
+CONFIG_PACKAGE_openssh-client=m
+CONFIG_PACKAGE_wol=m
+CONFIG_PACKAGE_wget=m
+CONFIG_PACKAGE_lftp=m
+CONFIG_PACKAGE_sudo=m
+CONFIG_PACKAGE_screen=m
+CONFIG_PACKAGE_ntfs-3g=m
+CONFIG_PACKAGE_NTFS-3G_USE_LIBFUSE=y
+CONFIG_PACKAGE_relayd=m
+
+# luci and https
 CONFIG_PACKAGE_luci=m
-CONFIG_PACKAGE_luci-ssl=m
-CONFIG_PACKAGE_luci-i18n-chinese=m
-CONFIG_PACKAGE_luci-app-mwan3=m
-CONFIG_PACKAGE_luci-app-wol=m
-CONFIG_PACKAGE_luci-app-ddns=m
 CONFIG_PACKAGE_luci-app-statistics=m
-CONFIG_PACKAGE_luci-app-qos=m
+CONFIG_PACKAGE_luci-app-mwan3=m
+CONFIG_PACKAGE_luci-app-ddns=m
 CONFIG_PACKAGE_luci-proto-3g=m
-CONFIG_PACKAGE_luci-proto-6x4=m
-CONFIG_PACKAGE_luci-proto-pptp=m
+CONFIG_PACKAGE_luci-ssl=m
 CONFIG_PACKAGE_uhttpd-mod-tls=m
 CONFIG_PACKAGE_uhttpd-mod-tls_cyassl=y
 
-# utils
-CONFIG_PACKAGE_ip=m
-CONFIG_PACKAGE_tc=m
-CONFIG_PACKAGE_vim=m
-CONFIG_PACKAGE_vim-small=m
-CONFIG_PACKAGE_ntfs-3g=m
-CONFIG_PACKAGE_tcpdump=m
-
-# local feed
-CONFIG_PACKAGE_ez-ipupdate-3322=m
-CONFIG_PACKAGE_multimac=m
-CONFIG_PACKAGE_autofs5=m
-CONFIG_PACKAGE_autofs5-mount-ext2=m

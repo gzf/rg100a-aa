@@ -1,0 +1,12 @@
+Index: b/package/busybox/Makefile
+===================================================================
+--- a/package/busybox/Makefile
++++ b/package/busybox/Makefile
+@@ -106,6 +106,7 @@
+ define Package/busybox/install
+ 	$(INSTALL_DIR) $(1)/etc/init.d
+ 	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
++	chmod +s $(1)/bin/busybox
+ 	for tmp in $(init-y); do \
+ 		$(INSTALL_BIN) ./files/$$$$tmp $(1)/etc/init.d/$$$$tmp; \
+ 	done

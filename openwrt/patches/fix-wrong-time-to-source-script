@@ -1,0 +1,15 @@
+Index: b/target/linux/brcm63xx/base-files/lib/preinit/05_reset_button_brcm63xx
+===================================================================
+--- a/target/linux/brcm63xx/base-files/lib/preinit/05_reset_button_brcm63xx
++++ b/target/linux/brcm63xx/base-files/lib/preinit/05_reset_button_brcm63xx
+@@ -1,8 +1,8 @@
+ #!/bin/sh
+ 
+-. /lib/brcm63xx.sh
+-
+ enable_reset_button() {
++    . /lib/brcm63xx.sh
++
+ 	if [ "$brcm63xx_has_reset_button" = "true" ]; then
+ 		insmod input-core
+ 		insmod input-polldev
