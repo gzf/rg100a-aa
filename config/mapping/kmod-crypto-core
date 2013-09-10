@@ -1,3 +1,1 @@
-kernel/crypto/ecb.ko
-kernel/crypto/deflate.ko
-kernel/crypto/cbc.ko
+kernel/crypto/crypto_algapi.ko

@@ -1,5 +1,4 @@
 base-files
-udevtrigger
 hotplug2
 libc
 libgcc
@@ -13,13 +12,9 @@ dnsmasq
 ppp
 ppp-mod-pppoe
 iptables
-iptables-mod-nat
-iptables-mod-conntrack
-iptables-utils
 comgt
 usb-modeswitch
 usb-modeswitch-data
-gpioctl
 libpthread
 kmod-atm
 kmod-mppe
@@ -27,8 +22,6 @@ kmod-switch
 kmod-nls-utf8
 kmod-nls-cp437
 kmod-fs-vfat
-kmod-fs-ext2
-kmod-fs-ext3
 kmod-fs-autofs4
 kmod-fuse
 kmod-gre
@@ -50,10 +43,10 @@ kmod-ipt-conntrack-extra
 kmod-ipt-nathelper
 kmod-ipt-nathelper-extra
 kmod-ipt-filter
-kmod-ipt-imq
 kmod-ipt-iprange
 kmod-ipt-ipopt
 kmod-ipt-hashlimit
 kmod-ip6tables
 kmod-ebtables
 kmod-sched
+kmod-sched-core

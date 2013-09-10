@@ -10,7 +10,7 @@ TOPDIR:=${CURDIR}
 LC_ALL:=C
 LANG:=C
 export TOPDIR LC_ALL LANG
-export KBUILD_VERBOSE=99
+export OPENWRT_VERBOSE=s
 all: help
 
 include $(TOPDIR)/include/host.mk
@@ -69,7 +69,7 @@ define Profile
   $(1)_NAME:=$(NAME)
   $(1)_PACKAGES:=$(PACKAGES)
   PROFILE_LIST += \
-    echo '$(1):'; [ -z '$(NAME)' ] || echo '	$(NAME)'; echo '	Packages: $(PACKAGES)';
+  	echo '$(1):'; [ -z '$(NAME)' ] || echo '	$(NAME)'; echo '	Packages: $(PACKAGES)';
 endef
 
 include $(INCLUDE_DIR)/target.mk
@@ -111,11 +111,21 @@ package_index: FORCE
 package_install: FORCE
 	@echo
 	@echo Installing packages...
+	$(OPKG) install $(PACKAGE_DIR)/libc_*.ipk
+	$(OPKG) install $(PACKAGE_DIR)/kernel_*.ipk
 	$(OPKG) install $(BUILD_PACKAGES)
 
 copy_files: FORCE
 	@echo
 	@echo Copying extra files
+	@( cd $(USER_FILES); find -type f ) | \
+		( cd $(TARGET_DIR); while :; do \
+			read FILE; \
+			[ -z "$$FILE" ] && break; \
+			[ -L "$$FILE" ] || continue; \
+			echo "Removing symlink $(TARGET_DIR)/$$FILE"; \
+			rm -f "$$FILE"; \
+		done; )
 	$(CP) $(USER_FILES)/* $(TARGET_DIR)/
 
 package_postinst: FORCE
@@ -135,10 +145,12 @@ package_postinst: FORCE
 build_image: FORCE
 	@echo
 	@echo Building images...
-	$(NO_TRACE_MAKE) -C target/linux/$(BOARD)/image install TARGET_BUILD=1 IB=1
+	$(NO_TRACE_MAKE) -C target/linux/$(BOARD)/image install TARGET_BUILD=1 IB=1 \
+		$(if $(USER_PROFILE),PROFILE="$(USER_PROFILE)")
 
 clean:
 	rm -rf $(TOPDIR)/tmp $(TOPDIR)/dl $(TARGET_DIR) $(BIN_DIR)
+
 
 info:
 	$(MAKE) -s _call_info DEFAULT_PACKAGES="4m-noweb 4m-luci"

@@ -1891,10 +1891,12 @@ Index: b/hostTools/scripts/defconfig-bcm.template
  # Library routines
  #
 -CONFIG_CRC_CCITT=y
+-# CONFIG_CRC16 is not set
+-# CONFIG_CRC32 is not set
 +# CONFIG_BITREVERSE is not set
 +CONFIG_CRC_CCITT=m
- # CONFIG_CRC16 is not set
- # CONFIG_CRC32 is not set
++CONFIG_CRC16=m
++CONFIG_CRC32=m
  # CONFIG_LIBCRC32C is not set
 -CONFIG_HAS_IOMEM=y
 -CONFIG_HAS_IOPORT=y
@@ -2621,15 +2623,6 @@ Index: b/make.common
  CROSS_COMPILE = $(TOOLCHAIN)/bin/mips-uclibc-
  endif
  else
-@@ -825,7 +825,7 @@
- # Actually, this check is only used by the top level Makefile.
- # No need to do this on every command.
- #
--KERNEL_VERSION := $(shell uname -r | sed -e 's/\(2\.6\)[0-9\.a-zA-Z\-]\+/\1/')
-+KERNEL_VERSION := $(shell uname -r | sed -e 's/\(2\.6\)[_0-9\.a-zA-Z\-]\+/\1/')
- kernel_version_check:
- 	@echo "kernel version is $(KERNEL_VERSION)"
- 	@if [ $(KERNEL_VERSION) != "2.6" ]; then \
 Index: b/userspace/gpl/apps/Makefile
 ===================================================================
 --- a/userspace/gpl/apps/Makefile
