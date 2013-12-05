@@ -5,3 +5,5 @@ set-EDITOR-if-vim-is-installed
 ticket-11700-cyrus-sasl
 fix-wrong-time-to-source-script
 busybox-setuid
+2760U-hotplug2-comp-fix
+disable-failsafe-shell

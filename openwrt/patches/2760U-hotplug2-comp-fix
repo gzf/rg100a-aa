@@ -1,0 +1,26 @@
+Index: b/package/hotplug2/patches/200-2760U-comp-fix
+===================================================================
+--- /dev/null
++++ b/package/hotplug2/patches/200-2760U-comp-fix
+@@ -0,0 +1,21 @@
++Index: b/uevent.c
++===================================================================
++--- a/uevent.c
+++++ b/uevent.c
++@@ -104,11 +104,14 @@
++ 	 * TODO: Split this to a different function
++ 	 */
++ 	if (!strcmp(item, "DEVPATH")) {
++-		uevent->env_vars_c++;
+++		uevent->env_vars_c+=2;
++ 		uevent->env_vars = xrealloc(uevent->env_vars, sizeof(struct env_var_t) * uevent->env_vars_c);
++-		uevent->env_vars[uevent->env_vars_c - 1].key = strdup("DEVICENAME");
++ 		tmp = strdup(ptr + 1);
+++		uevent->env_vars[uevent->env_vars_c - 1].key = strdup("DEVICENAME");
++ 		uevent->env_vars[uevent->env_vars_c - 1].value = strdup(basename(tmp));
+++        // DEVNAME is not issued by the kernel of 2760U
+++		uevent->env_vars[uevent->env_vars_c - 2].key = strdup("DEVNAME");
+++		uevent->env_vars[uevent->env_vars_c - 2].value = strdup(basename(tmp));
++ 		free(tmp);
++ 	}
++ 	
