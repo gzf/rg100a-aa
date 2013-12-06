@@ -7,6 +7,7 @@
 check_failsafe_mount() {
     check_skip || [ "$FAILSAFE" = true ] && {
 	    echo "switching to failsafe tmpfs"
+	    killall -q hotplug2 # prevent the init process from being killed by the init hotplug button rule
 	    mount -t tmpfs failsafe /overlay
 	    fopivot /overlay /rom && pi_mount_skip_next=true
     }
