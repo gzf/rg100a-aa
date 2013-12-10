@@ -228,9 +228,20 @@ ifup_iface() {
 }
 
 detect_broadcom() {
-    local i=-1
+    local i=-1 found
+    
+    check_configured() {
+        if [ "$1" = "$2" ]; then
+            found=1
+        fi
+    }
 
+    config_load wireless
     while [ -f /proc/net/wl$((++i)) ]; do
+        found=0
+        config_foreach check_configured wifi-device wl$i
+        [ "$found" -gt 0 ] && continue
+        
         cat <<EOF
 config wifi-device  wl${i}
     option type     broadcom
