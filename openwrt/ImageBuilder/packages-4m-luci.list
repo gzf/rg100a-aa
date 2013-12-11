@@ -1,5 +1,4 @@
 luci
-luci-app-ddns
 luci-proto-3g
 luci-i18n-chinese
 luci-ssl
