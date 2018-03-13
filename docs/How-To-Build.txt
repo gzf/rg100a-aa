@@ -1,0 +1,14 @@
+1：下载2760和backfire的源码
+   注意2760的源码解压后，把toolchains目录移到2760U的源码下面，
+   因为我修改了Makefile，指定了toolchains的相对路径
+2. 安装quilt，把patches目录下的补丁给2760源码打上，当然你也可以用patch直接打补丁
+   然后make，等待编译结束。然后进入hostTools目录，执行make clean; make，等待编译结束
+3. 把backfire/patches下的补丁给backfire源码打上，
+   拷贝backfire/defconfig到backfire目录里，
+   make menuconfig根据你的需求修改配置，保存，make，等待编译结束。
+   完了之后把bin/brcm63xx下的OpenWrt-ImageBuilder-brcm63xx-for-Linux-x86_64.tar.bz2解压
+4. 修改Build.defs，修改BCMFW，IMAGEBUILDER，分别指向2760的源码目录和ImageBuilder的解压目录
+   或者直接创建两个符号链接：DSL-2760U，ImageBuilder
+6. 执行./createlinks, 然后进入ImageBuilder的目录，执行 make image/4m-noweb/4m-luci
+7. 进入modules目录，执行make
+8. 回到顶层目录，make/make cfe/make oldcfe就可以生成我发布的那几个固件
